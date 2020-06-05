@@ -1,5 +1,6 @@
 alias(
     name = "RuleSuggestionService_deploy.jar",
+<<<<<<< HEAD
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
 )
 
@@ -21,4 +22,27 @@ alias(
 alias(
     name = "RuleModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
+=======
+    actual = "//java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+)
+
+alias(
+    name = "PoolAssignment",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
+)
+
+alias(
+    name = "UserPoolAssignment",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
+)
+
+alias(
+    name = "Filter",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Filter",
+)
+
+alias(
+    name = "Rule",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Rule",
+>>>>>>> 8be7a5e... Initial Contribution
 )
