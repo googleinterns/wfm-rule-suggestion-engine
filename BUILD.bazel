@@ -1,0 +1,24 @@
+alias(
+    name = "RuleSuggestionService_deploy.jar",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+)
+
+alias(
+    name = "PoolAssignment",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
+)
+
+alias(
+    name = "UserPoolAssignment",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
+)
+
+alias(
+    name = "Filter",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Filter",
+)
+
+alias(
+    name = "Rule",
+    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Rule",
+)
