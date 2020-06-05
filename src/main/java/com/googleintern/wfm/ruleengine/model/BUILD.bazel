@@ -1,0 +1,38 @@
+java_binary(
+    name = "PoolAssignmentModel",
+    srcs = ["PoolAssignmentModel.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
+java_binary(
+    name = "UserPoolAssignmentModel",
+    srcs = ["UserPoolAssignmentModel.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":FilterModel",
+        ":PoolAssignmentModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
+java_binary(
+    name = "FilterModel",
+    srcs = ["FilterModel.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
+java_binary(
+    name = "RuleModel",
+    srcs = ["RuleModel.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":FilterModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)

@@ -25,5 +25,5 @@ before_install:
   - rm -f install.sh
 
 script:
-#  - bazel build ...
+  - bazel build ...
 

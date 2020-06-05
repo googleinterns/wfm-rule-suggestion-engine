@@ -1,0 +1,83 @@
+java_binary(
+    name = "RuleSuggestionService",
+    srcs = ["RuleSuggestionService.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+    ],
+)
+
+java_library(
+    name = "maven_dependency",
+    exported_plugins = [":autovalue_plugin"],
+    visibility = ["//visibility:public"],
+    exports = [
+        ":autocommon",
+        ":autovalue",
+        ":guava",
+        ":junit",
+        ":protobuf",
+    ],
+)
+
+java_library(
+    name = "autovalue",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_google_auto_value_auto_value",
+        "@maven//:com_google_auto_value_auto_value_annotations",
+    ],
+)
+
+java_library(
+    name = "guava",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_google_guava_failureaccess",
+        "@maven//:com_google_guava_guava",
+    ],
+)
+
+java_library(
+    name = "guava_test",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_google_guava_guava_testlib",
+        "@maven//:com_google_guava_guava_tests",
+    ],
+)
+
+java_library(
+    name = "junit",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:junit_junit",
+    ],
+)
+
+java_library(
+    name = "autocommon",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_google_auto_auto_common",
+    ],
+)
+
+java_library(
+    name = "protobuf",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_google_protobuf_protobuf_java",
+        "@maven//:com_google_protobuf_protobuf_java_util",
+    ],
+)
+
+java_plugin(
+    name = "autovalue_plugin",
+    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:com_google_auto_value_auto_value",
+        "@maven//:com_google_auto_value_auto_value_annotations",
+    ],
+)
