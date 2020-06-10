@@ -1,24 +1,29 @@
 alias(
-    name = "RuleSuggestionService_deploy.jar",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+    name = "RuleSuggestionService",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+)
+
+alias(
+    name = "CsvParser_deploy.jar",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:CsvParser",
 )
 
 alias(
     name = "PoolAssignment",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
 )
 
 alias(
     name = "UserPoolAssignment",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
 )
 
 alias(
     name = "Filter",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Filter",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Filter",
 )
 
 alias(
     name = "Rule",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Rule",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Rule",
 )

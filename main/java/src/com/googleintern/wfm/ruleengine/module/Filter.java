@@ -1,4 +1,4 @@
-package java.src.com.googleintern.wfm.ruleengine.module;
+package main.java.src.com.googleintern.wfm.ruleengine.module;
 
 import com.google.auto.value.AutoValue;
 
