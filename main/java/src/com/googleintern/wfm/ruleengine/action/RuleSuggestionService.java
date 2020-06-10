@@ -1,4 +1,4 @@
-package src.main.java.com.googleintern.wfm.ruleengine.action;
+package main.java.src.com.googleintern.wfm.ruleengine.action;
 
 public interface RuleSuggestionService {
 

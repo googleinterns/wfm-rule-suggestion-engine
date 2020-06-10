@@ -1,4 +1,5 @@
 alias(
+<<<<<<< HEAD
     name = "RuleSuggestionService_deploy.jar",
 <<<<<<< HEAD
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
@@ -24,25 +25,38 @@ alias(
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
 =======
     actual = "//java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+=======
+    name = "RuleSuggestionService",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+)
+
+alias(
+    name = "CsvParser_deploy.jar",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:CsvParser",
+>>>>>>> d047107... Implement a functioning CsvParser. Need to write testcases.
 )
 
 alias(
     name = "PoolAssignment",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
 )
 
 alias(
     name = "UserPoolAssignment",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
 )
 
 alias(
     name = "Filter",
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Filter",
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Filter",
 )
 
 alias(
     name = "Rule",
+<<<<<<< HEAD
     actual = "//java/src/com/googleintern/wfm/ruleengine/module:Rule",
 >>>>>>> 8be7a5e... Initial Contribution
+=======
+    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Rule",
+>>>>>>> d047107... Implement a functioning CsvParser. Need to write testcases.
 )
