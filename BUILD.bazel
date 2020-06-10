@@ -1,7 +1,6 @@
+# action package
 alias(
-<<<<<<< HEAD
     name = "RuleSuggestionService_deploy.jar",
-<<<<<<< HEAD
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
 )
 
@@ -23,40 +22,36 @@ alias(
 alias(
     name = "RuleModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
-=======
-    actual = "//java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
-=======
-    name = "RuleSuggestionService",
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
 )
 
 alias(
-    name = "CsvParser_deploy.jar",
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/action:CsvParser",
->>>>>>> d047107... Implement a functioning CsvParser. Need to write testcases.
+    name = "CsvParser",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
+)
+
+# model package
+alias(
+    name = "PoolAssignmentModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",
 )
 
 alias(
-    name = "PoolAssignment",
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:PoolAssignment",
+    name = "UserPoolAssignmentModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserPoolAssignmentModel",
 )
 
 alias(
-    name = "UserPoolAssignment",
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:UserPoolAssignment",
+    name = "FilterModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
 )
 
 alias(
-    name = "Filter",
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Filter",
+    name = "RuleModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
 )
 
+# test package
 alias(
-    name = "Rule",
-<<<<<<< HEAD
-    actual = "//java/src/com/googleintern/wfm/ruleengine/module:Rule",
->>>>>>> 8be7a5e... Initial Contribution
-=======
-    actual = "//main/java/src/com/googleintern/wfm/ruleengine/module:Rule",
->>>>>>> d047107... Implement a functioning CsvParser. Need to write testcases.
+    name = "CsvParserTest_deploy.jar",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvParserTest",
 )

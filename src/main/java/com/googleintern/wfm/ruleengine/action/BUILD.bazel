@@ -10,11 +10,10 @@ java_binary(
 java_binary(
     name = "CsvParser",
     srcs = ["CsvParser.java"],
-    main_class = "main.java.src.com.googleintern.wfm.ruleengine.action.CsvParser",
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
-        "//main/java/src/com/googleintern/wfm/ruleengine/module:module_dependencies",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
 
