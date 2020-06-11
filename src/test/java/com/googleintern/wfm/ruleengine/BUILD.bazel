@@ -1,7 +1,10 @@
-java_binary(
+load("@rules_java//java:defs.bzl", "java_test")
+
+java_test(
     name = "CsvParserTest",
+    size = "large",
     srcs = ["CsvParserTest.java"],
-    main_class = "src.test.java.com.googleintern.wfm.ruleengine.CsvParserTest",
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.CsvParserTest",
     visibility = ["//visibility:public"],
     deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",

@@ -7,6 +7,7 @@ import com.opencsv.exceptions.CsvException;
 
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
@@ -28,59 +29,58 @@ public class CsvParser {
     }
 
     public static void ReadFromCSVFile() throws IOException, CsvException {
+        // Read all data from input csv file located at given path
         Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
         CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
         List<String[]> userRecords = csvReader.readAll();
-        for (String[] record : userRecords) {
-            int userId = Integer.parseInt(record[0]);
-            int workforceId = Integer.parseInt(record[1]);
-            int workgroupId = Integer.parseInt(record[6]);
-            System.out.println("userId: " + userId + " workforce id: " + workforceId + " workgroup id: " + workgroupId);
-            Pattern pattern = Pattern.compile("(\\d+)");
 
-            // reading role ids
-            Matcher roleIdsMatcher = pattern.matcher(record[2]);
+        // Input patterns that are used to match target information
+        Pattern numberPattern = Pattern.compile("(\\d+)");
+        Pattern roleSkillPattern = Pattern.compile("\"skill_id\":\"(\\d+)\"");
+        Pattern permissionPattern =
+                Pattern.compile("\"cases_pool_id\":\"(\\d+)\",\"permission_set_id\":\"(\\d+)\"");
+
+        // Parse data line by line
+        for (String[] record : userRecords){
+            int userId = Integer.parseInt(record[0]);
+            int workforceId = Integer.parseInt(record[4]);
+            int workgroupId = Integer.parseInt(record[5]);
+
+            // Parse role ids
+            Matcher roleIdsMatcher = numberPattern.matcher(record[1]);
             Set<FilterModel> filterSet = new HashSet<FilterModel>();
             while(roleIdsMatcher.find()){
                 int idValue = Integer.parseInt(roleIdsMatcher.group());
                 FilterModel filter = FilterModel.builder().setFilterType(1).setIdValue(idValue).build();
                 filterSet.add(filter);
-                System.out.println("role_ids: " + idValue);
-
             }
 
-            // reading skill ids
-            Matcher skillIdsMatcher = pattern.matcher(record[3]);
+            // Parse skill ids
+            Matcher skillIdsMatcher = numberPattern.matcher(record[2]);
             while(skillIdsMatcher.find()) {
                 int idValue = Integer.parseInt(skillIdsMatcher.group());
                 FilterModel filter = FilterModel.builder().setFilterType(2).setIdValue(idValue).build();
                 filterSet.add(filter);
-                System.out.println("skill_ids: " + idValue);
             }
 
-            // reading role_skills ids
-            Pattern roleSkillPattern = Pattern.compile("\"skill_id\":\"(\\d+)\"");
-            Matcher roleSKillsMatcher = roleSkillPattern.matcher(record[4]);
+            // Parse role_skills ids
+            Matcher roleSKillsMatcher = roleSkillPattern.matcher(record[3]);
             while(roleSKillsMatcher.find()) {
                 String skillId = roleSKillsMatcher.group();
-                Matcher roleSkillIdMatcher = pattern.matcher(skillId);
+                Matcher roleSkillIdMatcher = numberPattern.matcher(skillId);
                 roleSkillIdMatcher.find();
                 int idValue = Integer.parseInt(roleSkillIdMatcher.group());
                 if (idValue == 0) continue;
                 FilterModel filter = FilterModel.builder().setFilterType(3).setIdValue(idValue).build();
                 filterSet.add(filter);
-                System.out.println("role_skill_ids: " + idValue);
             }
 
+            // Parse pool ids and permission ids
+            Matcher permissionsMatcher = permissionPattern.matcher(record[6]);
             Set<PoolAssignmentModel> poolAssignmentsSet = new HashSet<PoolAssignmentModel>();
-            // reading pool ids and permission ids
-            Pattern permissionPattern =
-                    Pattern.compile("\"cases_pool_id\":\"(\\d+)\",\"permission_set_id\":\"(\\d+)\"");
-            Matcher permissionsMatcher = permissionPattern.matcher(record[7]);
             while(permissionsMatcher.find()){
                 String permission = permissionsMatcher.group();
-                Matcher idsForPermission = pattern.matcher(permission);
-                System.out.println(permission);
+                Matcher idsForPermission = numberPattern.matcher(permission);
                 idsForPermission.find();
                 int poolId = Integer.parseInt(idsForPermission.group());
                 idsForPermission.find();
@@ -88,15 +88,12 @@ public class CsvParser {
                 PoolAssignmentModel poolAssignment = PoolAssignmentModel.builder().setCasePoolId(poolId)
                         .setPermissionSetId(permissionId).build();
                 poolAssignmentsSet.add(poolAssignment);
-                System.out.println("pool id: " + poolId + "  permission id: " + permissionId);
             }
 
+            // Save current data in userPoolAssignmentList
             UserPoolAssignmentModel user = UserPoolAssignmentModel.builder().setUserId(userId).setWorkforceId(workforceId)
                     .setWorkgroupId(workgroupId).setFilters(filterSet).setPoolAssignments(poolAssignmentsSet).build();
-            System.out.println(userPoolAssignmentList.size());
             userPoolAssignmentList.add(user);
-
-            System.out.println("---------------------------");
         }
     }
 }

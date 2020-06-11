@@ -49,9 +49,3 @@ alias(
     name = "RuleModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
 )
-
-# test package
-alias(
-    name = "CsvParserTest_deploy.jar",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvParserTest",
-)
