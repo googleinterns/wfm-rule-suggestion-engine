@@ -6,6 +6,9 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * RuleModel class is used to store detailed information about a newly generated rule.
+ */
 @AutoValue
 public abstract class RuleModel {
     public abstract long workforceId();
@@ -18,13 +21,16 @@ public abstract class RuleModel {
         return new AutoValue_RuleModel.Builder();
     }
 
+    /**
+     * Builder class is used to set variables and create an instance for RuleModel class.
+     */
     @AutoValue.Builder
     public abstract static class Builder{
-        public abstract Builder setWorkforceId(long workforceIdValue);
-        public abstract Builder setWorkgroupId(long workgroupIdValue);
-        public abstract Builder setCasePoolId(long casePoolIdValue);
-        public abstract Builder setPermissionSetIds(Set<Long> permissionSetIdsValue);
-        public abstract Builder setFilters(List<ImmutableSet<FilterModel>> filtersValue);
+        public abstract Builder setWorkforceId(long workforceId);
+        public abstract Builder setWorkgroupId(long workgroupId);
+        public abstract Builder setCasePoolId(long casePoolId);
+        public abstract Builder setPermissionSetIds(Set<Long> permissionSetIds);
+        public abstract Builder setFilters(List<ImmutableSet<FilterModel>> filters);
         public abstract RuleModel build();
     }
 }
