@@ -5,26 +5,6 @@ alias(
 )
 
 alias(
-    name = "PoolAssignmentModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",
-)
-
-alias(
-    name = "UserPoolAssignmentModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserPoolAssignmentModel",
-)
-
-alias(
-    name = "FilterModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
-)
-
-alias(
-    name = "RuleModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
-)
-
-alias(
     name = "CsvParser",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
 )

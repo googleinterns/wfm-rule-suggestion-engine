@@ -18,16 +18,31 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/***
+ * CsvParser class is used to retrieve information from the input csv file ans store these data as instances of
+ * UserPoolAssignmentModel.
+ * String variable csvFilePath represents the path to the csv file, including the file name.
+ * List variable userPoolAssignmentList stores the results reading from the input csv file.
+ */
 public class CsvParser {
 
     public static String csvFilePath;
     public static List<UserPoolAssignmentModel> userPoolAssignmentList;
 
+    /**
+     * CsvParser class constructor
+     * @param csvFilePath path to the csv file, including the file name.
+     */
     public CsvParser(String csvFilePath){
         this.csvFilePath = csvFilePath;
-        userPoolAssignmentList = new ArrayList<UserPoolAssignmentModel>();
+        userPoolAssignmentList = new ArrayList<>();
     }
 
+    /**
+     * Read all data using csvFilePath. Parse useful information out and store it in userPoolAssignmentList.
+     * @throws IOException
+     * @throws CsvException
+     */
     public static void ReadFromCSVFile() throws IOException, CsvException {
         // Read all data from input csv file located at given path
         Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
@@ -42,37 +57,35 @@ public class CsvParser {
 
         // Parse data line by line
         for (String[] record : userRecords){
-            int userId = Integer.parseInt(record[0]);
-            int workforceId = Integer.parseInt(record[4]);
-            int workgroupId = Integer.parseInt(record[5]);
+            long userId = Long.parseLong(record[0]);
+            long workforceId = Long.parseLong(record[4]);
+            long workgroupId = Long.parseLong(record[5]);
 
             // Parse role ids
             Matcher roleIdsMatcher = numberPattern.matcher(record[1]);
-            Set<FilterModel> filterSet = new HashSet<FilterModel>();
+            List<Long> roleIds = new ArrayList<>();
             while(roleIdsMatcher.find()){
-                int idValue = Integer.parseInt(roleIdsMatcher.group());
-                FilterModel filter = FilterModel.builder().setFilterType(1).setIdValue(idValue).build();
-                filterSet.add(filter);
+                long idValue = Long.parseLong(roleIdsMatcher.group());
+                roleIds.add(idValue);
             }
 
             // Parse skill ids
             Matcher skillIdsMatcher = numberPattern.matcher(record[2]);
+            List<Long> skillIds = new ArrayList<>();
             while(skillIdsMatcher.find()) {
-                int idValue = Integer.parseInt(skillIdsMatcher.group());
-                FilterModel filter = FilterModel.builder().setFilterType(2).setIdValue(idValue).build();
-                filterSet.add(filter);
+                long idValue = Long.parseLong(skillIdsMatcher.group());
+                skillIds.add(idValue);
             }
 
             // Parse role_skills ids
             Matcher roleSKillsMatcher = roleSkillPattern.matcher(record[3]);
+            List<Long> roleSkillIds = new ArrayList<>();
             while(roleSKillsMatcher.find()) {
                 String skillId = roleSKillsMatcher.group();
                 Matcher roleSkillIdMatcher = numberPattern.matcher(skillId);
                 roleSkillIdMatcher.find();
-                int idValue = Integer.parseInt(roleSkillIdMatcher.group());
-                if (idValue == 0) continue;
-                FilterModel filter = FilterModel.builder().setFilterType(3).setIdValue(idValue).build();
-                filterSet.add(filter);
+                long idValue = Long.parseLong(roleSkillIdMatcher.group());
+                roleSkillIds.add(idValue);
             }
 
             // Parse pool ids and permission ids
@@ -92,7 +105,8 @@ public class CsvParser {
 
             // Save current data in userPoolAssignmentList
             UserPoolAssignmentModel user = UserPoolAssignmentModel.builder().setUserId(userId).setWorkforceId(workforceId)
-                    .setWorkgroupId(workgroupId).setFilters(filterSet).setPoolAssignments(poolAssignmentsSet).build();
+                    .setWorkgroupId(workgroupId).setRoleIds(roleIds).setSkillIds(skillIds).setRoleSkillIds(roleSkillIds)
+                    .setPoolAssignments(poolAssignmentsSet).build();
             userPoolAssignmentList.add(user);
         }
     }
