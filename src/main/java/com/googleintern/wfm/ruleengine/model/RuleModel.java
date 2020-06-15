@@ -30,7 +30,7 @@ public abstract class RuleModel {
         public abstract Builder setWorkgroupId(long workgroupId);
         public abstract Builder setCasePoolId(long casePoolId);
         public abstract Builder setPermissionSetIds(Set<Long> permissionSetIds);
-        public abstract Builder setFilters(List<ImmutableSet<FilterModel>> filters);
+        public abstract Builder setFilters(List<Set<FilterModel>> filters);
         public abstract RuleModel build();
     }
 }

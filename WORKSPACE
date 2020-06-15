@@ -64,6 +64,7 @@ http_archive(
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+# Update maven_install: using 'bazel run @unpinned_maven//:pin'
 maven_install(
     name = "maven",
     artifacts = [
@@ -77,6 +78,7 @@ maven_install(
         "com.google.guava:failureaccess:1.0.1",
         "com.google.guava:guava-testlib:27.1-jre",
         "junit:junit:4.12",
+        "com.opencsv:opencsv:5.2",
     ],
     fetch_sources = True,
     maven_install_json = "//:maven_install.json",
