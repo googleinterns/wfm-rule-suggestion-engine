@@ -1,5 +1,7 @@
 package src.test.java.com.googleintern.wfm.ruleengine;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,128 +24,118 @@ public class CsvParserTest {
   private static final long USER_ID_CASE_0 = 0;
   private static final long WORKFORCE_ID_CASE_0 = 1024;
   private static final long WORKGROUP_ID_CASE_0 = 0;
-  private static final List<Long> ROLE_IDS_CASE_0 = new ArrayList<>();
-  private static final List<Long> SKILL_IDS_CASE_0 = new ArrayList<>();
-  private static final List<Long> ROLESKILL_IDS_CASE_0 = new ArrayList<>();
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_0 = new HashSet<>();
+  private static final ImmutableList<Long> ROLE_IDS_CASE_0 = ImmutableList.of();
+  private static final ImmutableList<Long> SKILL_IDS_CASE_0 = ImmutableList.of();
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_0 = ImmutableList.of();
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_0 =
+      ImmutableSet.of();
 
   // Expected values of fields for Case 1
   private static final int CASE_NUMBER_1 = 1;
   private static final long USER_ID_CASE_1 = 1;
   private static final long WORKFORCE_ID_CASE_1 = 1024;
   private static final long WORKGROUP_ID_CASE_1 = 0;
-  private static final List<Long> ROLE_IDS_CASE_1 = Arrays.asList(2020L);
-  private static final List<Long> SKILL_IDS_CASE_1 = new ArrayList<>();
-  private static final List<Long> ROLESKILL_IDS_CASE_1 = new ArrayList<>();
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_1 = new HashSet<>();
+  private static final ImmutableList<Long> ROLE_IDS_CASE_1 = ImmutableList.of(2020L);
+  private static final ImmutableList<Long> SKILL_IDS_CASE_1 = ImmutableList.of();
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_1 = ImmutableList.of();
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_1 =
+      ImmutableSet.of();
 
   // Expected values of fields for Case 2
   private static final int CASE_NUMBER_2 = 2;
   private static final long USER_ID_CASE_2 = 2;
   private static final long WORKFORCE_ID_CASE_2 = 1024;
   private static final long WORKGROUP_ID_CASE_2 = 0;
-  private static final List<Long> ROLE_IDS_CASE_2 = Arrays.asList(2020L, 2019L, 2018L);
-  private static final List<Long> SKILL_IDS_CASE_2 = Arrays.asList(2000L);
-  private static final List<Long> ROLESKILL_IDS_CASE_2 = Arrays.asList(1990L);
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_2 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2048).build()
-          )
-      );
+  private static final ImmutableList<Long> ROLE_IDS_CASE_2 = ImmutableList.of(2020L, 2019L, 2018L);
+  private static final ImmutableList<Long> SKILL_IDS_CASE_2 = ImmutableList.of(2000L);
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_2 = ImmutableList.of(1990L);
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_2 =
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2048).build());
 
   // Expected values of fields for Case 3
   private static final int CASE_NUMBER_3 = 3;
   private static final long USER_ID_CASE_3 = 3;
   private static final long WORKFORCE_ID_CASE_3 = 1024;
   private static final long WORKGROUP_ID_CASE_3 = 0;
-  private static final List<Long> ROLE_IDS_CASE_3 = Arrays.asList(2020L, 2019L, 2018L, 2017L);
-  private static final List<Long> SKILL_IDS_CASE_3 = Arrays.asList(2000L, 2001L);
-  private static final List<Long> ROLESKILL_IDS_CASE_3 = Arrays.asList(1990L, 1989L, 1991L);
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_3 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1133).build()
-          )
-      );
+  private static final ImmutableList<Long> ROLE_IDS_CASE_3 =
+      ImmutableList.of(2020L, 2019L, 2018L, 2017L);
+  private static final ImmutableList<Long> SKILL_IDS_CASE_3 = ImmutableList.of(2000L, 2001L);
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_3 =
+      ImmutableList.of(1990L, 1989L, 1991L);
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_3 =
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1133).build());
 
   // Expected values of fields for Case 4
   private static final int CASE_NUMBER_4 = 4;
   private static final long USER_ID_CASE_4 = 4;
   private static final long WORKFORCE_ID_CASE_4 = 1024;
   private static final long WORKGROUP_ID_CASE_4 = 2048;
-  private static final List<Long> ROLE_IDS_CASE_4 = new ArrayList<>();
-  private static final List<Long> SKILL_IDS_CASE_4 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final List<Long> ROLESKILL_IDS_CASE_4 = Arrays.asList(1990L, 1991L);
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_4 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build()
-          )
-      );
+  private static final ImmutableList<Long> ROLE_IDS_CASE_4 = ImmutableList.of();
+  private static final ImmutableList<Long> SKILL_IDS_CASE_4 = ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_4 = ImmutableList.of(1990L, 1991L);
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_4 =
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build());
 
   // Expected values of fields for Case 5
   private static final int CASE_NUMBER_5 = 5;
   private static final long USER_ID_CASE_5 = 5;
   private static final long WORKFORCE_ID_CASE_5 = 1024;
   private static final long WORKGROUP_ID_CASE_5 = 2048;
-  private static final List<Long> ROLE_IDS_CASE_5 = new ArrayList<>();
-  private static final List<Long> SKILL_IDS_CASE_5 = new ArrayList<>();
-  private static final List<Long> ROLESKILL_IDS_CASE_5 = Arrays.asList(1990L, 1991L, 1992L, 1993L);
+  private static final ImmutableList<Long> ROLE_IDS_CASE_5 = ImmutableList.of();
+  private static final ImmutableList<Long> SKILL_IDS_CASE_5 = ImmutableList.of();
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_5 =
+      ImmutableList.of(1990L, 1991L, 1992L, 1993L);
   private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_5 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2001052).setPermissionSetId(1111).build()
-          )
-      );
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2001052).setPermissionSetId(1111).build());
 
   // Expected values of fields for Case 6
   private static final int CASE_NUMBER_6 = 6;
   private static final long USER_ID_CASE_6 = 6;
   private static final long WORKFORCE_ID_CASE_6 = 1024;
   private static final long WORKGROUP_ID_CASE_6 = 1024;
-  private static final List<Long> ROLE_IDS_CASE_6 = new ArrayList<>();
-  private static final List<Long> SKILL_IDS_CASE_6 = new ArrayList<>();
-  private static final List<Long> ROLESKILL_IDS_CASE_6 = new ArrayList<>();
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_6 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1112).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1113).build()
-          )
-      );
+  private static final ImmutableList<Long> ROLE_IDS_CASE_6 = ImmutableList.of();
+  private static final ImmutableList<Long> SKILL_IDS_CASE_6 = ImmutableList.of();
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_6 = ImmutableList.of();
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_6 =
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1112).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1113).build());
 
   // Expected values of fields for Case 7
   private static final int CASE_NUMBER_7 = 7;
   private static final long USER_ID_CASE_7 = 7;
   private static final long WORKFORCE_ID_CASE_7 = 1024;
   private static final long WORKGROUP_ID_CASE_7 = 2048;
-  private static final List<Long> ROLE_IDS_CASE_7 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final List<Long> SKILL_IDS_CASE_7 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final List<Long> ROLESKILL_IDS_CASE_7 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_7 =
-      new HashSet<>(
-          Arrays.asList(
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1098).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1112).build(),
-              PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2249).build()
-          )
-      );
+  private static final ImmutableList<Long> ROLE_IDS_CASE_7 = ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableList<Long> SKILL_IDS_CASE_7 = ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_7 =
+      ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_7 =
+      ImmutableSet.of(
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1098).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1112).build(),
+          PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2249).build());
 
   // Expected values of fields for Case 8
   private static final int CASE_NUMBER_8 = 8;
   private static final long USER_ID_CASE_8 = 8;
   private static final long WORKFORCE_ID_CASE_8 = 1024;
   private static final long WORKGROUP_ID_CASE_8 = 2048;
-  private static final List<Long> ROLE_IDS_CASE_8 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final List<Long> SKILL_IDS_CASE_8 = Arrays.asList(1998L, 2038L, 2249L);
-  private static final List<Long> ROLESKILL_IDS_CASE_8 = Arrays.asList(1990L, 1999L, 1991L);
-  private static final Set<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_8 = new HashSet<>();
+  private static final ImmutableList<Long> ROLE_IDS_CASE_8 = ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableList<Long> SKILL_IDS_CASE_8 = ImmutableList.of(1998L, 2038L, 2249L);
+  private static final ImmutableList<Long> ROLESKILL_IDS_CASE_8 =
+      ImmutableList.of(1990L, 1999L, 1991L);
+  private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_8 =
+      ImmutableSet.of();
 
   /**
    * Test CsvParser can read every row and every column from the input.

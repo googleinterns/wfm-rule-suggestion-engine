@@ -1,11 +1,13 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action;
 
+import com.google.common.collect.ImmutableList;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -29,9 +31,9 @@ import java.util.regex.Pattern;
 public class CsvParser {
   enum Header {
     USER_ID(0),
-    ROLE_IDS(1),
-    SKILL_IDS(2),
-    ROLESKILL_IDS(3),
+    ROLE_ID(1),
+    SKILL_ID(2),
+    ROLESKILL_ID(3),
     WORKFORCE_ID(4),
     WORKGROUP_ID(5);
 
@@ -56,7 +58,7 @@ public class CsvParser {
    * @throws IOException
    * @throws CsvException
    */
-  public static List<UserPoolAssignmentModel> readFromCSVFile(String csvFilePath)
+  public static ImmutableList<UserPoolAssignmentModel> readFromCSVFile(String csvFilePath)
       throws IOException, CsvException {
     // Read all data from input csv file located at given path
     Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
@@ -64,7 +66,8 @@ public class CsvParser {
     List<String[]> userRecords = csvReader.readAll();
 
     // List variable userPoolAssignmentList stores the results reading from the input csv file
-    List<UserPoolAssignmentModel> userPoolAssignmentList = new ArrayList<>();
+    ImmutableList.Builder<UserPoolAssignmentModel> userPoolAssignmentList =
+        new ImmutableList.Builder<>();
 
     // Parse data line by line
     for (String[] record : userRecords) {
@@ -73,7 +76,7 @@ public class CsvParser {
       long workgroupId = Long.parseLong(record[Header.WORKGROUP_ID.column]);
 
       // Parse role ids
-      Matcher roleIdsMatcher = NUMBER_PATTERN.matcher(record[Header.ROLE_IDS.column]);
+      Matcher roleIdsMatcher = NUMBER_PATTERN.matcher(record[Header.ROLE_ID.column]);
       List<Long> roleIds = new ArrayList<>();
       while (roleIdsMatcher.find()) {
         long idValue = Long.parseLong(roleIdsMatcher.group());
@@ -81,7 +84,7 @@ public class CsvParser {
       }
 
       // Parse skill ids
-      Matcher skillIdsMatcher = NUMBER_PATTERN.matcher(record[Header.SKILL_IDS.column]);
+      Matcher skillIdsMatcher = NUMBER_PATTERN.matcher(record[Header.SKILL_ID.column]);
       List<Long> skillIds = new ArrayList<>();
       while (skillIdsMatcher.find()) {
         long idValue = Long.parseLong(skillIdsMatcher.group());
@@ -89,7 +92,7 @@ public class CsvParser {
       }
 
       // Parse role_skills ids
-      Matcher roleSKillsMatcher = ROLESKILL_PATTERN.matcher(record[Header.ROLESKILL_IDS.column]);
+      Matcher roleSKillsMatcher = ROLESKILL_PATTERN.matcher(record[Header.ROLESKILL_ID.column]);
       List<Long> roleSkillIds = new ArrayList<>();
       while (roleSKillsMatcher.find()) {
         String skillId = roleSKillsMatcher.group();
@@ -130,6 +133,6 @@ public class CsvParser {
               .build();
       userPoolAssignmentList.add(user);
     }
-    return userPoolAssignmentList;
+    return userPoolAssignmentList.build();
   }
 }

@@ -3,9 +3,10 @@ package src.main.java.com.googleintern.wfm.ruleengine.model;
 import com.google.auto.value.AutoValue;
 
 /**
- * FilterModel class is used to store information about a filter for a Rule object. Enum variable
- * type represents the type of filter(ROLE, SKILL, ROLESKILL). Long variable value represents the
- * value of ID for a filter.
+ * Store information about a filter for a Rule object.
+ *
+ * Enum variable type represents the type of filter(ROLE, SKILL, ROLESKILL).
+ * Long variable value represents thevalue of ID for a filter.
  */
 @AutoValue
 public abstract class FilterModel {
