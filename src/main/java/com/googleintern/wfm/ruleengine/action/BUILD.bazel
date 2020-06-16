@@ -14,6 +14,16 @@ java_binary(
     deps = [
         ":maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ]
+)
+
+java_binary(
+    name = "CsvWriter",
+    srcs = ["CsvWriter.java"],
+    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.CsvWriter",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
     ],
 )
 
