@@ -15,6 +15,7 @@ import java.util.*;
 /** * CsvParserTest class is used to testing the functionality of CsvParser class. */
 public class CsvParserTest {
   private static final String TEST_CSV_FILE_PATH =
+//      "//src/test/resources/com/googleintern/wfm/ruleengine/csv_parser_test_data.csv";
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/src/"
           + "test/resources/com/googleintern/wfm/ruleengine/csv_parser_test_data.csv";
