@@ -24,6 +24,8 @@ java_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
     ],
 )
 
