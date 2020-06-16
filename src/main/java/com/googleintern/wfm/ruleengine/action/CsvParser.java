@@ -143,16 +143,18 @@ public class CsvParser {
     while (permissionsMatcher.find()) {
       String permission = permissionsMatcher.group();
       Matcher idsForPermission = NUMBER_PATTERN.matcher(permission);
-      idsForPermission.find();
-      int poolId = Integer.parseInt(idsForPermission.group());
-      idsForPermission.find();
-      int permissionId = Integer.parseInt(idsForPermission.group());
-      PoolAssignmentModel poolAssignment =
-          PoolAssignmentModel.builder()
-              .setCasePoolId(poolId)
-              .setPermissionSetId(permissionId)
-              .build();
-      poolAssignmentsBuilder.add(poolAssignment);
+      if (idsForPermission.find()) {
+        int poolId = Integer.parseInt(idsForPermission.group());
+        if (idsForPermission.find()) {
+          int permissionId = Integer.parseInt(idsForPermission.group());
+          PoolAssignmentModel poolAssignment =
+              PoolAssignmentModel.builder()
+                  .setCasePoolId(poolId)
+                  .setPermissionSetId(permissionId)
+                  .build();
+          poolAssignmentsBuilder.add(poolAssignment);
+        }
+      }
     }
     return poolAssignmentsBuilder.build();
   }
