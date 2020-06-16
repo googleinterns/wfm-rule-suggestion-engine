@@ -53,7 +53,7 @@ public class CsvParser {
    * userPoolAssignmentList.
    *
    * @param csvFilePath : represents the path to the csv file, including the file name.
-   * @return an immutable list of UserPoolAssignmentModel objects
+   * @return an ImmutableList of UserPoolAssignmentModel objects
    * @throws IOException
    * @throws CsvException
    */
@@ -64,11 +64,6 @@ public class CsvParser {
     CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
     List<String[]> userRecords = csvReader.readAll();
 
-    // List variable userPoolAssignmentList stores the results reading from the input csv file
-    ImmutableList.Builder<UserPoolAssignmentModel> userPoolAssignmentList =
-        new ImmutableList.Builder<>();
-
-    // Parse data line by line
     return userRecords.stream()
         .map(record -> parseData(record))
         .collect(ImmutableList.toImmutableList());
@@ -80,7 +75,7 @@ public class CsvParser {
    * @param record : String format of one line of data.
    * @return a UserPoolAssignmentModel object which stores parsing information.
    */
-  private static UserPoolAssignmentModel parseData(final String[] record) {
+  private static UserPoolAssignmentModel parseData(String[] record) {
     long userId = Long.parseLong(record[Header.USER_ID.column]);
     long workforceId = Long.parseLong(record[Header.WORKFORCE_ID.column]);
     long workgroupId = Long.parseLong(record[Header.WORKGROUP_ID.column]);
@@ -95,7 +90,7 @@ public class CsvParser {
     ImmutableList<Long> roleSkillIds = parseRoleSkillIds(record[Header.ROLESKILL_ID.column]);
 
     // Parse pool ids and permission ids
-    Set<PoolAssignmentModel> poolAssignmentsSet =
+    Set<PoolAssignmentModel> poolAssignments =
         parsePoolAssignments(record[Header.POOL_ASSIGNMENT.column]);
 
     return UserPoolAssignmentModel.builder()
@@ -105,17 +100,11 @@ public class CsvParser {
         .setRoleIds(roleIds)
         .setSkillIds(skillIds)
         .setRoleSkillIds(roleSkillIds)
-        .setPoolAssignments(poolAssignmentsSet)
+        .setPoolAssignments(poolAssignments)
         .build();
   }
 
-  /**
-   * * Parse role ids from an input string variable.
-   *
-   * @param roleIdData : String format of input role ids.
-   * @return an immutable list of long objects that stores role ids.
-   */
-  private static ImmutableList<Long> parseRoleIds(final String roleIdData) {
+  private static ImmutableList<Long> parseRoleIds(String roleIdData) {
     Matcher roleIdsMatcher = NUMBER_PATTERN.matcher(roleIdData);
     ImmutableList.Builder<Long> roleIdsBuilder = ImmutableList.builder();
     while (roleIdsMatcher.find()) {
@@ -125,13 +114,7 @@ public class CsvParser {
     return roleIdsBuilder.build();
   }
 
-  /**
-   * * Parse skill ids from an input string variable.
-   *
-   * @param skillIdData : String format input skill ids.
-   * @return an immutable list of long objects that stores skill ids.
-   */
-  private static ImmutableList<Long> parseSkillIds(final String skillIdData) {
+  private static ImmutableList<Long> parseSkillIds(String skillIdData) {
     Matcher skillIdsMatcher = NUMBER_PATTERN.matcher(skillIdData);
     ImmutableList.Builder<Long> skillIdsBuilder = ImmutableList.builder();
     while (skillIdsMatcher.find()) {
@@ -141,13 +124,7 @@ public class CsvParser {
     return skillIdsBuilder.build();
   }
 
-  /**
-   * * Parse role skill ids from an input string variable.
-   *
-   * @param roleSkillIdData : String format input role skill ids.
-   * @return an immutable list of long objects that stores role skill ids.
-   */
-  private static ImmutableList<Long> parseRoleSkillIds(final String roleSkillIdData) {
+  private static ImmutableList<Long> parseRoleSkillIds(String roleSkillIdData) {
     Matcher roleSKillsMatcher = ROLESKILL_PATTERN.matcher(roleSkillIdData);
     ImmutableList.Builder<Long> roleSkillIdsBuilder = ImmutableList.builder();
     while (roleSKillsMatcher.find()) {
@@ -160,15 +137,7 @@ public class CsvParser {
     return roleSkillIdsBuilder.build();
   }
 
-  /**
-   * * Parse pool assignments(case pool id, permission set id) from an input string variable.
-   *
-   * @param poolAssignmentData : String format input pool assignments.
-   * @return an immutable list of PoolAssignmentModel objects that stores pool assignments(case pool
-   *     id, permission set id).
-   */
-  private static ImmutableSet<PoolAssignmentModel> parsePoolAssignments(
-      final String poolAssignmentData) {
+  private static ImmutableSet<PoolAssignmentModel> parsePoolAssignments(String poolAssignmentData) {
     Matcher permissionsMatcher = PERMISSION_PATTERN.matcher(poolAssignmentData);
     ImmutableSet.Builder<PoolAssignmentModel> poolAssignmentsBuilder = ImmutableSet.builder();
     while (permissionsMatcher.find()) {

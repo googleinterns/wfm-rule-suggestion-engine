@@ -15,7 +15,6 @@ import java.util.*;
 /** * CsvParserTest class is used to testing the functionality of CsvParser class. */
 public class CsvParserTest {
   private static final String TEST_CSV_FILE_PATH =
-//      "//src/test/resources/com/googleintern/wfm/ruleengine/csv_parser_test_data.csv";
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/src/"
           + "test/resources/com/googleintern/wfm/ruleengine/csv_parser_test_data.csv";
@@ -138,12 +137,6 @@ public class CsvParserTest {
   private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_8 =
       ImmutableSet.of();
 
-  /**
-   * Test CsvParser can read every row and every column from the input.
-   *
-   * @throws IOException
-   * @throws CsvException
-   */
   @Test
   public void parserFully() throws IOException, CsvException {
     List<UserPoolAssignmentModel> userPoolAssignmentList =
@@ -155,12 +148,6 @@ public class CsvParserTest {
     }
   }
 
-  /**
-   * Test CsvParser read accurate information from the input file.
-   *
-   * @throws IOException
-   * @throws CsvException
-   */
   @Test
   public void parserReadingTest() throws IOException, CsvException {
     List<UserPoolAssignmentModel> userPoolAssignmentList =
@@ -177,7 +164,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_0)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_0)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_0));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_0), expectedUserPoolAssignmentValue);
 
     // Verify for Case 1 Readings
     expectedUserPoolAssignmentValue =
@@ -190,7 +177,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_1)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_1)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_1));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_1), expectedUserPoolAssignmentValue);
 
     // Verify for Case 2 Readings
     expectedUserPoolAssignmentValue =
@@ -203,7 +190,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_2)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_2)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_2));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_2), expectedUserPoolAssignmentValue);
 
     // Verify for Case 3 Readings
     expectedUserPoolAssignmentValue =
@@ -216,7 +203,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_3)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_3)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_3));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_3), expectedUserPoolAssignmentValue);
 
     // Verify for Case 4 Readings
     expectedUserPoolAssignmentValue =
@@ -229,7 +216,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_4)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_4)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_4));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_4), expectedUserPoolAssignmentValue);
 
     // Verify for Case 5 Readings
     expectedUserPoolAssignmentValue =
@@ -242,7 +229,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_5)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_5)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_5));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_5), expectedUserPoolAssignmentValue);
 
     // Verify for Case 6 Readings
     expectedUserPoolAssignmentValue =
@@ -255,7 +242,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_6)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_6)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_6));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_6), expectedUserPoolAssignmentValue);
 
     // Verify for Case 7 Readings
     expectedUserPoolAssignmentValue =
@@ -268,7 +255,7 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_7)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_7)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_7));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_7), expectedUserPoolAssignmentValue);
 
     // Verify for Case 8 Readings
     expectedUserPoolAssignmentValue =
@@ -281,6 +268,6 @@ public class CsvParserTest {
             .setRoleSkillIds(ROLESKILL_IDS_CASE_8)
             .setPoolAssignments(POOL_ASSIGNMENTS_CASE_8)
             .build();
-    Assert.assertEquals(expectedUserPoolAssignmentValue, userPoolAssignmentList.get(CASE_NUMBER_8));
+    Assert.assertEquals(userPoolAssignmentList.get(CASE_NUMBER_8), expectedUserPoolAssignmentValue);
   }
 }
