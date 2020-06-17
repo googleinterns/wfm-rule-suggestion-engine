@@ -12,23 +12,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
-
+/**
+ * 
+ */
 public class CsvWriter {
-  enum Header {
-    RULE_ID(0),
-    WORKFORCE_ID(1),
-    WORKGROUP_ID(2),
-    CASE_POOL_ID(3),
-    PERMISSION_SET_ID(4),
-    FILTER_ID(5);
+  enum Separator {
+    SEMICOLON(";"),
+    COMMA(","),
+    SQUARE_BRACKET_LEFT("["),
+    SQUARE_BRACKET_RIGHT("]"),
+    CURLY_BRACKET_LEFT("{"),
+    CURLY_BRACKET_RIGHT("}");
 
-    final int column;
+    final String symbol;
 
-    Header(int column) {
-      this.column = column;
+    Separator(String symbol) {
+      this.symbol = symbol;
     }
   }
-
+  private static final String SKILL_ID_FORMAT = "skill_id:";
+  private static final String ROLE_ID_FORMAT = "role_id:";
   private static final String OUTPUT_CSV_FILE_NAME = "Generated Rules" + ".csv";
   private static final String[] CSV_FILE_HEADER =
       new String[] {
@@ -38,25 +41,20 @@ public class CsvWriter {
   public static void writeDataIntoCsvFile(
       String outputCsvFileLocation, ImmutableList<RuleModel> rules) throws IOException {
     String outputCsvFilePath = outputCsvFileLocation + OUTPUT_CSV_FILE_NAME;
-    File file = new File(outputCsvFilePath);
-    Files.deleteIfExists(file.toPath());
 
-    // Create FileWriter object
-    FileWriter outputFile = new FileWriter(file);
+    File outputFile = new File(outputCsvFilePath);
+    Files.deleteIfExists(outputFile.toPath());
 
-    // Create CSVWriter object
-    CSVWriter writer = new CSVWriter(outputFile);
+    FileWriter outputFileWriter = new FileWriter(outputFile);
 
-    writer.writeNext(CSV_FILE_HEADER);
+    CSVWriter csvWriter = new CSVWriter(outputFileWriter);
 
+    csvWriter.writeNext(CSV_FILE_HEADER);
     ImmutableList<String[]> data =
         rules.stream().map(CsvWriter::writeData).collect(ImmutableList.toImmutableList());
 
-    // Write all rules into csv file
-    writer.writeAll(data);
-
-    // Close writer connection
-    writer.close();
+    csvWriter.writeAll(data);
+    csvWriter.close();
   }
 
   private static String[] writeData(final RuleModel rule) {
@@ -64,29 +62,35 @@ public class CsvWriter {
     String workgroupId = Long.toString(rule.workgroupId());
     String casePoolId = Long.toString(rule.casePoolId());
 
-    String permissionIds = "[";
+    String permissionIds = Separator.SQUARE_BRACKET_LEFT.symbol;
     for (final Long permissionId : rule.permissionSetIds()) {
-      if (permissionIds.length() > 1) permissionIds = permissionIds + ",";
-      permissionIds = permissionIds + Long.toString(permissionId);
+      if (permissionIds.length() > 1) permissionIds = permissionIds + Separator.COMMA.symbol;
+      permissionIds = permissionIds + permissionId;
     }
-    permissionIds = permissionIds + "]";
+    permissionIds = permissionIds + Separator.SQUARE_BRACKET_RIGHT.symbol;
 
-    String filterIds = "[";
+    String filterIds = Separator.SQUARE_BRACKET_LEFT.symbol;
     for (final ImmutableSet<FilterModel> filterSet : rule.filters()) {
-      if (filterIds.length() > 1) filterIds = filterIds + ";";
+      if (filterIds.length() > 1) filterIds = filterIds + Separator.SEMICOLON.symbol;
       String currFilterIds = "";
       for (final FilterModel filter : filterSet) {
-        currFilterIds = currFilterIds.length() > 0? currFilterIds + "," : currFilterIds + "{";
+        currFilterIds =
+            currFilterIds.length() > 0
+                ? currFilterIds + Separator.COMMA.symbol
+                : currFilterIds + Separator.CURLY_BRACKET_LEFT.symbol;
         if (filter.type() == FilterModel.FilterType.SKILL
             || filter.type() == FilterModel.FilterType.ROLESKILL)
-          currFilterIds = currFilterIds + "skill_id:";
+          currFilterIds = currFilterIds + SKILL_ID_FORMAT;
         else if (filter.type() == FilterModel.FilterType.ROLE)
-          currFilterIds = currFilterIds + "role_id:";
-        currFilterIds = currFilterIds + Long.toString(filter.value());
+          currFilterIds = currFilterIds + ROLE_ID_FORMAT;
+        currFilterIds = currFilterIds + filter.value();
       }
-      filterIds = currFilterIds.length() > 0? filterIds + currFilterIds + "}" : filterIds;
+      filterIds =
+          currFilterIds.length() > 0
+              ? filterIds + currFilterIds + Separator.CURLY_BRACKET_RIGHT.symbol
+              : filterIds;
     }
-    filterIds = filterIds + "]";
+    filterIds = filterIds + Separator.SQUARE_BRACKET_RIGHT.symbol;
 
     return new String[] {workforceId, workgroupId, casePoolId, permissionIds, filterIds};
   }
@@ -94,7 +98,7 @@ public class CsvWriter {
   public static void main(String[] args) throws IOException {
     String outputCsvFileLocation =
         "/usr/local/google/home/qintonghan/Project/wfm-rule-suggestion-engine/output/";
-    ImmutableList.Builder<RuleModel> rulesBuilder = ImmutableList.<RuleModel>builder();
+    ImmutableList.Builder<RuleModel> rulesBuilder = ImmutableList.builder();
     RuleModel.Builder ruleBuilder = RuleModel.builder();
     ruleBuilder
         .setWorkforceId(1024L)
@@ -106,18 +110,18 @@ public class CsvWriter {
     filterBuilder.add(
         FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(7689L).build());
     filterBuilder.add(
-            FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(7689L).build());
+        FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(7689L).build());
     filterBuilder.add(
-            FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(7689L).build());
+        FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(7689L).build());
     ImmutableSet<FilterModel> filter = filterBuilder.build();
 
     ImmutableSet.Builder<FilterModel> filterBuilder1 = ImmutableSet.builder();
     filterBuilder1.add(
-            FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(7689L).build());
+        FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(7689L).build());
     filterBuilder1.add(
-            FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(7689L).build());
+        FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(7689L).build());
     filterBuilder1.add(
-            FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(7689L).build());
+        FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(7689L).build());
     ImmutableSet<FilterModel> filter1 = filterBuilder.build();
 
     ImmutableList<ImmutableSet<FilterModel>> filters =
