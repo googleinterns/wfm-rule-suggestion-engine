@@ -73,7 +73,7 @@ public class CsvParser {
     long workgroupId = Long.parseLong(record[Header.WORKGROUP_ID.column]);
     ImmutableList<Long> roleIds = parseRoleIds(record[Header.ROLE_ID.column]);
     ImmutableList<Long> skillIds = parseSkillIds(record[Header.SKILL_ID.column]);
-    ImmutableList<Long> roleSkillIds = parseRoleSkillIds(record[Header.ROLESKILL_ID.column])
+    ImmutableList<Long> roleSkillIds = parseRoleSkillIds(record[Header.ROLESKILL_ID.column]);
     Set<PoolAssignmentModel> poolAssignments =
         parsePoolAssignments(record[Header.POOL_ASSIGNMENT.column]);
 
