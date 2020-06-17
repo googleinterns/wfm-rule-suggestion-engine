@@ -1,8 +1,15 @@
+# action package
 alias(
     name = "RuleSuggestionService_deploy.jar",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
 )
 
+alias(
+    name = "CsvParser",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
+)
+
+# model package
 alias(
     name = "PoolAssignmentModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",

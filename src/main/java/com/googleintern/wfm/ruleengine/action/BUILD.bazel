@@ -7,6 +7,16 @@ java_binary(
     ],
 )
 
+java_binary(
+    name = "CsvParser",
+    srcs = ["CsvParser.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
 java_library(
     name = "maven_dependency",
     exported_plugins = [":autovalue_plugin"],
@@ -16,6 +26,7 @@ java_library(
         ":autovalue",
         ":guava",
         ":junit",
+        ":opencsv",
         ":protobuf",
     ],
 )
@@ -69,6 +80,14 @@ java_library(
     exports = [
         "@maven//:com_google_protobuf_protobuf_java",
         "@maven//:com_google_protobuf_protobuf_java_util",
+    ],
+)
+
+java_library(
+    name = "opencsv",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@maven//:com_opencsv_opencsv",
     ],
 )
 
