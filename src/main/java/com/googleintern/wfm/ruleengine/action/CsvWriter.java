@@ -31,7 +31,6 @@ public class CsvWriter {
 
   private static final String SKILL_ID_FORMAT = "skill_id:";
   private static final String ROLE_ID_FORMAT = "role_id:";
-  private static final String OUTPUT_CSV_FILE_NAME = "Generated Rules" + ".csv";
   private static final String[] CSV_FILE_HEADER =
       new String[] {
         "Workforce ID", "Workgroup ID", "Case Pool ID", "Permission Set IDs", "Filters"
