@@ -52,8 +52,6 @@ public class CsvParser {
    * Read all data using csvFilePath. Parse useful information out and store it in *
    * userPoolAssignmentList.
    *
-   * @param csvFilePath : represents the path to the csv file, including the file name.
-   * @return an ImmutableList of UserPoolAssignmentModel objects
    * @throws IOException
    * @throws CsvException
    */
@@ -69,27 +67,13 @@ public class CsvParser {
         .collect(ImmutableList.toImmutableList());
   }
 
-  /**
-   * Parse information for a single line of data.
-   *
-   * @param record : String format of one line of data.
-   * @return a UserPoolAssignmentModel object which stores parsing information.
-   */
   private static UserPoolAssignmentModel parseData(String[] record) {
     long userId = Long.parseLong(record[Header.USER_ID.column]);
     long workforceId = Long.parseLong(record[Header.WORKFORCE_ID.column]);
     long workgroupId = Long.parseLong(record[Header.WORKGROUP_ID.column]);
-
-    // Parse role ids
     ImmutableList<Long> roleIds = parseRoleIds(record[Header.ROLE_ID.column]);
-
-    // Parse skill ids
     ImmutableList<Long> skillIds = parseSkillIds(record[Header.SKILL_ID.column]);
-
-    // Parse role_skills ids
-    ImmutableList<Long> roleSkillIds = parseRoleSkillIds(record[Header.ROLESKILL_ID.column]);
-
-    // Parse pool ids and permission ids
+    ImmutableList<Long> roleSkillIds = parseRoleSkillIds(record[Header.ROLESKILL_ID.column])
     Set<PoolAssignmentModel> poolAssignments =
         parsePoolAssignments(record[Header.POOL_ASSIGNMENT.column]);
 
