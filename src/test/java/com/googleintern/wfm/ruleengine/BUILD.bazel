@@ -12,3 +12,16 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
+
+java_test(
+    name = "CsvWriterTest",
+    size = "large",
+    srcs = ["CsvWriterTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.CsvWriterTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvWriter",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)

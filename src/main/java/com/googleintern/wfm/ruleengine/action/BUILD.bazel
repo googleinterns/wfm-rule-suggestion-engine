@@ -14,7 +14,7 @@ java_binary(
     deps = [
         ":maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ]
+    ],
 )
 
 java_binary(

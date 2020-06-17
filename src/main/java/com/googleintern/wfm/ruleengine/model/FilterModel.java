@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class FilterModel {
-  enum FilterType {
+  public enum FilterType {
     ROLE,
     SKILL,
     ROLESKILL,
