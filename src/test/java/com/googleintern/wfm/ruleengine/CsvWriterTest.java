@@ -63,7 +63,8 @@ public class CsvWriterTest {
    * Rule 2: Multiple distinctive elements for permission ids and filter ids. Valid values for other
    * variables.
    */
-  private static final ImmutableSet<Long> PERMISSION_IDS_RULE_2 = ImmutableSet.of(3344L, 2045L);
+  private static final ImmutableSet<Long> PERMISSION_IDS_RULE_2 =
+          ImmutableSet.of(3344L, 2045L);
 
   private static final ImmutableSet<FilterModel> OR_FILTER_IDS_INDEX_1_RULE_2 =
       ImmutableSet.of(

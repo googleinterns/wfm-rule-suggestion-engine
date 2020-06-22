@@ -29,8 +29,8 @@ public class CsvWriter {
     }
   }
 
-  private static final String SKILL_ID_FORMAT = "skill_id:";
-  private static final String ROLE_ID_FORMAT = "role_id:";
+  private static final String SKILL_ID_PREFIX = "skill_id:";
+  private static final String ROLE_ID_PREFIX = "role_id:";
   private static final String[] CSV_FILE_HEADER =
       new String[] {
         "Workforce ID", "Workgroup ID", "Case Pool ID", "Permission Set IDs", "Filters"
@@ -69,39 +69,39 @@ public class CsvWriter {
   }
 
   private static String writePermissionSetIds(ImmutableSet<Long> permissionSetIds) {
-    String permissionIds = Separator.SQUARE_BRACKET_LEFT.symbol;
-    for (final Long permissionSetId : permissionSetIds) {
-      if (permissionIds.length() > 1) permissionIds = permissionIds + Separator.COMMA.symbol;
-      permissionIds = permissionIds + permissionSetId;
+    StringBuilder permissionIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
+    for (Long permissionSetId : permissionSetIds) {
+      if (permissionIdsBuilder.length() > 1) {
+        permissionIdsBuilder.append(Separator.COMMA.symbol);
+      }
+      permissionIdsBuilder.append(permissionSetId);
     }
-    permissionIds = permissionIds + Separator.SQUARE_BRACKET_RIGHT.symbol;
-    return permissionIds;
+    permissionIdsBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
+    return permissionIdsBuilder.toString();
   }
 
   private static String writeFilterIds(List<ImmutableSet<FilterModel>> filters) {
-    String filterIds = Separator.SQUARE_BRACKET_LEFT.symbol;
+    StringBuilder filterIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
     for (final ImmutableSet<FilterModel> filterSet : filters) {
-      if (filterIds.length() > 1) filterIds = filterIds + Separator.SEMICOLON.symbol;
-      String currFilterIds = "";
+      if (filterIdsBuilder.length() > 1) {
+        filterIdsBuilder.append(Separator.SEMICOLON.symbol);
+      }
+      StringBuilder currFilterIdsBuilder = new StringBuilder();
       for (final FilterModel filter : filterSet) {
-        currFilterIds =
-            currFilterIds.length() > 0
-                ? currFilterIds + Separator.COMMA.symbol
-                : currFilterIds + Separator.CURLY_BRACKET_LEFT.symbol;
+        currFilterIdsBuilder.append(currFilterIdsBuilder.length() > 0 ? Separator.COMMA.symbol :
+                Separator.CURLY_BRACKET_LEFT.symbol);
         if (filter.type() == FilterModel.FilterType.SKILL
             || filter.type() == FilterModel.FilterType.ROLESKILL) {
-          currFilterIds = currFilterIds + SKILL_ID_FORMAT;
+          currFilterIdsBuilder.append(SKILL_ID_PREFIX);
         } else if (filter.type() == FilterModel.FilterType.ROLE) {
-          currFilterIds = currFilterIds + ROLE_ID_FORMAT;
+          currFilterIdsBuilder.append(ROLE_ID_PREFIX);
         }
-        currFilterIds = currFilterIds + filter.value();
+        currFilterIdsBuilder.append(filter.value());
       }
-      filterIds =
-          currFilterIds.length() > 0
-              ? filterIds + currFilterIds + Separator.CURLY_BRACKET_RIGHT.symbol
-              : filterIds;
+      filterIdsBuilder.append(currFilterIdsBuilder.toString().isEmpty() ? "" :
+              currFilterIdsBuilder.toString() + Separator.CURLY_BRACKET_RIGHT.symbol);
     }
-    filterIds = filterIds + Separator.SQUARE_BRACKET_RIGHT.symbol;
-    return filterIds;
+    filterIdsBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
+    return filterIdsBuilder.toString();
   }
 }
