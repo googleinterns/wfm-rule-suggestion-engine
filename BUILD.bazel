@@ -9,6 +9,21 @@ alias(
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
 )
 
+alias(
+    name = "DataProcessing",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessing",
+)
+
+alias(
+    name = "GroupByWorkgroupId",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByWorkgroupId",
+)
+
+alias(
+    name = "GroupByCasePoolIdAndPermissionId",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByCasePoolIdAndPermissionId",
+)
+
 # model package
 alias(
     name = "PoolAssignmentModel",

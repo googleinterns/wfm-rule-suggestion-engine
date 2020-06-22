@@ -26,6 +26,39 @@ java_binary(
         ":maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
+    ]
+)
+
+java_binary(
+    name = "DataProcessing",
+    srcs = ["DataProcessing.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_binary(
+    name = "GroupByWorkgroupId",
+    srcs = ["GroupByWorkgroupId.java"],
+    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.GroupByWorkgroupId",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":CsvParser",
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_binary(
+    name = "GroupByCasePoolIdAndPermissionId",
+    srcs = ["GroupByCasePoolIdAndPermissionId.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+>>>>>>> 599b8f9... WIP for creating tests.
     ],
 )
 
