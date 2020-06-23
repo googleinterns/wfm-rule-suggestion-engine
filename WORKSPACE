@@ -64,6 +64,7 @@ http_archive(
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+# Update maven_install: using 'bazel run @unpinned_maven//:pin'
 maven_install(
     name = "maven",
     artifacts = [
