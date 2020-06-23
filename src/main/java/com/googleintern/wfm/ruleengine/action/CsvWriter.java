@@ -53,22 +53,22 @@ public class CsvWriter {
 
     csvWriter.writeNext(CSV_FILE_HEADER);
     ImmutableList<String[]> data =
-        rules.stream().map(CsvWriter::writeData).collect(ImmutableList.toImmutableList());
+        rules.stream().map(CsvWriter::convertRuleToRow).collect(ImmutableList.toImmutableList());
 
     csvWriter.writeAll(data);
     csvWriter.close();
   }
 
-  private static String[] writeData(final RuleModel rule) {
+  private static String[] convertRuleToRow(final RuleModel rule) {
     String workforceId = Long.toString(rule.workforceId());
     String workgroupId = Long.toString(rule.workgroupId());
     String casePoolId = Long.toString(rule.casePoolId());
-    String permissionIds = writePermissionSetIds(rule.permissionSetIds());
-    String filterIds = writeFilterIds(rule.filters());
+    String permissionIds = convertPermissionSetIdsToCell(rule.permissionSetIds());
+    String filterIds = convertFilterIdsToCell(rule.filters());
     return new String[] {workforceId, workgroupId, casePoolId, permissionIds, filterIds};
   }
 
-  private static String writePermissionSetIds(ImmutableSet<Long> permissionSetIds) {
+  private static String convertPermissionSetIdsToCell(ImmutableSet<Long> permissionSetIds) {
     StringBuilder permissionIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
     for (Long permissionSetId : permissionSetIds) {
       if (permissionIdsBuilder.length() > 1) {
@@ -80,7 +80,7 @@ public class CsvWriter {
     return permissionIdsBuilder.toString();
   }
 
-  private static String writeFilterIds(List<ImmutableSet<FilterModel>> filters) {
+  private static String convertFilterIdsToCell(List<ImmutableSet<FilterModel>> filters) {
     StringBuilder filterIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
     for (final ImmutableSet<FilterModel> filterSet : filters) {
       if (filterIdsBuilder.length() > 1) {
