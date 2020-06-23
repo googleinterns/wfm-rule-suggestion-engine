@@ -3,67 +3,56 @@ package src.main.java.com.googleintern.wfm.ruleengine.action;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSetMultimap;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
 
 import java.util.HashMap;
 
+/**
+ * GroupByCasePoolIdAndPermissionId class is used to group data by (Case Pool ID, Permission Set
+ * ID).
+ */
 public class GroupByCasePoolIdAndPermissionId {
 
-  public static ImmutableListMultimap<PoolAssignmentModel, FilterModel>
+  /**
+   * Group data from the same workgroup by (Case Pool ID, Permission Set ID).
+   * @param dataFromSameWorkGroupId
+   * @return
+   */
+  public static ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
       groupByCasePoolIdAndPermissionSetId(
           ImmutableList<UserPoolAssignmentModel> dataFromSameWorkGroupId) {
-    ImmutableListMultimap.Builder<PoolAssignmentModel, FilterModel>
-        mapByCasePoolIdAndPermissionSetIdBuilder =
-            ImmutableListMultimap.<PoolAssignmentModel, FilterModel>builder();
+    ImmutableSetMultimap.Builder<PoolAssignmentModel, ImmutableList<FilterModel>>
+        mapByCasePoolIdAndPermissionSetIdBuilder = ImmutableSetMultimap.builder();
     for (UserPoolAssignmentModel data : dataFromSameWorkGroupId) {
       ImmutableList<FilterModel> filters = convertSkillIdRoleIdToFilter(data);
       for (PoolAssignmentModel permission : data.poolAssignments()) {
-        mapByCasePoolIdAndPermissionSetIdBuilder.putAll(permission, filters);
+        mapByCasePoolIdAndPermissionSetIdBuilder.put(permission, filters);
       }
     }
     return mapByCasePoolIdAndPermissionSetIdBuilder.build();
   }
 
-  public static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
+  private static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
       UserPoolAssignmentModel user) {
     ImmutableList.Builder<FilterModel> filtersBuilder = ImmutableList.builder();
-    for (final Long skillId : user.skillIds()) {
-      FilterModel filter =
-          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(skillId).build();
-      filtersBuilder.add(filter);
+    for (Long roleId : user.roleIds()) {
+      filtersBuilder.add(
+          FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(roleId).build());
     }
-    for (final Long roleId : user.roleIds()) {
-      FilterModel filter =
-          FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(roleId).build();
-      filtersBuilder.add(filter);
+    for (Long skillId : user.skillIds()) {
+      filtersBuilder.add(
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(skillId).build());
     }
-    for (final Long roleSkillId : user.roleSkillIds()) {
-      FilterModel filter =
+    for (Long roleSkillId : user.roleSkillIds()) {
+      filtersBuilder.add(
           FilterModel.builder()
               .setType(FilterModel.FilterType.ROLESKILL)
               .setValue(roleSkillId)
-              .build();
-      filtersBuilder.add(filter);
+              .build());
     }
     return filtersBuilder.build();
   }
-
-  public static ImmutableMap<FilterModel, Integer> countFilterTypesForPermissionId(
-      ImmutableList<ImmutableList<FilterModel>> filterLists) {
-    HashMap<FilterModel, Integer> map = new HashMap<>();
-    int value = 0;
-    for (final ImmutableList<FilterModel> filters : filterLists) {
-      for (final FilterModel filter : filters) {
-        if (!map.containsKey(filter)) {
-          map.put(filter, value);
-          value = value + 1;
-        }
-      }
-    }
-    return ImmutableMap.copyOf(map);
-  }
-
-
 }

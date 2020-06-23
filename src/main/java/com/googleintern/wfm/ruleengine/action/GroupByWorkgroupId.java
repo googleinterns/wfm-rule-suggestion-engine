@@ -1,17 +1,22 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action;
 
 import com.google.common.collect.*;
-import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import java.util.Set;
 
-import java.io.IOException;
-import java.util.*;
-
+/**
+ * GroupByWorkgroupId class is used to group data by their workgroup Id value and generate possible
+ * general rules for the same workgroup.
+ */
 public class GroupByWorkgroupId {
-
+  /**
+   * Group data by workgroup Id.
+   * @param validData
+   * @return
+   */
   public static ImmutableListMultimap<Long, UserPoolAssignmentModel> groupByWorkGroupId(
       ImmutableList<UserPoolAssignmentModel> validData) {
     ImmutableListMultimap.Builder<Long, UserPoolAssignmentModel> mapByWorkGroupIdBuilder =
@@ -22,57 +27,70 @@ public class GroupByWorkgroupId {
     return mapByWorkGroupIdBuilder.build();
   }
 
+  /**
+   * Generate rules that can apply to all users from the same workgroup Id.
+   * @param mapByWorkgroupId
+   * @param workgroupId
+   * @return
+   */
   public static ImmutableSet<RuleModel> generalRuleByWorkgroupId(
       ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkgroupId, Long workgroupId) {
     ImmutableList<UserPoolAssignmentModel> userFromSameWorkGroupId =
         mapByWorkgroupId.get(workgroupId);
     ImmutableSet<PoolAssignmentModel> permissionIntersections =
-        userFromSameWorkGroupId.get(0).poolAssignments();
-    for (UserPoolAssignmentModel user : userFromSameWorkGroupId) {
-      permissionIntersections =
-          Sets.intersection(permissionIntersections, user.poolAssignments()).immutableCopy();
-      if (permissionIntersections.size() == 0) return null;
+        findPermissionIntersection(userFromSameWorkGroupId);
+    if (permissionIntersections == null) {
+      return ImmutableSet.of();
     }
-
-    SetMultimap<Long, Long> permissionGroup = HashMultimap.create();
-    for (PoolAssignmentModel permission : permissionIntersections) {
-      Long casePoolId = permission.casePoolId();
-      Long permissionSetId = permission.permissionSetId();
-      if (permissionGroup.containsKey(casePoolId))
-        permissionGroup.get(casePoolId).add(permissionSetId);
-      else permissionGroup.put(casePoolId, permissionSetId);
-    }
-    ImmutableSet.Builder<RuleModel> generalRulesForWorkgroupBuilder =
-        ImmutableSet.<RuleModel>builder();
+    ImmutableSetMultimap<Long, Long> permissionGroup =
+        groupPermissionByCasePoolId(permissionIntersections);
     Long workforceId = userFromSameWorkGroupId.get(0).workforceId();
-    ImmutableList<ImmutableSet<FilterModel>> emptyFilters =
-        ImmutableList.<ImmutableSet<FilterModel>>builder().build();
-    for (Map.Entry<Long, Collection<Long>> entry : permissionGroup.asMap().entrySet()) {
-      Long casePoolId = entry.getKey();
-      Collection<Long> permissionSetIds = entry.getValue();
-      RuleModel rule =
-          RuleModel.builder()
-              .setWorkforceId(workforceId)
-              .setWorkgroupId(workgroupId)
-              .setCasePoolId(casePoolId)
-              .setFilters(emptyFilters)
-              .setPermissionSetIds(Collections.unmodifiableSet((Set<Long>) permissionSetIds))
-              .build();
-      generalRulesForWorkgroupBuilder.add(rule);
-    }
-    return generalRulesForWorkgroupBuilder.build();
+    return createGeneralRuleForWorkgroupId(permissionGroup, workforceId, workgroupId);
   }
 
-  private static final String TEST_CSV_FILE_PATH =
-      System.getProperty("user.home")
-          + "/Project/wfm-rule-suggestion-engine/src/"
-          + "test/resources/com/googleintern/wfm/ruleengine/csv_parser_test_data.csv";
+  private static ImmutableSet<PoolAssignmentModel> findPermissionIntersection(
+      ImmutableList<UserPoolAssignmentModel> userFromSameWorkGroupId) {
+    Set<PoolAssignmentModel> permissionIntersections =
+        userFromSameWorkGroupId.get(0).poolAssignments();
 
-  public static void main(String[] args) throws IOException, CsvException {
-    ImmutableList<UserPoolAssignmentModel> userPoolAssignments =
-        CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
-    ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkGroupId =
-        GroupByWorkgroupId.groupByWorkGroupId(userPoolAssignments);
-    mapByWorkGroupId.forEach((key, value) -> System.out.println(key));
+    for (UserPoolAssignmentModel user : userFromSameWorkGroupId) {
+      permissionIntersections = Sets.intersection(permissionIntersections, user.poolAssignments());
+      if (permissionIntersections.size() == 0) {
+        return null;
+      }
+    }
+    return ImmutableSet.copyOf(permissionIntersections);
+  }
+
+  private static ImmutableSetMultimap<Long, Long> groupPermissionByCasePoolId(
+      ImmutableSet<PoolAssignmentModel> permissions) {
+    ImmutableSetMultimap.Builder<Long, Long> permissionGroupBuilder =
+        ImmutableSetMultimap.builder();
+    for (PoolAssignmentModel permission : permissions) {
+      Long casePoolId = permission.casePoolId();
+      Long permissionSetId = permission.permissionSetId();
+      permissionGroupBuilder.put(casePoolId, permissionSetId);
+    }
+    return permissionGroupBuilder.build();
+  }
+
+  private static ImmutableSet<RuleModel> createGeneralRuleForWorkgroupId(
+      ImmutableSetMultimap<Long, Long> permissions, Long workforceId, Long workgroupId) {
+    ImmutableList<ImmutableSet<FilterModel>> emptyFilters =
+        ImmutableList.<ImmutableSet<FilterModel>>builder().build();
+    ImmutableSet.Builder<RuleModel> generalRulesForWorkgroupBuilder =
+        ImmutableSet.<RuleModel>builder();
+    permissions.forEach(
+        (casePoolId, permissionId) -> {
+          generalRulesForWorkgroupBuilder.add(
+              RuleModel.builder()
+                  .setWorkforceId(workforceId)
+                  .setWorkgroupId(workgroupId)
+                  .setCasePoolId(casePoolId)
+                  .setPermissionSetIds(permissions.get(casePoolId))
+                  .setFilters(emptyFilters)
+                  .build());
+        });
+    return generalRulesForWorkgroupBuilder.build();
   }
 }
