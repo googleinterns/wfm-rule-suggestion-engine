@@ -14,7 +14,6 @@ java_test(
 )
 
 java_test(
-<<<<<<< HEAD
     name = "CsvWriterTest",
     size = "large",
     srcs = ["CsvWriterTest.java"],
@@ -22,31 +21,36 @@ java_test(
     visibility = ["//visibility:public"],
     deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvWriter",
-=======
-    name = "DataProcessingTest",
-    size = "large",
-    srcs = ["DataProcessingTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.DataProcessingTest",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessing",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
 
 java_test(
-    name = "GroupingTest",
-    srcs = ["GroupingTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.GroupingTest",
+    name = "DataProcessorTest",
+    size = "large",
+    srcs = ["DataProcessorTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.DataProcessorTest",
     visibility = ["//visibility:public"],
     deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessing",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByCasePoolIdAndPermissionId",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByWorkgroupId",
->>>>>>> 599b8f9... WIP for creating tests.
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_test(
+    name = "GroupingUtilTest",
+    size = "large",
+    srcs = ["GroupingUtilTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.GroupingUtilTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],

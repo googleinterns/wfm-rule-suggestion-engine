@@ -5,7 +5,7 @@ import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
-import src.main.java.com.googleintern.wfm.ruleengine.action.DataProcessing;
+import src.main.java.com.googleintern.wfm.ruleengine.action.DataProcessor;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * DataProcessingTest class is used to test the functionality of DataProcessing class.
  */
-public class DataProcessingTest {
+public class DataProcessorTest {
   private static final String TEST_CSV_FILE_PATH =
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/src/"
@@ -26,7 +26,7 @@ public class DataProcessingTest {
     ImmutableList<UserPoolAssignmentModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableList<UserPoolAssignmentModel> validUserPoolAssignments =
-        DataProcessing.filterValidData(userPoolAssignments);
+        DataProcessor.filterValidData(userPoolAssignments);
     Assert.assertEquals(EXPECTED_VALID_DATA_SIZE, 5);
     for (UserPoolAssignmentModel userData : validUserPoolAssignments) {
       Assert.assertNotEquals(INVALID_WORKGROUP_ID, userData.workgroupId());

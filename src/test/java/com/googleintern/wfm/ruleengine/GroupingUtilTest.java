@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableSetMultimap;
 import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
+import src.main.java.com.googleintern.wfm.ruleengine.action.CasePoolIdAndPermissionIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
-import src.main.java.com.googleintern.wfm.ruleengine.action.GroupByCasePoolIdAndPermissionId;
-import src.main.java.com.googleintern.wfm.ruleengine.action.GroupByWorkgroupId;
+import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
@@ -18,10 +18,10 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentMod
 import java.io.IOException;
 
 /**
- * GroupingTest class is used to test the functionality of both GroupByWorkgroupId and
+ * GroupingTest class is used to test the functionality of both WorkgroupIdGroupingUtil and
  * GroupByCasePoolIdAndPermissionId.
  */
-public class GroupingTest {
+public class GroupingUtilTest {
   private static final String TEST_CSV_FILE_PATH =
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/src/"
@@ -85,18 +85,18 @@ public class GroupingTest {
   private static final ImmutableList<FilterModel> FILTERS_FOR_USER_2 =
       ImmutableList.of(
           FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(2018L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(1990L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1990L).build());
 
   private static final ImmutableList<FilterModel> FILTERS_FOR_USER_3 =
       ImmutableList.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2010L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(1990L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1990L).build());
 
   private static final ImmutableList<FilterModel> FILTERS_FOR_USER_4 =
       ImmutableList.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2017L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(1990L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(1989L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1990L).build(),
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1989L).build());
 
   /** All permissions appeared in 'csv_grouping_test_data.csv' file. */
   private static final PoolAssignmentModel PERMISSION_0 =
@@ -146,7 +146,7 @@ public class GroupingTest {
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
 
     ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkGroupId =
-        GroupByWorkgroupId.groupByWorkGroupId(userPoolAssignments);
+        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
     Assert.assertEquals(EXPECTED_WORKGROUP_ID_NUMBER, mapByWorkGroupId.keySet().size());
 
     mapByWorkGroupId.forEach(
@@ -160,14 +160,14 @@ public class GroupingTest {
     ImmutableList<UserPoolAssignmentModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkGroupId =
-        GroupByWorkgroupId.groupByWorkGroupId(userPoolAssignments);
+        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
 
     ImmutableSet<RuleModel> firstGeneratedRules =
-        GroupByWorkgroupId.generalRuleByWorkgroupId(mapByWorkGroupId, EXPECTED_FIRST_WORKGROUP_ID);
+        WorkgroupIdGroupingUtil.generalRuleByWorkgroupId(mapByWorkGroupId, EXPECTED_FIRST_WORKGROUP_ID);
     Assert.assertEquals(EXPECTED_FIRST_GENERATED_RULES, firstGeneratedRules);
 
     ImmutableSet<RuleModel> secondGeneratedRules =
-        GroupByWorkgroupId.generalRuleByWorkgroupId(mapByWorkGroupId, EXPECTED_SECOND_WORKGROUP_ID);
+        WorkgroupIdGroupingUtil.generalRuleByWorkgroupId(mapByWorkGroupId, EXPECTED_SECOND_WORKGROUP_ID);
     Assert.assertEquals(EXPECTED_SECOND_GENERATED_RULES, secondGeneratedRules);
   }
 
@@ -176,15 +176,15 @@ public class GroupingTest {
     ImmutableList<UserPoolAssignmentModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkGroupId =
-        GroupByWorkgroupId.groupByWorkGroupId(userPoolAssignments);
+        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
 
     ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> firstPermissionGroup =
-        GroupByCasePoolIdAndPermissionId.groupByCasePoolIdAndPermissionSetId(
+        CasePoolIdAndPermissionIdGroupingUtil.groupByCasePoolIdAndPermissionSetId(
             mapByWorkGroupId.get(EXPECTED_FIRST_WORKGROUP_ID));
     Assert.assertEquals(EXPECTED_FIRST_PERMISSION_GROUP, firstPermissionGroup);
 
     ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> secondPermissionGroup =
-        GroupByCasePoolIdAndPermissionId.groupByCasePoolIdAndPermissionSetId(
+        CasePoolIdAndPermissionIdGroupingUtil.groupByCasePoolIdAndPermissionSetId(
             mapByWorkGroupId.get(EXPECTED_SECOND_WORKGROUP_ID));
     Assert.assertEquals(EXPECTED_SECOND_PERMISSION_GROUP, secondPermissionGroup);
   }

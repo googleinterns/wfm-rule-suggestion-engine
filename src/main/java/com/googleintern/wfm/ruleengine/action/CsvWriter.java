@@ -90,8 +90,7 @@ public class CsvWriter {
       for (final FilterModel filter : filterSet) {
         currFilterIdsBuilder.append(currFilterIdsBuilder.length() > 0 ? Separator.COMMA.symbol :
                 Separator.CURLY_BRACKET_LEFT.symbol);
-        if (filter.type() == FilterModel.FilterType.SKILL
-            || filter.type() == FilterModel.FilterType.ROLESKILL) {
+        if (filter.type() == FilterModel.FilterType.SKILL) {
           currFilterIdsBuilder.append(SKILL_ID_PREFIX);
         } else if (filter.type() == FilterModel.FilterType.ROLE) {
           currFilterIdsBuilder.append(ROLE_ID_PREFIX);

@@ -1,38 +1,31 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSetMultimap;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
 
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * GroupByCasePoolIdAndPermissionId class is used to group data by (Case Pool ID, Permission Set
  * ID).
  */
-public class GroupByCasePoolIdAndPermissionId {
+public class CasePoolIdAndPermissionIdGroupingUtil {
 
-  /**
-   * Group data from the same workgroup by (Case Pool ID, Permission Set ID).
-   * @param dataFromSameWorkGroupId
-   * @return
-   */
+  /** Group data from the same workgroup by (Case Pool ID, Permission Set ID). */
   public static ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-      groupByCasePoolIdAndPermissionSetId(
-          ImmutableList<UserPoolAssignmentModel> dataFromSameWorkGroupId) {
+      groupByCasePoolIdAndPermissionSetId(List<UserPoolAssignmentModel> dataFromSameWorkGroupId) {
     ImmutableSetMultimap.Builder<PoolAssignmentModel, ImmutableList<FilterModel>>
-        mapByCasePoolIdAndPermissionSetIdBuilder = ImmutableSetMultimap.builder();
+        filtersByCasePoolIdAndPermissionSetIdBuilder = ImmutableSetMultimap.builder();
     for (UserPoolAssignmentModel data : dataFromSameWorkGroupId) {
       ImmutableList<FilterModel> filters = convertSkillIdRoleIdToFilter(data);
       for (PoolAssignmentModel permission : data.poolAssignments()) {
-        mapByCasePoolIdAndPermissionSetIdBuilder.put(permission, filters);
+        filtersByCasePoolIdAndPermissionSetIdBuilder.put(permission, filters);
       }
     }
-    return mapByCasePoolIdAndPermissionSetIdBuilder.build();
+    return filtersByCasePoolIdAndPermissionSetIdBuilder.build();
   }
 
   private static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
@@ -49,7 +42,7 @@ public class GroupByCasePoolIdAndPermissionId {
     for (Long roleSkillId : user.roleSkillIds()) {
       filtersBuilder.add(
           FilterModel.builder()
-              .setType(FilterModel.FilterType.ROLESKILL)
+              .setType(FilterModel.FilterType.SKILL)
               .setValue(roleSkillId)
               .build());
     }

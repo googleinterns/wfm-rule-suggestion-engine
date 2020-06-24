@@ -70,12 +70,12 @@ public class CsvWriterTest {
       ImmutableSet.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2020L).build(),
           FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(2011L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(2033L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2033L).build());
   private static final ImmutableSet<FilterModel> OR_FILTER_IDS_INDEX_2_RULE_2 =
       ImmutableSet.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1990L).build(),
           FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(1995L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(1998L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(1998L).build());
   private static final ImmutableList<ImmutableSet<FilterModel>> AND_FILTER_IDS_RULE_2 =
       ImmutableList.of(OR_FILTER_IDS_INDEX_1_RULE_2, OR_FILTER_IDS_INDEX_2_RULE_2);
   private static final RuleModel RULE_2 =
@@ -98,7 +98,7 @@ public class CsvWriterTest {
       ImmutableSet.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2020L).build(),
           FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(2011L).build(),
-          FilterModel.builder().setType(FilterModel.FilterType.ROLESKILL).setValue(2033L).build());
+          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2033L).build());
   private static final ImmutableSet<FilterModel> OR_FILTER_IDS_INDEX_2_RULE_3 =
       ImmutableSet.of(
           FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(2056L).build());
