@@ -11,17 +11,17 @@ alias(
 
 alias(
     name = "DataProcessing",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessing",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
 )
 
 alias(
     name = "GroupByWorkgroupId",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByWorkgroupId",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
 )
 
 alias(
     name = "GroupByCasePoolIdAndPermissionId",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:GroupByCasePoolIdAndPermissionId",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
 )
 
 # model package
