@@ -60,6 +60,16 @@ java_binary(
     ],
 )
 
+java_binary(
+    name = "GeneralRulesForWorkgroupId",
+    srcs = ["GeneralRulesForWorkgroupId.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
 java_library(
     name = "maven_dependency",
     exported_plugins = [":autovalue_plugin"],

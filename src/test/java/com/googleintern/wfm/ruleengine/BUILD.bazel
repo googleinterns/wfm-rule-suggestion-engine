@@ -55,3 +55,19 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
+
+java_test(
+    name = "GeneralRulesForWorkgroupIdTest",
+    size = "large",
+    srcs = ["GeneralRulesForWorkgroupIdTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.GeneralRulesForWorkgroupIdTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:GeneralRulesForWorkgroupId",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
