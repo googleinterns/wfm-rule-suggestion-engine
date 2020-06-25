@@ -13,7 +13,6 @@ public abstract class FilterModel {
   public enum FilterType {
     ROLE,
     SKILL,
-    ROLESKILL,
   }
 
   public abstract FilterType type();

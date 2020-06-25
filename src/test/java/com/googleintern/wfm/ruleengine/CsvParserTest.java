@@ -211,18 +211,18 @@ public class CsvParserTest {
 
   @Test
   public void parserFully() throws IOException, CsvException {
-    List<UserPoolAssignmentModel> userPoolAssignmentList =
+    List<UserPoolAssignmentModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
-    Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS.size(), userPoolAssignmentList.size());
-    for (final UserPoolAssignmentModel userPoolAssignment : userPoolAssignmentList) {
+    Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS.size(), userPoolAssignments.size());
+    for (final UserPoolAssignmentModel userPoolAssignment : userPoolAssignments) {
       Assert.assertNotNull(userPoolAssignment);
     }
   }
 
   @Test
   public void parserReadingTest() throws IOException, CsvException {
-    List<UserPoolAssignmentModel> userPoolAssignmentList =
+    List<UserPoolAssignmentModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
-    Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS, userPoolAssignmentList);
+    Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS, userPoolAssignments);
   }
 }
