@@ -9,8 +9,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentMod
 import java.util.List;
 
 /**
- * GroupByCasePoolIdAndPermissionId class is used to group data by (Case Pool ID, Permission Set
- * ID).
+ * CasePoolIdAndPermissionIdGroupingUtil class is used to group data by (Case Pool ID, Permission
+ * Set ID).
  */
 public class CasePoolIdAndPermissionIdGroupingUtil {
 

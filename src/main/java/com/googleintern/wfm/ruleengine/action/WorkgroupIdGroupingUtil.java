@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * GroupByWorkgroupId class is used to group data by their workgroup Id value and generate possible
+ * WorkgroupIdGroupingUtil class is used to group data by their workgroup Id value and generate possible
  * general rules for the same workgroup.
  */
 public class WorkgroupIdGroupingUtil {

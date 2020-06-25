@@ -11,7 +11,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentMod
 import java.io.IOException;
 
 /**
- * DataProcessingTest class is used to test the functionality of DataProcessing class.
+ * DataProcessorTest class is used to test the functionality of DataProcessing class.
  */
 public class DataProcessorTest {
   private static final String TEST_CSV_FILE_PATH =
