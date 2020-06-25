@@ -153,3 +153,13 @@ java_plugin(
         "@maven//:com_google_auto_value_auto_value_annotations",
     ],
 )
+
+java_binary(
+    name = "RuleValidation",
+    srcs = ["RuleValidation.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)

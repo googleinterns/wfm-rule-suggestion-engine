@@ -49,3 +49,8 @@ alias(
     name = "RuleModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
 )
+
+alias(
+    name = "RuleValidation",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+)
