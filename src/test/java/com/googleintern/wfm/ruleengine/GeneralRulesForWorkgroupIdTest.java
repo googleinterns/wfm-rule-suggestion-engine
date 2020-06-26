@@ -15,6 +15,10 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentMod
 
 import java.io.IOException;
 
+/**
+ * GeneralRulesForWorkgroupIdTest is used to test the functionality of the
+ * GeneralRulesForWorkgroupId class.
+ */
 public class GeneralRulesForWorkgroupIdTest {
   private static final String TEST_CSV_FILE_PATH =
       System.getProperty("user.home")
@@ -28,7 +32,7 @@ public class GeneralRulesForWorkgroupIdTest {
   /**
    * Expected general rules for Workgroup ID = 1122.
    *
-   * <p>Permissions have different case pool ID values.
+   * Permissions have different case pool ID values.
    */
   private static final ImmutableSet<RuleModel> EXPECTED_FIRST_GENERATED_RULES =
       ImmutableSet.of(
@@ -50,7 +54,7 @@ public class GeneralRulesForWorkgroupIdTest {
   /**
    * Expected general rules for Workgroup ID = 2233.
    *
-   * <p>Permissions have the same case pool ID, but different permission set IDs.
+   * Permissions have the same case pool ID, but different permission set IDs.
    */
   private static final ImmutableSet<RuleModel> EXPECTED_SECOND_GENERATED_RULES =
       ImmutableSet.of(
