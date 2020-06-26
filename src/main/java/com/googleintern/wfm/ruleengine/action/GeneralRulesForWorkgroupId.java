@@ -16,19 +16,19 @@ import java.util.Set;
 public class GeneralRulesForWorkgroupId {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generalRuleByWorkgroupId(
-      ImmutableListMultimap<Long, UserPoolAssignmentModel> userPoolAssignmentsByWorkGroupIdBuilder,
+      ImmutableListMultimap<Long, UserPoolAssignmentModel> userPoolAssignmentsByWorkGroupId,
       Long workgroupId) {
     ImmutableList<UserPoolAssignmentModel> userPoolAssignmentsFromSameWorkGroupId =
-        userPoolAssignmentsByWorkGroupIdBuilder.get(workgroupId);
+        userPoolAssignmentsByWorkGroupId.get(workgroupId);
     ImmutableSet<PoolAssignmentModel> permissionIntersections =
-        findPermissionIntersection(userPoolAssignmentsFromSameWorkGroupId);
+        findCommonPermissionsInsideOneWorkgroup(userPoolAssignmentsFromSameWorkGroupId);
     ImmutableSetMultimap<Long, Long> permissionGroup =
         groupPermissionByCasePoolId(permissionIntersections);
     Long workforceId = userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId();
     return createGeneralRuleForWorkgroupId(permissionGroup, workforceId, workgroupId);
   }
 
-  private static ImmutableSet<PoolAssignmentModel> findPermissionIntersection(
+  private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(
       List<UserPoolAssignmentModel> userPoolAssignmentsFromSameWorkGroupId) {
     ImmutableSet<PoolAssignmentModel> permissionIntersections =
         userPoolAssignmentsFromSameWorkGroupId.get(0).poolAssignments();
