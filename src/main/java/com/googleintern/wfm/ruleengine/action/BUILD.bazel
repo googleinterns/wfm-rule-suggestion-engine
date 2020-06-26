@@ -160,6 +160,7 @@ java_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )

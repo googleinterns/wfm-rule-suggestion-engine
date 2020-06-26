@@ -28,7 +28,7 @@ public class CasePoolIdAndPermissionIdGroupingUtil {
     return filtersByCasePoolIdAndPermissionSetIdBuilder.build();
   }
 
-  private static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
+  public static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
       UserPoolAssignmentModel user) {
     ImmutableList.Builder<FilterModel> filtersBuilder = ImmutableList.builder();
     for (Long roleId : user.roleIds()) {
