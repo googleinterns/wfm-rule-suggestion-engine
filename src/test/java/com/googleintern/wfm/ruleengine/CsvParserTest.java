@@ -22,7 +22,7 @@ public class CsvParserTest {
   /**
    * Expected values of fields for Case 0
    *
-   * Case 0 : Empty for role_ids, skills, role_skills and pool_assignments columns. Invalid value
+   * <p>Case 0 : Empty for role_ids, skills, role_skills and pool_assignments columns. Invalid value
    * for workgroup_id column.
    */
   private static final long USER_ID_CASE_0 = 0;
@@ -48,7 +48,7 @@ public class CsvParserTest {
   /**
    * Expected values of fields for Case 1
    *
-   * Case 1: Single value for role_ids, skills, role_skills and pool_assignments columns. Valid
+   * <p>Case 1: Single value for role_ids, skills, role_skills and pool_assignments columns. Valid
    * value for workgroup_id column.
    */
   private static final long USER_ID_CASE_1 = 1;
@@ -72,15 +72,16 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_1)
           .build();
 
-  /***
-   * Expected values of fields for Case 2
+  /**
+   * * Expected values of fields for Case 2
    *
-   * Case 2: Multiple distinctive values for role_ids, skills, and role_skills columns. Valid value
+   * <p>Case 2: Multiple distinctive values for role_ids, skills, and role_skills columns. Valid
+   * value for workgroup_id column. Same value of pool id and different values of permission set id
    * for workgroup_id column. Same value of pool id and different values of permission set id for
-   * workgroup_id column. Same value of pool id and different values of permission set id for
    * elements in the pool_assignments column.
    */
   private static final long USER_ID_CASE_2 = 2;
+
   private static final long WORKFORCE_ID_CASE_2 = 1024;
   private static final long WORKGROUP_ID_CASE_2 = 2048;
   private static final ImmutableList<Long> ROLE_IDS_CASE_2 =
@@ -103,15 +104,16 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_2)
           .build();
 
-  /***
-   * Expected values of fields for Case 3
+  /**
+   * * Expected values of fields for Case 3
    *
-   * Case 3: Multiple distinctive values for skills and pool_assignments columns. Valid value for
+   * <p>Case 3: Multiple distinctive values for skills and pool_assignments columns. Valid value for
    * workgroup_id column. The role_skills column has no proficiency element and is in form of
    * {"skill_id": number}. Same value of permission set id and different values of pool ids for
    * elements in the pool_assignments column.
    */
   private static final long USER_ID_CASE_3 = 3;
+
   private static final long WORKFORCE_ID_CASE_3 = 1024;
   private static final long WORKGROUP_ID_CASE_3 = 2048;
   private static final ImmutableList<Long> ROLE_IDS_CASE_3 =
@@ -133,15 +135,16 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_3)
           .build();
 
-  /***
-   * Expected values of fields for Case 4
+  /**
+   * * Expected values of fields for Case 4
    *
-   * Case 4: Multiple distinctive values for role_skills, skills and pool_assignments columns. Valid
-   * value for workgroup_id column. The role_skills column has no proficiency element and is in form
-   * of {"skill_id": number}. Same value of pool id and different values of permission set id for
-   * elements in the pool_assignments column.
+   * <p>Case 4: Multiple distinctive values for role_skills, skills and pool_assignments columns.
+   * Valid value for workgroup_id column. The role_skills column has no proficiency element and is
+   * in form of {"skill_id": number}. Same value of pool id and different values of permission set
+   * id for elements in the pool_assignments column.
    */
   private static final long USER_ID_CASE_4 = 4;
+
   private static final long WORKFORCE_ID_CASE_4 = 1024;
   private static final long WORKGROUP_ID_CASE_4 = 2048;
   private static final ImmutableList<Long> ROLE_IDS_CASE_4 =
@@ -165,15 +168,16 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_4)
           .build();
 
-  /***
-   * Expected values of fields for Case 5
+  /**
+   * * Expected values of fields for Case 5
    *
-   * Case 5: Role_skills, skills and pool_assignments columns have same values of id as inputs.
+   * <p>Case 5: Role_skills, skills and pool_assignments columns have same values of id as inputs.
    * Valid value for workgroup_id column. The role_skills column has no proficiency element and is
    * in form of {"skill_id": number}. Same value of pool id and different values of permission set
    * id for elements in the pool_assignments column.
    */
   private static final long USER_ID_CASE_5 = 5;
+
   private static final long WORKFORCE_ID_CASE_5 = 1024;
   private static final long WORKGROUP_ID_CASE_5 = 2048;
   private static final ImmutableList<Long> ROLE_IDS_CASE_5 = ImmutableList.of(1998L, 2038L, 2249L);
@@ -196,9 +200,7 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_5)
           .build();
 
-  /***
-   * Expected list of UserPoolAssignments
-   */
+  /** * Expected list of UserPoolAssignments */
   private static final ImmutableList<UserPoolAssignmentModel> EXPECTED_USERPOOLASSIGNMENTS =
       ImmutableList.<UserPoolAssignmentModel>builder()
           .add(EXPECTED_USERPOOLASSIGNMENT_CASE_0)

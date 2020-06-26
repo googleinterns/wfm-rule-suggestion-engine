@@ -88,8 +88,10 @@ public class CsvWriter {
       }
       StringBuilder currFilterIdsBuilder = new StringBuilder();
       for (final FilterModel filter : filterSet) {
-        currFilterIdsBuilder.append(currFilterIdsBuilder.length() > 0 ? Separator.COMMA.symbol :
-                Separator.CURLY_BRACKET_LEFT.symbol);
+        currFilterIdsBuilder.append(
+            currFilterIdsBuilder.length() > 0
+                ? Separator.COMMA.symbol
+                : Separator.CURLY_BRACKET_LEFT.symbol);
         if (filter.type() == FilterModel.FilterType.SKILL) {
           currFilterIdsBuilder.append(SKILL_ID_PREFIX);
         } else if (filter.type() == FilterModel.FilterType.ROLE) {
@@ -97,8 +99,10 @@ public class CsvWriter {
         }
         currFilterIdsBuilder.append(filter.value());
       }
-      filterIdsBuilder.append(currFilterIdsBuilder.toString().isEmpty() ? "" :
-              currFilterIdsBuilder.toString() + Separator.CURLY_BRACKET_RIGHT.symbol);
+      filterIdsBuilder.append(
+          currFilterIdsBuilder.toString().isEmpty()
+              ? ""
+              : currFilterIdsBuilder.toString() + Separator.CURLY_BRACKET_RIGHT.symbol);
     }
     filterIdsBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
     return filterIdsBuilder.toString();
