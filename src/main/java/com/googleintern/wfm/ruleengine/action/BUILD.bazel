@@ -61,8 +61,8 @@ java_binary(
 )
 
 java_binary(
-    name = "GeneralRulesForWorkgroupId",
-    srcs = ["GeneralRulesForWorkgroupId.java"],
+    name = "WorkgroupIdRuleGenerator",
+    srcs = ["WorkgroupIdRuleGenerator.java"],
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",

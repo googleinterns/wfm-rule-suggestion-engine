@@ -25,8 +25,8 @@ alias(
 )
 
 alias(
-    name = "GeneralRulesForWorkgroupId",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:GeneralRulesForWorkgroupId",
+    name = "WorkgroupIdRuleGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
 )
 
 # model package
