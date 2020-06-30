@@ -36,16 +36,11 @@ public class WorkgroupIdRuleGenerator {
 
   private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(
       List<UserPoolAssignmentModel> userPoolAssignmentsFromSameWorkGroupId) {
-    Set<PoolAssignmentModel> permissionIntersections =
-        userPoolAssignmentsFromSameWorkGroupId.get(0).poolAssignments();
-
-    for (UserPoolAssignmentModel user : userPoolAssignmentsFromSameWorkGroupId) {
-      permissionIntersections = Sets.intersection(permissionIntersections, user.poolAssignments());
-      if (permissionIntersections.size() == 0) {
-        return ImmutableSet.of();
-      }
-    }
-    return ImmutableSet.copyOf(permissionIntersections);
+    return userPoolAssignmentsFromSameWorkGroupId.stream()
+        .map(userPoolAssignment -> userPoolAssignment.poolAssignments())
+        .reduce(
+            userPoolAssignmentsFromSameWorkGroupId.get(0).poolAssignments(),
+            (intersections, user) -> Sets.intersection(intersections, user).immutableCopy());
   }
 
   private static ImmutableSetMultimap<Long, Long> groupPermissionByCasePoolId(
