@@ -40,10 +40,10 @@ public class KarnaughMapTableGenerator {
       ImmutableBiMap<FilterModel, Integer> filterByIndex,
       ImmutableSet<ImmutableList<FilterModel>> filters) {
     int totalNumberOfFilters = filterByIndex.keySet().size();
-    ImmutableList<Integer> filterNumberAllZeros =
-        ImmutableList.copyOf(new ArrayList<>(Collections.nCopies(totalNumberOfFilters, 0)));
+    List<Integer> filterNumberAllZeros =
+        new ArrayList<>(Collections.nCopies(totalNumberOfFilters, 0));
     ImmutableSet<ImmutableList<Integer>> allFilterPermutations =
-        findAllPermutations(filterNumberAllZeros, totalNumberOfFilters);
+        findAllPermutations(filterNumberAllZeros, totalNumberOfFilters - 1);
     ImmutableSet<ImmutableList<Integer>> allOneCases =
         findAllOneCases(filterByIndex, allFilterPermutations, filters);
     return ImmutableSet.copyOf(Sets.difference(allFilterPermutations, allOneCases));
