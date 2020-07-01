@@ -12,6 +12,21 @@ import java.util.Set;
 /**
  * WorkgroupIdRuleGenerator class is used to create rules that can apply to all users from the same
  * work group.
+ *
+ * <p>Steps:
+ *
+ * <ol>
+ *   <li>Step 1: Check whether the target work group ID is a valid or not.
+ *   <li>Step 2: Get all userPoolAssignments({@link UserPoolAssignmentModel}) associated with the
+ *       target work group ID as an Immutable List and check its size.
+ *   <li>Step 3: Loop through all userPoolAssignments in the list and find their common
+ *       PoolAssignments({@link PoolAssignmentModel}). Store the finding results as an immutable
+ *       set.
+ *   <li>Step 4: Group the finding result from step 3 by Case Pool ID. Store the grouping results in
+ *       an immutable set multimap where key represent Case Pool IDs and values represent Permission
+ *       Set IDs.
+ *   <li>Step 5: Form Rules based on the grouping results from step 4.
+ * </ol>
  */
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
