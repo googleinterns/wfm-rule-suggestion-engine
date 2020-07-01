@@ -12,7 +12,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentMod
 import java.io.IOException;
 import java.util.*;
 
-/** * CsvParserTest class is used to testing the functionality of CsvParser class. */
+/** CsvParserTest class is used to testing the functionality of CsvParser class. */
 public class CsvParserTest {
   private static final String TEST_CSV_FILE_PATH =
       System.getProperty("user.home")
@@ -73,7 +73,7 @@ public class CsvParserTest {
           .build();
 
   /**
-   * * Expected values of fields for Case 2
+   * Expected values of fields for Case 2
    *
    * <p>Case 2: Multiple distinctive values for role_ids, skills, and role_skills columns. Valid
    * value for workgroup_id column. Same value of pool id and different values of permission set id
@@ -105,7 +105,7 @@ public class CsvParserTest {
           .build();
 
   /**
-   * * Expected values of fields for Case 3
+   * Expected values of fields for Case 3
    *
    * <p>Case 3: Multiple distinctive values for skills and pool_assignments columns. Valid value for
    * workgroup_id column. The role_skills column has no proficiency element and is in form of
@@ -136,7 +136,7 @@ public class CsvParserTest {
           .build();
 
   /**
-   * * Expected values of fields for Case 4
+   * Expected values of fields for Case 4
    *
    * <p>Case 4: Multiple distinctive values for role_skills, skills and pool_assignments columns.
    * Valid value for workgroup_id column. The role_skills column has no proficiency element and is
@@ -169,7 +169,7 @@ public class CsvParserTest {
           .build();
 
   /**
-   * * Expected values of fields for Case 5
+   * Expected values of fields for Case 5
    *
    * <p>Case 5: Role_skills, skills and pool_assignments columns have same values of id as inputs.
    * Valid value for workgroup_id column. The role_skills column has no proficiency element and is
@@ -200,7 +200,7 @@ public class CsvParserTest {
           .setPoolAssignments(POOL_ASSIGNMENTS_CASE_5)
           .build();
 
-  /** * Expected list of UserPoolAssignments */
+  /** Expected list of UserPoolAssignments */
   private static final ImmutableList<UserPoolAssignmentModel> EXPECTED_USERPOOLASSIGNMENTS =
       ImmutableList.<UserPoolAssignmentModel>builder()
           .add(EXPECTED_USERPOOLASSIGNMENT_CASE_0)
