@@ -30,8 +30,23 @@ alias(
 )
 
 alias(
+<<<<<<< HEAD
     name = "RuleValidation",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+=======
+    name = "KarnaughMapTermGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
+)
+
+alias(
+    name = "KarnaughMapReduction",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapReduction",
+)
+
+alias(
+    name = "KarnaughMapRuleGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
+>>>>>>> 01780c6... Add KarnaughMapRuleGenerator class.
 )
 
 # model package
@@ -63,4 +78,35 @@ alias(
     name = "KarnaughMapComparisionResultModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
 >>>>>>> 509af9a... Add KarnaughMapReduction
+)
+
+# test
+alias(
+    name = "CsvParserTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvParserTest",
+)
+
+alias(
+    name = "CsvWriterTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvWriterTest",
+)
+
+alias(
+    name = "DataProcessorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:DataProcessorTest",
+)
+
+alias(
+    name = "GroupingUtilTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:GroupingUtilTest",
+)
+
+alias(
+    name = "WorkgroupIdRuleGeneratorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:WorkgroupIdRuleGeneratorTest",
+)
+
+alias(
+    name = "KarnaughMapTermGeneratorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapTermGeneratorTest",
 )

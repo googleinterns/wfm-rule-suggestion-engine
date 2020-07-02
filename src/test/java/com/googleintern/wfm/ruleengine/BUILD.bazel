@@ -98,13 +98,13 @@ java_test(
 )
 
 java_test(
-    name = "KarnaughMapTableGeneratorTest",
+    name = "KarnaughMapTermGeneratorTest",
     size = "large",
-    srcs = ["KarnaughMapTableGeneratorTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.KarnaughMapTableGeneratorTest",
+    srcs = ["KarnaughMapTermGeneratorTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.KarnaughMapTermGeneratorTest",
     visibility = ["//visibility:public"],
     deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTableGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
