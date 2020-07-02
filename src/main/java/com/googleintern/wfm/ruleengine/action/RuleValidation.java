@@ -82,7 +82,7 @@ public class RuleValidation {
     FileWriter outputFileWriter = new FileWriter(outputFile);
     CSVWriter csvWriter = new CSVWriter(outputFileWriter);
 
-    ImmutableList<String[]> validationResult = convertRuleValidationResultsToListOfStringArrays();
+    ImmutableList<String[]> validationResult = convertRuleValidationResultsToCsvRows();
 
     csvWriter.writeAll(validationResult);
     csvWriter.close();
@@ -97,13 +97,18 @@ public class RuleValidation {
 
   public static ImmutableSet<UserPoolAssignmentModel> findUncoveredUsers() {
     return expectedUserPoolAssignments.stream()
-        .filter(
-            user ->
-                ((!actualAssignedPermissionsByUserPoolAssignment.containsKey(user)
-                        && !user.poolAssignments().isEmpty())
-                    || (!user.poolAssignments()
-                        .equals(actualAssignedPermissionsByUserPoolAssignment.get(user)))))
+        .filter(user -> isUserUncovered(user))
         .collect(ImmutableSet.toImmutableSet());
+  }
+
+  private static boolean isUserUncovered(UserPoolAssignmentModel user) {
+    if ((!actualAssignedPermissionsByUserPoolAssignment.containsKey(user)
+            && !user.poolAssignments().isEmpty())
+        || (!user.poolAssignments()
+            .equals(actualAssignedPermissionsByUserPoolAssignment.get(user)))) {
+      return true;
+    }
+    return false;
   }
 
   public static ImmutableSet<PoolAssignmentModel> findUncoveredPoolAssignments() {
@@ -133,26 +138,22 @@ public class RuleValidation {
         .collect(ImmutableSet.toImmutableSet());
   }
 
-  private static ImmutableList<String[]> convertRuleValidationResultsToListOfStringArrays() {
+  private static ImmutableList<String[]> convertRuleValidationResultsToCsvRows() {
     ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions = findUncoveredUsers();
     return ImmutableList.<String[]>builder()
-        .addAll(
-            convertRuleCoveragePercentageToListOfStringArrays(usersWithWrongAssignedPermissions))
+        .add(convertRuleCoveragePercentageToListOfStringArrays(usersWithWrongAssignedPermissions))
         .addAll(convertUncoveredPoolAssignmentsToListOfStringArrays())
         .addAll(
             convertWrongUserPoolAssignmentToListOfStringArrays(usersWithWrongAssignedPermissions))
         .build();
   }
 
-  private static ImmutableList<String[]> convertRuleCoveragePercentageToListOfStringArrays(
+  private static String[] convertRuleCoveragePercentageToListOfStringArrays(
       ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
     double ruleCoverage = calculateRulesCoverage(usersWithWrongAssignedPermissions);
-    ImmutableList.Builder<String[]> ruleCoveragePercentageBuilder = ImmutableList.builder();
-    ruleCoveragePercentageBuilder.add(
-        new String[] {
-          RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage * 100) + PERCENTAGE_SIGN
-        });
-    return ruleCoveragePercentageBuilder.build();
+    return new String[] {
+      RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage * 100) + PERCENTAGE_SIGN
+    };
   }
 
   private static ImmutableList<String[]> convertUncoveredPoolAssignmentsToListOfStringArrays() {
@@ -258,8 +259,8 @@ public class RuleValidation {
     return rules.stream()
         .filter(
             rule ->
-                (decideToAssignPermissions(
-                    user.workforceId(), user.workgroupId(), userFilters, rule)))
+                    shouldAssignPermissions(
+                    user.workforceId(), user.workgroupId(), userFilters, rule))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()
@@ -272,7 +273,7 @@ public class RuleValidation {
         .collect(ImmutableSet.toImmutableSet());
   }
 
-  private static boolean decideToAssignPermissions(
+  private static boolean shouldAssignPermissions(
       Long workforceId, Long workgroupId, Set<FilterModel> userFilters, RuleModel rule) {
     if ((rule.workforceId() != workforceId) || (rule.workgroupId() != workgroupId)) {
       return false;
