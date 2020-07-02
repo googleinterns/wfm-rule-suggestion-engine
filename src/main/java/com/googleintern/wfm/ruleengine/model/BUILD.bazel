@@ -42,8 +42,17 @@ java_binary(
     srcs = ["RuleValidationReport.java"],
     visibility = ["//visibility:public"],
     deps = [
-        "PoolAssignmentModel",
+        ":PoolAssignmentModel",
         ":UserModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
+java_binary(
+    name = "KarnaughMapComparisionResultModel",
+    srcs = ["KarnaughMapComparisionResultModel.java"],
+    visibility = ["//visibility:public"],
+    deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
     ],
 )
@@ -53,6 +62,7 @@ java_library(
     visibility = ["//visibility:public"],
     exports = [
         "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
