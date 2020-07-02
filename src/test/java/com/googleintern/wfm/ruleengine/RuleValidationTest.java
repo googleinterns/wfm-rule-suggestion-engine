@@ -179,7 +179,7 @@ public class RuleValidationTest {
   public void findUncoveredUsersTest() {
     RuleValidation validationResults = new RuleValidation(RULES, USERS);
     ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
-        validationResults.findUncoveredUsers();
+        validationResults.findUncoveredUsers(USERS);
     Assert.assertEquals(
         NUMBER_OF_USER_WITH_WRONG_ASSIGNED_PERMISSIONS, usersWithWrongAssignedPermissions.size());
     Assert.assertEquals(USERS_WITH_WRONG_ASSIGNED_PERMISSIONS, usersWithWrongAssignedPermissions);
@@ -189,19 +189,17 @@ public class RuleValidationTest {
   public void calculateRulesCoverageTest() {
     RuleValidation validationResults = new RuleValidation(RULES, USERS);
     ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
-        validationResults.findUncoveredUsers();
+        validationResults.findUncoveredUsers(USERS);
     double rulesCoverage =
-        validationResults.calculateRulesCoverage(usersWithWrongAssignedPermissions);
+        validationResults.calculateRulesCoverage(usersWithWrongAssignedPermissions, USERS);
     Assert.assertEquals(Double.toString(EXPECTED_RULES_COVERAGE), Double.toString(rulesCoverage));
   }
 
   @Test
   public void findUncoveredPoolAssignmentsTest() {
     RuleValidation validationResults = new RuleValidation(RULES, USERS);
-    ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
-        validationResults.findUncoveredUsers();
     ImmutableSet<PoolAssignmentModel> uncoveredPoolAssignments =
-        validationResults.findUncoveredPoolAssignments();
+        validationResults.findUncoveredPoolAssignments(USERS);
     Assert.assertEquals(EXPECTED_UNCOVERED_POOL_ASSIGNMENTS, uncoveredPoolAssignments);
   }
 
@@ -214,7 +212,7 @@ public class RuleValidationTest {
     List<String[]> expectedWrittenResults = csvReaderForExpectedWrittenResults.readAll();
 
     RuleValidation validationResults = new RuleValidation(RULES, USERS);
-    validationResults.writeRuleValidationResultsIntoCsvFile(TEST_CSV_FILE_OUTPUT_PATH);
+    validationResults.writeRuleValidationResultsIntoCsvFile(TEST_CSV_FILE_OUTPUT_PATH, USERS);
     Reader readerForActualWrittenResults =
         Files.newBufferedReader(Paths.get(TEST_CSV_FILE_OUTPUT_PATH));
     CSVReader csvReaderForActualWrittenResults =

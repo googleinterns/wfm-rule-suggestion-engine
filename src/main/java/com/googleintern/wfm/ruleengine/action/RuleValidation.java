@@ -42,8 +42,6 @@ public class RuleValidation {
   /** Map permissions assigned by generated rules to each user */
   public static ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
       actualAssignedPermissionsByUserPoolAssignment;
-  /** Group Truth of UserPoolAssignments data */
-  public static ImmutableList<UserPoolAssignmentModel> expectedUserPoolAssignments;
 
   /** Constant string variables used for result outputs. */
   private static final String RULE_COVERAGE_PERCENT_HEADER = "Coverage % for Rule Set:";
@@ -68,12 +66,12 @@ public class RuleValidation {
   public RuleValidation(
       Set<RuleModel> rules, List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
     this.rules = ImmutableSet.copyOf(rules);
-    this.expectedUserPoolAssignments = ImmutableList.copyOf(expectedUserPoolAssignments);
     this.actualAssignedPermissionsByUserPoolAssignment =
         assignPermissionsBasedOnGeneratedRules(expectedUserPoolAssignments);
   }
 
-  public static void writeRuleValidationResultsIntoCsvFile(String outputCsvFilePath)
+  public static void writeRuleValidationResultsIntoCsvFile(
+      String outputCsvFilePath, List<UserPoolAssignmentModel> expectedUserPoolAssignments)
       throws IOException {
     File outputFile = new File(outputCsvFilePath);
     Files.deleteIfExists(outputFile.toPath());
@@ -82,20 +80,23 @@ public class RuleValidation {
     FileWriter outputFileWriter = new FileWriter(outputFile);
     CSVWriter csvWriter = new CSVWriter(outputFileWriter);
 
-    ImmutableList<String[]> validationResult = convertRuleValidationResultsToCsvRows();
+    ImmutableList<String[]> validationResult =
+        convertRuleValidationResultsToCsvRows(expectedUserPoolAssignments);
 
     csvWriter.writeAll(validationResult);
     csvWriter.close();
   }
 
   public static double calculateRulesCoverage(
-      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
+      Set<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
     double numberOfWrongAssignment = usersWithWrongAssignedPermissions.size();
     double totalNumberOfUsers = expectedUserPoolAssignments.size();
     return (totalNumberOfUsers - numberOfWrongAssignment) / totalNumberOfUsers;
   }
 
-  public static ImmutableSet<UserPoolAssignmentModel> findUncoveredUsers() {
+  public static ImmutableSet<UserPoolAssignmentModel> findUncoveredUsers(
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
     return expectedUserPoolAssignments.stream()
         .filter(user -> isUserUncovered(user))
         .collect(ImmutableSet.toImmutableSet());
@@ -111,14 +112,17 @@ public class RuleValidation {
     return false;
   }
 
-  public static ImmutableSet<PoolAssignmentModel> findUncoveredPoolAssignments() {
-    ImmutableSet<PoolAssignmentModel> expectedAllPoolAssignments = findExpectedAllPoolAssignments();
+  public static ImmutableSet<PoolAssignmentModel> findUncoveredPoolAssignments(
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
+    ImmutableSet<PoolAssignmentModel> expectedAllPoolAssignments =
+        findExpectedAllPoolAssignments(expectedUserPoolAssignments);
     ImmutableSet<PoolAssignmentModel> actualAllPoolAssignments = findActualAllPoolAssignments();
     return ImmutableSet.copyOf(
         Sets.difference(expectedAllPoolAssignments, actualAllPoolAssignments));
   }
 
-  private static ImmutableSet<PoolAssignmentModel> findExpectedAllPoolAssignments() {
+  private static ImmutableSet<PoolAssignmentModel> findExpectedAllPoolAssignments(
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
     return expectedUserPoolAssignments.stream()
         .map(user -> user.poolAssignments())
         .reduce(ImmutableSet.of(), (union, current) -> Sets.union(union, current).immutableCopy());
@@ -138,26 +142,33 @@ public class RuleValidation {
         .collect(ImmutableSet.toImmutableSet());
   }
 
-  private static ImmutableList<String[]> convertRuleValidationResultsToCsvRows() {
-    ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions = findUncoveredUsers();
+  private static ImmutableList<String[]> convertRuleValidationResultsToCsvRows(
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
+    ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
+        findUncoveredUsers(expectedUserPoolAssignments);
     return ImmutableList.<String[]>builder()
-        .add(convertRuleCoveragePercentageToListOfStringArrays(usersWithWrongAssignedPermissions))
-        .addAll(convertUncoveredPoolAssignmentsToListOfStringArrays())
-        .addAll(
-            convertWrongUserPoolAssignmentToListOfStringArrays(usersWithWrongAssignedPermissions))
+        .add(
+            convertRuleCoveragePercentageToCsvRow(
+                usersWithWrongAssignedPermissions, expectedUserPoolAssignments))
+        .addAll(convertUncoveredPoolAssignmentsToCsvRows(expectedUserPoolAssignments))
+        .addAll(convertWrongUserPoolAssignmentsToCsvRows(usersWithWrongAssignedPermissions))
         .build();
   }
 
-  private static String[] convertRuleCoveragePercentageToListOfStringArrays(
-      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
-    double ruleCoverage = calculateRulesCoverage(usersWithWrongAssignedPermissions);
+  private static String[] convertRuleCoveragePercentageToCsvRow(
+      Set<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
+    double ruleCoverage =
+        calculateRulesCoverage(usersWithWrongAssignedPermissions, expectedUserPoolAssignments);
     return new String[] {
       RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage * 100) + PERCENTAGE_SIGN
     };
   }
 
-  private static ImmutableList<String[]> convertUncoveredPoolAssignmentsToListOfStringArrays() {
-    ImmutableSet<PoolAssignmentModel> uncoveredPoolAssignments = findUncoveredPoolAssignments();
+  private static ImmutableList<String[]> convertUncoveredPoolAssignmentsToCsvRows(
+      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
+    ImmutableSet<PoolAssignmentModel> uncoveredPoolAssignments =
+        findUncoveredPoolAssignments(expectedUserPoolAssignments);
     ImmutableList.Builder<String[]> uncoveredPoolAssignmentsBuilder = ImmutableList.builder();
     uncoveredPoolAssignmentsBuilder.add(POOL_ASSIGNMENT_HEADER);
     for (PoolAssignmentModel poolAssignment : uncoveredPoolAssignments) {
@@ -170,8 +181,8 @@ public class RuleValidation {
     return uncoveredPoolAssignmentsBuilder.build();
   }
 
-  private static ImmutableList<String[]> convertWrongUserPoolAssignmentToListOfStringArrays(
-      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
+  private static ImmutableList<String[]> convertWrongUserPoolAssignmentsToCsvRows(
+      Set<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
     ImmutableList.Builder<String[]> wrongUserPoolAssignmentsBuilder = ImmutableList.builder();
     wrongUserPoolAssignmentsBuilder.add(WRONG_USER_POOL_ASSIGNMENT_HEADER);
     for (UserPoolAssignmentModel user : usersWithWrongAssignedPermissions) {
@@ -255,12 +266,11 @@ public class RuleValidation {
   }
 
   private static ImmutableSet<PoolAssignmentModel> assignPermissions(
-      UserPoolAssignmentModel user, ImmutableSet<FilterModel> userFilters) {
+      UserPoolAssignmentModel user, Set<FilterModel> userFilters) {
     return rules.stream()
         .filter(
             rule ->
-                    shouldAssignPermissions(
-                    user.workforceId(), user.workgroupId(), userFilters, rule))
+                shouldAssignPermissions(user.workforceId(), user.workgroupId(), userFilters, rule))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()
