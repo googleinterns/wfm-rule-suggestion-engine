@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import org.junit.Assert;
 import org.junit.Test;
-import src.main.java.com.googleintern.wfm.ruleengine.action.KarnaughMapTableGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.KarnaughMapTermGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 
@@ -14,7 +14,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
  * KarnaughMapTableGeneratorTest is used to test the functionality of KarnaughMapTableGenerator
  * class.
  */
-public class KarnaughMapTableGeneratorTest {
+public class KarnaughMapTermGeneratorTest {
   private static final FilterModel FILTER_0 =
       FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(1111L).build();
   private static final FilterModel FILTER_1 =
@@ -60,7 +60,7 @@ public class KarnaughMapTableGeneratorTest {
   @Test
   public void mapFiltersByIndexTest() {
     ImmutableBiMap<FilterModel, Integer> filterByIndex =
-        KarnaughMapTableGenerator.mapFiltersByIndex(
+        KarnaughMapTermGenerator.mapFiltersByIndex(
             FILTER_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID, POOL_ASSIGNMENT);
     Assert.assertEquals(EXPECTED_SIZE_OF_KEY_SET, filterByIndex.keySet().size());
     Assert.assertEquals(EXPECTED_KEY_SET, filterByIndex.keySet());
@@ -69,7 +69,7 @@ public class KarnaughMapTableGeneratorTest {
   @Test
   public void findAllZeroCasesTest() {
     ImmutableSet<ImmutableList<Integer>> allZerosCases =
-        KarnaughMapTableGenerator.findAllZeroCases(EXPECTED_FILTER_BY_INDEX, FILTERS);
+        KarnaughMapTermGenerator.findAllZeroCases(EXPECTED_FILTER_BY_INDEX, FILTERS);
     Assert.assertEquals(allZerosCases, EXPECTED_ALL_ZEROS_CASES);
   }
 }

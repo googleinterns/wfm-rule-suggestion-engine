@@ -12,7 +12,7 @@ import java.util.List;
  * KarnaughMapTableGenerator class is used to prepare information/variables for Karnaugh Map
  * Reduction algorithm.
  */
-public class KarnaughMapTableGenerator {
+public class KarnaughMapTermGenerator {
 
   public static ImmutableBiMap<FilterModel, Integer> mapFiltersByIndex(
       ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
