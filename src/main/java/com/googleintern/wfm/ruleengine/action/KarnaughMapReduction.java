@@ -5,6 +5,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import src.main.java.com.googleintern.wfm.ruleengine.model.KarnaughMapComparisionResultModel;
 
+/**
+ * KarnaughMapReduction class is used to minimize Karnaugh Map terms formed by
+ * KarnaughMapTermGenerator class.
+ */
 public class KarnaughMapReduction {
 
   public static ImmutableSet<ImmutableList<Integer>> minimizeKMapTerms(
