@@ -154,3 +154,13 @@ java_binary(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
+
+java_binary(
+    name = "KarnaughMapReduction",
+    srcs = ["KarnaughMapReduction.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)

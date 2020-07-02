@@ -56,8 +56,13 @@ alias(
 )
 
 alias(
+<<<<<<< HEAD
     name = "RuleValidationReport",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
+=======
+    name = "KarnaughMapComparisionResultModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
+>>>>>>> 509af9a... Add KarnaughMapReduction
 )
 
 # test
