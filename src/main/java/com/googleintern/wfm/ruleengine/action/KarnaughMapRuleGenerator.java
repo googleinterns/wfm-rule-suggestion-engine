@@ -17,8 +17,8 @@ public class KarnaughMapRuleGenerator {
   public static RuleModel singleRuleGenerator(
       ImmutableSet<ImmutableList<Integer>> minimizedTerms,
       ImmutableBiMap<FilterModel, Integer> filterByIndex,
-      Long workgroupId,
       Long workforceId,
+      Long workgroupId,
       Long casePoolId,
       Set<Long> permissionSetIds) {
     return RuleModel.builder()
