@@ -90,3 +90,16 @@ alias(
     name = "WorkgroupIdRuleGeneratorTest",
     actual = "//src/test/java/com/googleintern/wfm/ruleengine:WorkgroupIdRuleGeneratorTest",
 )
+<<<<<<< HEAD
+=======
+
+alias(
+    name = "KarnaughMapTermGeneratorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapTermGeneratorTest",
+)
+
+alias(
+    name = "KarnaughMapRuleGeneratorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapRuleGeneratorTest",
+)
+>>>>>>> a482d05... Add tests for KarnaughMapReduction class.
