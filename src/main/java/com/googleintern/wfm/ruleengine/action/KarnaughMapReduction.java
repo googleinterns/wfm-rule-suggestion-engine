@@ -18,6 +18,9 @@ public class KarnaughMapReduction {
     ImmutableList<ImmutableList<Integer>> termsNeedToMinimize = allZeroTerms;
     while (!termsNeedToMinimize.isEmpty()) {
       KarnaughMapComparisionResultModel compareResult = compareKMapTerms(termsNeedToMinimize);
+      ImmutableSet<ImmutableList<Integer>> temp =
+          Sets.difference(ImmutableSet.copyOf(termsNeedToMinimize), compareResult.minimizedTerms())
+              .immutableCopy();
       finalMinimizedResultsBuilder.addAll(
           Sets.difference(ImmutableSet.copyOf(termsNeedToMinimize), compareResult.minimizedTerms())
               .immutableCopy());
