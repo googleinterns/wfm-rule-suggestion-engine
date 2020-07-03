@@ -12,15 +12,12 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.KarnaughMapComparisio
 public class KarnaughMapReduction {
 
   public static ImmutableSet<ImmutableList<Integer>> minimizeKMapTerms(
-      ImmutableList<ImmutableList<Integer>> allZeroTerms) {
+      ImmutableSet<ImmutableList<Integer>> allZeroTerms) {
     ImmutableSet.Builder<ImmutableList<Integer>> finalMinimizedResultsBuilder =
         ImmutableSet.builder();
-    ImmutableList<ImmutableList<Integer>> termsNeedToMinimize = allZeroTerms;
+    ImmutableList<ImmutableList<Integer>> termsNeedToMinimize = allZeroTerms.asList();
     while (!termsNeedToMinimize.isEmpty()) {
       KarnaughMapComparisionResultModel compareResult = compareKMapTerms(termsNeedToMinimize);
-      ImmutableSet<ImmutableList<Integer>> temp =
-          Sets.difference(ImmutableSet.copyOf(termsNeedToMinimize), compareResult.minimizedTerms())
-              .immutableCopy();
       finalMinimizedResultsBuilder.addAll(
           Sets.difference(ImmutableSet.copyOf(termsNeedToMinimize), compareResult.minimizedTerms())
               .immutableCopy());

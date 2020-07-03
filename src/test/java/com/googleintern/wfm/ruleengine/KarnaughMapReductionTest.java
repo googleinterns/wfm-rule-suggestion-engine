@@ -13,8 +13,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.KarnaughMapReduction
 public class KarnaughMapReductionTest {
 
   /** Case 0: Have even number of variables in each term. */
-  private static final ImmutableList<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_0 =
-      ImmutableList.of(
+  private static final ImmutableSet<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_0 =
+      ImmutableSet.of(
           ImmutableList.of(0, 0, 0, 0),
           ImmutableList.of(0, 0, 0, 1),
           ImmutableList.of(0, 0, 1, 1),
@@ -29,8 +29,8 @@ public class KarnaughMapReductionTest {
           ImmutableList.of(-1, 0, 1, 1));
 
   /** Case 1: Have odd number of variables in each term. */
-  private static final ImmutableList<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_1 =
-      ImmutableList.of(
+  private static final ImmutableSet<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_1 =
+      ImmutableSet.of(
           ImmutableList.of(0, 0, 0),
           ImmutableList.of(0, 0, 1),
           ImmutableList.of(0, 1, 0),
@@ -43,8 +43,8 @@ public class KarnaughMapReductionTest {
           ImmutableList.of(0, -1, -1), ImmutableList.of(-1, 0, 0), ImmutableList.of(-1, 1, 1));
 
   /** Case 2: Have terms with ten(large number) of variables. */
-  private static final ImmutableList<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_2 =
-      ImmutableList.of(
+  private static final ImmutableSet<ImmutableList<Integer>> ALL_ZERO_TERMS_Case_2 =
+      ImmutableSet.of(
           ImmutableList.of(0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
           ImmutableList.of(0, 0, 0, 0, 0, 0, 0, 0, 1, 1),
           ImmutableList.of(0, 0, 1, 1, 0, 0, 0, 0, 0, 0),
