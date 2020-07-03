@@ -9,6 +9,10 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.KarnaughMapRuleGener
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
+/**
+ * KarnaughMapRuleGeneratorTest class is used to test the functionality of KarnaughMapRuleGenerator
+ * class.
+ */
 public class KarnaughMapRuleGeneratorTest {
   private static final Long WORK_FORCE_ID = 10334L;
 
