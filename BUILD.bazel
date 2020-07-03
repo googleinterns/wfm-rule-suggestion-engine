@@ -115,3 +115,8 @@ alias(
     name = "KarnaughMapRuleGeneratorTest",
     actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapRuleGeneratorTest",
 )
+
+alias(
+    name = "KarnaughMapReductionTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapReductionTest",
+)

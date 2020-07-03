@@ -29,4 +29,5 @@ script:
   - bazel test //src/test/java/com/googleintern/wfm/ruleengine:RuleValidationTest
   - bazel test //:KarnaughMapTermGeneratorTest
   - bazel test //:KarnaughMapRuleGeneratorTest
+  - bazel test //:KarnaughMapReductionTest
 
