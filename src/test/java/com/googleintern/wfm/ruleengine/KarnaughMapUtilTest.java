@@ -147,7 +147,7 @@ public class KarnaughMapUtilTest {
     Assert.assertEquals(EXPECTED_KEY_SET_CASE_0, filterByIndex.keySet());
 
     ImmutableSet<ImmutableList<Integer>> allZerosCases =
-        KarnaughMapTermGenerator.findAllZeroCases(filterByIndex, FILTERS_CASE_0);
+        KarnaughMapTermGenerator.findAllZeroTerms(filterByIndex, FILTERS_CASE_0);
     Assert.assertTrue(allZerosCases.equals(EXPECTED_ALL_ZEROS_CASES_CASE_0));
 
     ImmutableSet<ImmutableList<Integer>> minimizedTerms =
@@ -174,7 +174,7 @@ public class KarnaughMapUtilTest {
     Assert.assertEquals(EXPECTED_KEY_SET_CASE_1, filterByIndex.keySet());
 
     ImmutableSet<ImmutableList<Integer>> allZerosCases =
-        KarnaughMapTermGenerator.findAllZeroCases(filterByIndex, FILTERS_CASE_1);
+        KarnaughMapTermGenerator.findAllZeroTerms(filterByIndex, FILTERS_CASE_1);
     Assert.assertEquals(EXPECTED_SIZE_OF_ALL_ZERO_TERMS_CASE_1, allZerosCases.size());
 
     ImmutableSet<ImmutableList<Integer>> minimizedTerms =
