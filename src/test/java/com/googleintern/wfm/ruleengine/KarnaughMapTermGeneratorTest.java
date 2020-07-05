@@ -69,7 +69,7 @@ public class KarnaughMapTermGeneratorTest {
   @Test
   public void findAllZeroCasesTest() {
     ImmutableSet<ImmutableList<Integer>> allZerosCases =
-        KarnaughMapTermGenerator.findAllZeroCases(EXPECTED_FILTER_BY_INDEX, FILTERS);
+        KarnaughMapTermGenerator.findAllZeroTerms(EXPECTED_FILTER_BY_INDEX, FILTERS);
     Assert.assertEquals(allZerosCases, EXPECTED_ALL_ZEROS_CASES);
   }
 }
