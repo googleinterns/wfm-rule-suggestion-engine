@@ -6,7 +6,7 @@ import com.google.auto.value.AutoValue;
  * Store information about a filter for a Rule object.
  *
  * <p>Enum variable type represents the type of filter(ROLE, SKILL, ROLESKILL). Long variable value
- * represents thevalue of ID for a filter.
+ * represents the value of ID for a filter.
  */
 @AutoValue
 public abstract class FilterModel {

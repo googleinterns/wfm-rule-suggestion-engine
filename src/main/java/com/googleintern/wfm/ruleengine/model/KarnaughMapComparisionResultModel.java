@@ -7,6 +7,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * KarnaughMapComparisionResultModel class is used to store information about minimized results from
+ * the KarnaughMapReduction class.
+ */
 @AutoValue
 public abstract class KarnaughMapComparisionResultModel {
   public abstract ImmutableList<ImmutableList<Integer>> minimizedResults();
