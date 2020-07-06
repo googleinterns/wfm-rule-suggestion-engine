@@ -21,8 +21,9 @@ public class KarnaughMapTermGenerator {
    *
    * <ol>
    *   <li>Step 1: Check whether the target {@link PoolAssignmentModel} is a valid or not.
-   *   <li>Step 2: Find different types of {@link FilterModel} and stored them in a set.
-   *   <li>Step 3: Map each {@link FilterModel} by an unique Integer.
+   *   <li>Step 2: Find different types of {@link FilterModel} and stored them in allTypesOfFilters.
+   *   <li>Step 3: Map each {@link FilterModel} by an unique Integer. Store the mapping results as
+   *       BiMap format.
    * </ol>
    */
   public static ImmutableBiMap<FilterModel, Integer> mapFiltersByIndex(
@@ -58,10 +59,10 @@ public class KarnaughMapTermGenerator {
    * <p>Steps:
    *
    * <ol>
-   *   <li>Step 1: Find all possible combinations of terms using Filter index in BiMap. Save finding
-   *       results in a set.
+   *   <li>Step 1: Find all possible combinations of terms using Filter index in BiMap. Save
+   *       generated results in allFilterPermutations.
    *   <li>Step 2: Find all one terms. One terms are defined as existing terms(Filter combinations)
-   *       from input data set. Save finding results in a set.
+   *       and covered terms from input data set. Save finding results in allOneTerms.
    *   <li>Step 3: Find all zero terms. Zero terms are terms that are not covered by the input data
    *       set.
    * </ol>
@@ -74,9 +75,9 @@ public class KarnaughMapTermGenerator {
         new ArrayList<>(Collections.nCopies(totalNumberOfFilters, 0));
     ImmutableSet<ImmutableList<Integer>> allFilterPermutations =
         findAllPossibleTerms(filterNumberAllZeros, totalNumberOfFilters - 1);
-    ImmutableSet<ImmutableList<Integer>> allOneCases =
+    ImmutableSet<ImmutableList<Integer>> allOneTerms =
         findAllOneTerms(filterByIndex, allFilterPermutations, filters);
-    return ImmutableSet.copyOf(Sets.difference(allFilterPermutations, allOneCases));
+    return ImmutableSet.copyOf(Sets.difference(allFilterPermutations, allOneTerms));
   }
 
   private static ImmutableSet<FilterModel> findAllTypesOfFilters(
