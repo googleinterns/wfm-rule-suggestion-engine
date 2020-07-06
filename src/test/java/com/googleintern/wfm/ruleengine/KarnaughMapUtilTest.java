@@ -19,7 +19,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
  */
 public class KarnaughMapUtilTest {
 
-  /** Constants that are used in both Case 0 and Case 1. */
+  /** Constant variables that are used in both Case 0 and Case 1. */
   private static final FilterModel FILTER_0 =
       FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(1111L).build();
 
@@ -45,7 +45,7 @@ public class KarnaughMapUtilTest {
   private static final PoolAssignmentModel POOL_ASSIGNMENT =
       PoolAssignmentModel.builder().setCasePoolId(2020L).setPermissionSetId(4455L).build();
 
-  /** Case 0: Constants that are used for four variables test. */
+  /** Case 0: Constant variables that are used for four variables test. */
   private static final ImmutableSet<ImmutableList<FilterModel>> FILTERS_CASE_0 =
       ImmutableSet.<ImmutableList<FilterModel>>builder()
           .add(ImmutableList.of(FILTER_0, FILTER_1))
@@ -97,7 +97,7 @@ public class KarnaughMapUtilTest {
                   ImmutableSet.of(FILTER_0, FILTER_1)))
           .build();
 
-  /** Case 1: Constants that are used for six variables test. */
+  /** Case 1: Constant variables that are used for six variables test. */
   private static final ImmutableSet<ImmutableList<FilterModel>> FILTERS_CASE_1 =
       ImmutableSet.<ImmutableList<FilterModel>>builder()
           .add(ImmutableList.of(FILTER_0, FILTER_1, FILTER_2))
