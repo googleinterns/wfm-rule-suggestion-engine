@@ -15,13 +15,13 @@ import java.util.Set;
  * <p>Steps:
  *
  * <ol>
- *   <li>Step 1: For each term in the minimizedTerms set, check whether the term can be converted or
- *       not.
- *   <li>Step 2: If there is one index in the term equal to 0, this term can be converted.
- *       Otherwise, the term can not be converted.
+ *   <li>Step 1: For each term(ImmutableList<Integer>) in the minimizedTerms set, check whether the
+ *       term can be converted or not.
+ *   <li>Step 2: Check whether the term can be converted or not. If there is one index in the term
+ *       equal to 0, the term can be converted. Otherwise, the term can not be converted.
  *   <li>Step 3: If the term can be converted, find out all indexes in term that are 0. Use the
  *       filterByIndex BiMap to get the {@link FilterModel} that are corresponding to each index.
- *   <li>Step 4: Create new {@link RuleModel} based on converted results and passed-in values.
+ *   <li>Step 4: Create a new {@link RuleModel} based on converted results and passed-in values.
  * </ol>
  */
 public class KarnaughMapRuleGenerator {
