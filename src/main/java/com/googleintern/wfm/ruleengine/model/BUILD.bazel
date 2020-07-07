@@ -37,6 +37,17 @@ java_binary(
     ],
 )
 
+java_binary(
+    name = "RuleValidationReport",
+    srcs = ["RuleValidationReport.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "PoolAssignmentModel",
+        ":UserPoolAssignmentModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
 java_library(
     name = "model_dependencies",
     visibility = ["//visibility:public"],
@@ -44,6 +55,7 @@ java_library(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:UserPoolAssignmentModel",
     ],
 )
