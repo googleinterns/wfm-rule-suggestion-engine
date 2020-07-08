@@ -36,8 +36,8 @@ alias(
 )
 
 alias(
-    name = "UserPoolAssignmentModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserPoolAssignmentModel",
+    name = "UserModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserModel",
 )
 
 alias(

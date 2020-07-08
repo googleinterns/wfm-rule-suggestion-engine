@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,8 +34,8 @@ public class CsvParserTest {
   private static final ImmutableList<Long> ROLESKILL_IDS_CASE_0 = ImmutableList.of();
   private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_0 =
       ImmutableSet.of();
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_0 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_0 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_0)
           .setWorkforceId(WORKFORCE_ID_CASE_0)
           .setWorkgroupId(WORKGROUP_ID_CASE_0)
@@ -61,8 +61,8 @@ public class CsvParserTest {
   private static final ImmutableSet<PoolAssignmentModel> POOL_ASSIGNMENTS_CASE_1 =
       ImmutableSet.of(
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2048).build());
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_1 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_1 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_1)
           .setWorkforceId(WORKFORCE_ID_CASE_1)
           .setWorkgroupId(WORKGROUP_ID_CASE_1)
@@ -93,8 +93,8 @@ public class CsvParserTest {
       ImmutableSet.of(
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1133).build());
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_2 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_2 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_2)
           .setWorkforceId(WORKFORCE_ID_CASE_2)
           .setWorkgroupId(WORKGROUP_ID_CASE_2)
@@ -124,8 +124,8 @@ public class CsvParserTest {
       ImmutableSet.of(
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
           PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build());
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_3 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_3 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_3)
           .setWorkforceId(WORKFORCE_ID_CASE_3)
           .setWorkgroupId(WORKGROUP_ID_CASE_3)
@@ -157,8 +157,8 @@ public class CsvParserTest {
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1111).build(),
           PoolAssignmentModel.builder().setCasePoolId(2000516).setPermissionSetId(1111).build(),
           PoolAssignmentModel.builder().setCasePoolId(2001052).setPermissionSetId(1111).build());
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_4 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_4 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_4)
           .setWorkforceId(WORKFORCE_ID_CASE_4)
           .setWorkgroupId(WORKGROUP_ID_CASE_4)
@@ -189,8 +189,8 @@ public class CsvParserTest {
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1098).build(),
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(1112).build(),
           PoolAssignmentModel.builder().setCasePoolId(2000543).setPermissionSetId(2249).build());
-  private static final UserPoolAssignmentModel EXPECTED_USERPOOLASSIGNMENT_CASE_5 =
-      UserPoolAssignmentModel.builder()
+  private static final UserModel EXPECTED_USERPOOLASSIGNMENT_CASE_5 =
+      UserModel.builder()
           .setUserId(USER_ID_CASE_5)
           .setWorkforceId(WORKFORCE_ID_CASE_5)
           .setWorkgroupId(WORKGROUP_ID_CASE_5)
@@ -201,8 +201,8 @@ public class CsvParserTest {
           .build();
 
   /** Expected list of UserPoolAssignments */
-  private static final ImmutableList<UserPoolAssignmentModel> EXPECTED_USERPOOLASSIGNMENTS =
-      ImmutableList.<UserPoolAssignmentModel>builder()
+  private static final ImmutableList<UserModel> EXPECTED_USERPOOLASSIGNMENTS =
+      ImmutableList.<UserModel>builder()
           .add(EXPECTED_USERPOOLASSIGNMENT_CASE_0)
           .add(EXPECTED_USERPOOLASSIGNMENT_CASE_1)
           .add(EXPECTED_USERPOOLASSIGNMENT_CASE_2)
@@ -213,17 +213,17 @@ public class CsvParserTest {
 
   @Test
   public void parserFully() throws IOException, CsvException {
-    List<UserPoolAssignmentModel> userPoolAssignments =
+    List<UserModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS.size(), userPoolAssignments.size());
-    for (final UserPoolAssignmentModel userPoolAssignment : userPoolAssignments) {
+    for (final UserModel userPoolAssignment : userPoolAssignments) {
       Assert.assertNotNull(userPoolAssignment);
     }
   }
 
   @Test
   public void parserReadingTest() throws IOException, CsvException {
-    List<UserPoolAssignmentModel> userPoolAssignments =
+    List<UserModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     Assert.assertEquals(EXPECTED_USERPOOLASSIGNMENTS, userPoolAssignments);
   }

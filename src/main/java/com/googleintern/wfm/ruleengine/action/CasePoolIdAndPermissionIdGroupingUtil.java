@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSetMultimap;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ public class CasePoolIdAndPermissionIdGroupingUtil {
 
   /** Group data from the same workgroup by (Case Pool ID, Permission Set ID). */
   public static ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-      groupByCasePoolIdAndPermissionSetId(List<UserPoolAssignmentModel> dataFromSameWorkGroupId) {
+      groupByCasePoolIdAndPermissionSetId(List<UserModel> dataFromSameWorkGroupId) {
     ImmutableSetMultimap.Builder<PoolAssignmentModel, ImmutableList<FilterModel>>
         filtersByCasePoolIdAndPermissionSetIdBuilder = ImmutableSetMultimap.builder();
-    for (UserPoolAssignmentModel data : dataFromSameWorkGroupId) {
+    for (UserModel data : dataFromSameWorkGroupId) {
       ImmutableList<FilterModel> filters = convertSkillIdRoleIdToFilter(data);
       for (PoolAssignmentModel permission : data.poolAssignments()) {
         filtersByCasePoolIdAndPermissionSetIdBuilder.put(permission, filters);
@@ -29,7 +29,7 @@ public class CasePoolIdAndPermissionIdGroupingUtil {
   }
 
   public static ImmutableList<FilterModel> convertSkillIdRoleIdToFilter(
-      UserPoolAssignmentModel user) {
+      UserModel user) {
     ImmutableList.Builder<FilterModel> filtersBuilder = ImmutableList.builder();
     for (Long roleId : user.roleIds()) {
       filtersBuilder.add(

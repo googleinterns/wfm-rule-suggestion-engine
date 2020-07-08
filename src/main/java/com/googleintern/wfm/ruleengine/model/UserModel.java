@@ -9,7 +9,7 @@ import java.util.Set;
 
 /** UserPoolAssignmentModel class is used to store a row of data from input file. */
 @AutoValue
-public abstract class UserPoolAssignmentModel {
+public abstract class UserModel {
   public abstract long userId();
 
   public abstract long workforceId();
@@ -25,7 +25,7 @@ public abstract class UserPoolAssignmentModel {
   public abstract ImmutableSet<PoolAssignmentModel> poolAssignments();
 
   public static Builder builder() {
-    return new AutoValue_UserPoolAssignmentModel.Builder();
+    return new AutoValue_UserModel.Builder();
   }
 
   /**
@@ -48,6 +48,6 @@ public abstract class UserPoolAssignmentModel {
 
     public abstract Builder setPoolAssignments(Set<PoolAssignmentModel> poolAssignments);
 
-    public abstract UserPoolAssignmentModel build();
+    public abstract UserModel build();
   }
 }

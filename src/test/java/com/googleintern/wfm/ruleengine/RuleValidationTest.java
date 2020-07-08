@@ -100,9 +100,9 @@ public class RuleValidationTest {
       ImmutableSet.of(
           PoolAssignmentModel.builder().setCasePoolId(2000555L).setPermissionSetId(1112L).build());
 
-  private static final ImmutableList<UserPoolAssignmentModel> USERS =
+  private static final ImmutableList<UserModel> USERS =
       ImmutableList.of(
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(0)
               .setWorkforceId(1024L)
               .setWorkgroupId(2048L)
@@ -111,7 +111,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_0)
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(1)
               .setWorkforceId(1024L)
               .setWorkgroupId(2048L)
@@ -120,7 +120,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_1)
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(2)
               .setWorkforceId(1024L)
               .setWorkgroupId(2050L)
@@ -129,7 +129,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of(1997L))
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_2)
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(3)
               .setWorkforceId(1024L)
               .setWorkgroupId(2050L)
@@ -138,7 +138,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_3)
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(4)
               .setWorkforceId(1024L)
               .setWorkgroupId(2048L)
@@ -147,7 +147,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(ImmutableSet.of())
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(5)
               .setWorkforceId(1024L)
               .setWorkgroupId(2050L)
@@ -156,7 +156,7 @@ public class RuleValidationTest {
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_4)
               .build(),
-          UserPoolAssignmentModel.builder()
+          UserModel.builder()
               .setUserId(6)
               .setWorkforceId(1024L)
               .setWorkgroupId(2060L)
@@ -166,10 +166,10 @@ public class RuleValidationTest {
               .setPoolAssignments(ImmutableSet.of())
               .build());
 
-  private static final ImmutableSet<UserPoolAssignmentModel> USERS_WITH_LESS_ASSIGNED_PERMISSIONS =
+  private static final ImmutableSet<UserModel> USERS_WITH_LESS_ASSIGNED_PERMISSIONS =
       ImmutableSet.of(USERS.get(5));
 
-  private static final ImmutableSet<UserPoolAssignmentModel> USERS_WITH_MORE_ASSIGNED_PERMISSIONS =
+  private static final ImmutableSet<UserModel> USERS_WITH_MORE_ASSIGNED_PERMISSIONS =
       ImmutableSet.of(USERS.get(4));
 
   private static final double EXPECTED_RULES_COVERAGE = (double) 5 / 7;
@@ -187,7 +187,8 @@ public class RuleValidationTest {
 
   @Test
   public void calculateRulesCoverageTest() {
-    RuleValidationReport ruleValidationReport = RuleValidation.validate(RULES, USERS);
+    RuleValidation ruleValidation = new RuleValidation(USERS);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     Assert.assertEquals(
         Double.toString(EXPECTED_RULES_COVERAGE),
         Double.toString(ruleValidationReport.ruleCoverage()));
@@ -195,14 +196,16 @@ public class RuleValidationTest {
 
   @Test
   public void findUncoveredPoolAssignmentsTest() {
-    RuleValidationReport ruleValidationReport = RuleValidation.validate(RULES, USERS);
+    RuleValidation ruleValidation = new RuleValidation(USERS);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     Assert.assertEquals(
         EXPECTED_UNCOVERED_POOL_ASSIGNMENTS, ruleValidationReport.uncoveredPoolAssignments());
   }
 
   @Test
   public void findUsersWithLessAssignedPermissionsTest() {
-    RuleValidationReport ruleValidationReport = RuleValidation.validate(RULES, USERS);
+    RuleValidation ruleValidation = new RuleValidation(USERS);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     Assert.assertEquals(
         USERS_WITH_LESS_ASSIGNED_PERMISSIONS,
         ruleValidationReport.usersWithLessAssignedPermissions());
@@ -210,7 +213,8 @@ public class RuleValidationTest {
 
   @Test
   public void findWrongUsersWithMoreAssignedPermissionsTest() {
-    RuleValidationReport ruleValidationReport = RuleValidation.validate(RULES, USERS);
+    RuleValidation ruleValidation = new RuleValidation(USERS);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     Assert.assertEquals(
         USERS_WITH_MORE_ASSIGNED_PERMISSIONS,
         ruleValidationReport.usersWithMoreAssignedPermissions());
@@ -224,7 +228,8 @@ public class RuleValidationTest {
         new CSVReaderBuilder(readerForExpectedWrittenResults).build();
     List<String[]> expectedWrittenResults = csvReaderForExpectedWrittenResults.readAll();
 
-    RuleValidationReport ruleValidationReport = RuleValidation.validate(RULES, USERS);
+    RuleValidation ruleValidation = new RuleValidation(USERS);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     ruleValidationReport.writeToCsvFile(TEST_CSV_FILE_OUTPUT_PATH);
 
     Reader readerForActualWrittenResults =

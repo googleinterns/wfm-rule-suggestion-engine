@@ -20,14 +20,14 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 @AutoValue
 public abstract class RuleValidationReport {
 
-  public abstract ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
+  public abstract ImmutableSetMultimap<UserModel, PoolAssignmentModel>
       assignedPoolAssignmentsByUsers();
 
   public abstract double ruleCoverage();
 
-  public abstract ImmutableSet<UserPoolAssignmentModel> usersWithLessAssignedPermissions();
+  public abstract ImmutableSet<UserModel> usersWithLessAssignedPermissions();
 
-  public abstract ImmutableSet<UserPoolAssignmentModel> usersWithMoreAssignedPermissions();
+  public abstract ImmutableSet<UserModel> usersWithMoreAssignedPermissions();
 
   public abstract ImmutableSet<PoolAssignmentModel> uncoveredPoolAssignments();
 
@@ -41,15 +41,15 @@ public abstract class RuleValidationReport {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder setAssignedPoolAssignmentsByUsers(
-        SetMultimap<UserPoolAssignmentModel, PoolAssignmentModel> assignedPoolAssignmentsByUsers);
+        SetMultimap<UserModel, PoolAssignmentModel> assignedPoolAssignmentsByUsers);
 
     public abstract Builder setRuleCoverage(double ruleCoverage);
 
     public abstract Builder setUsersWithLessAssignedPermissions(
-        Set<UserPoolAssignmentModel> usersWithLessAssignedPermissions);
+        Set<UserModel> usersWithLessAssignedPermissions);
 
     public abstract Builder setUsersWithMoreAssignedPermissions(
-        Set<UserPoolAssignmentModel> usersWithMoreAssignedPermissions);
+        Set<UserModel> usersWithMoreAssignedPermissions);
 
     public abstract Builder setUncoveredPoolAssignments(
         Set<PoolAssignmentModel> uncoveredPoolAssignments);
@@ -171,10 +171,10 @@ public abstract class RuleValidationReport {
   }
 
   private ImmutableList<String[]> convertWrongUserPoolAssignmentsToCsvRows(
-      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions) {
+      ImmutableSet<UserModel> usersWithWrongAssignedPermissions) {
     ImmutableList.Builder<String[]> wrongUserPoolAssignmentsBuilder = ImmutableList.builder();
     wrongUserPoolAssignmentsBuilder.add(WRONG_USER_POOL_ASSIGNMENT_HEADER);
-    for (UserPoolAssignmentModel user : usersWithWrongAssignedPermissions) {
+    for (UserModel user : usersWithWrongAssignedPermissions) {
       wrongUserPoolAssignmentsBuilder.add(
           new String[] {
             Long.toString(user.userId()),

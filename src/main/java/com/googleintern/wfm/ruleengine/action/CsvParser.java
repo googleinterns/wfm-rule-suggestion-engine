@@ -6,7 +6,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -55,7 +55,7 @@ public class CsvParser {
    * @throws IOException
    * @throws CsvException
    */
-  public static ImmutableList<UserPoolAssignmentModel> readFromCSVFile(String csvFilePath)
+  public static ImmutableList<UserModel> readFromCSVFile(String csvFilePath)
       throws IOException, CsvException {
     // Read all data from input csv file located at given path
     Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
@@ -67,7 +67,7 @@ public class CsvParser {
         .collect(ImmutableList.toImmutableList());
   }
 
-  private static UserPoolAssignmentModel parseData(String[] record) {
+  private static UserModel parseData(String[] record) {
     long userId = Long.parseLong(record[Header.USER_ID.column]);
     long workforceId = Long.parseLong(record[Header.WORKFORCE_ID.column]);
     long workgroupId = Long.parseLong(record[Header.WORKGROUP_ID.column]);
@@ -77,7 +77,7 @@ public class CsvParser {
     Set<PoolAssignmentModel> poolAssignments =
         parsePoolAssignments(record[Header.POOL_ASSIGNMENT.column]);
 
-    return UserPoolAssignmentModel.builder()
+    return UserModel.builder()
         .setUserId(userId)
         .setWorkforceId(workforceId)
         .setWorkgroupId(workgroupId)
