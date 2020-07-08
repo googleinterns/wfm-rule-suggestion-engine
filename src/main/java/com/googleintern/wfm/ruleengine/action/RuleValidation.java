@@ -8,6 +8,20 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 /**
  * RuleValidation class is used to validate the performance of generated rules based on the input
  * data set.
+ *
+ * <p>Steps:
+ *
+ * <ol>
+ *   <li>Step 1: Assign {@link PoolAssignmentModel} to each user based on generated rules. Save
+ *       permission assignments by users in an immutable set multimap.
+ *   <li>Step 2: Find users that have wrong pool assignments assigned.
+ *   <li>Step 3: Calculate the generated rules' coverage(% of users that have the right pool
+ *       assignments).
+ *   <li>Step 4: Find users that have less pool assignments assigned.
+ *   <li>Step 5: Find users that have more pool assignments assigned.
+ *   <li>Step 6: Find pool assignments that have no related rules.
+ *   <li>Step 7: Use finding results from above steps to create {@link RuleValidationReport}.
+ * </ol>
  */
 public class RuleValidation {
 
@@ -138,9 +152,7 @@ public class RuleValidation {
     return existingUserPoolAssignments.stream()
         .filter(
             user ->
-                !(assignedPermissionsByUserPoolAssignment.containsKey(user)
-                    && user.poolAssignments()
-                        .equals(assignedPermissionsByUserPoolAssignment.get(user))))
+                !(user.poolAssignments().equals(assignedPermissionsByUserPoolAssignment.get(user))))
         .collect(toImmutableSet());
   }
 

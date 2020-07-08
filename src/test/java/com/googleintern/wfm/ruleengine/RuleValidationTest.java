@@ -155,6 +155,15 @@ public class RuleValidationTest {
               .setSkillIds(ImmutableList.of())
               .setRoleSkillIds(ImmutableList.of())
               .setPoolAssignments(EXPECTED_POOL_ASSIGNMENTS_USER_4)
+              .build(),
+          UserPoolAssignmentModel.builder()
+              .setUserId(6)
+              .setWorkforceId(1024L)
+              .setWorkgroupId(2060L)
+              .setRoleIds(ImmutableList.of())
+              .setSkillIds(ImmutableList.of())
+              .setRoleSkillIds(ImmutableList.of())
+              .setPoolAssignments(ImmutableSet.of())
               .build());
 
   private static final ImmutableSet<UserPoolAssignmentModel> USERS_WITH_LESS_ASSIGNED_PERMISSIONS =
@@ -163,7 +172,7 @@ public class RuleValidationTest {
   private static final ImmutableSet<UserPoolAssignmentModel> USERS_WITH_MORE_ASSIGNED_PERMISSIONS =
       ImmutableSet.of(USERS.get(4));
 
-  private static final double EXPECTED_RULES_COVERAGE = (double) 4 / 6;
+  private static final double EXPECTED_RULES_COVERAGE = (double) 5 / 7;
 
   private static final ImmutableSet<PoolAssignmentModel> EXPECTED_UNCOVERED_POOL_ASSIGNMENTS =
       ImmutableSet.of(
