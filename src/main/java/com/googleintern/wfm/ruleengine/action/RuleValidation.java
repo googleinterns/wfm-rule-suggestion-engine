@@ -3,24 +3,48 @@ package src.main.java.com.googleintern.wfm.ruleengine.action;
 import com.google.common.collect.*;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
-import java.util.List;
-import java.util.Set;
-
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
- * RuleValidation class is used to test the performance of generated rules and write validation
- * results into a csv file.
+ * RuleValidation class is used to validate the performance of generated rules based on the input
+ * data set.
  */
 public class RuleValidation {
 
+  public static RuleValidationReport validate(
+      ImmutableSet<RuleModel> generatedRules,
+      ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments) {
+
+    ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
+        assignedPermissionsByUserPoolAssignment =
+            assignPermissionsBasedOnGeneratedRules(existingUserPoolAssignments, generatedRules);
+
+    ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
+        findUncoveredUsers(existingUserPoolAssignments, assignedPermissionsByUserPoolAssignment);
+
+    return RuleValidationReport.builder()
+        .setAssignedPoolAssignmentsByUsers(assignedPermissionsByUserPoolAssignment)
+        .setRuleCoverage(
+            calculateRulesCoverage(
+                usersWithWrongAssignedPermissions.size(), existingUserPoolAssignments.size()))
+        .setUsersWithLessAssignedPermissions(
+            findUsersWithLessPermissionsAssigned(
+                usersWithWrongAssignedPermissions, assignedPermissionsByUserPoolAssignment))
+        .setUsersWithMoreAssignedPermissions(
+            findUsersWithMorePermissionsAssigned(
+                usersWithWrongAssignedPermissions, assignedPermissionsByUserPoolAssignment))
+        .setUncoveredPoolAssignments(
+            findUncoveredPoolAssignments(existingUserPoolAssignments, generatedRules))
+        .build();
+  }
+
   private static ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
       assignPermissionsBasedOnGeneratedRules(
-          List<UserPoolAssignmentModel> expectedUserPoolAssignments,
+          ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments,
           ImmutableSet<RuleModel> generatedRules) {
     ImmutableSetMultimap.Builder<UserPoolAssignmentModel, PoolAssignmentModel>
         filtersByUserPoolAssignmentBuilder = ImmutableSetMultimap.builder();
-    for (UserPoolAssignmentModel user : expectedUserPoolAssignments) {
+    for (UserPoolAssignmentModel user : existingUserPoolAssignments) {
       filtersByUserPoolAssignmentBuilder.putAll(user, assignPermissions(user, generatedRules));
     }
     return filtersByUserPoolAssignmentBuilder.build();
@@ -31,7 +55,7 @@ public class RuleValidation {
     ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
         skillIdsAndRoleIdsByFilters = mapSkillIdsAndRoleIdsByFilters(generatedRules);
     return generatedRules.stream()
-        .filter(rule -> shouldAssignPermissions(user, rule, skillIdsAndRoleIdsByFilters))
+        .filter(rule -> shouldAssignPermissions(rule, user, skillIdsAndRoleIdsByFilters))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()
@@ -44,17 +68,37 @@ public class RuleValidation {
         .collect(toImmutableSet());
   }
 
+  private static ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
+      mapSkillIdsAndRoleIdsByFilters(ImmutableSet<RuleModel> generatedRules) {
+    ImmutableMap.Builder<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
+        skillIdsAndRoleIdsByFiltersBuilder = ImmutableMap.builder();
+    generatedRules.forEach(
+        generatedRule ->
+            generatedRule
+                .filters()
+                .forEach(
+                    orFilters ->
+                        skillIdsAndRoleIdsByFiltersBuilder.put(
+                            orFilters, convertFiltersToSkillIdsAndRoleIds(orFilters))));
+    return skillIdsAndRoleIdsByFiltersBuilder.build();
+  }
+
   private static boolean shouldAssignPermissions(
+      RuleModel generateRule,
       UserPoolAssignmentModel user,
-      RuleModel rule,
       ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
           skillIdsAndRoleIdsByFilters) {
-    if ((rule.workforceId() != user.workforceId()) || (rule.workgroupId() != user.workgroupId())) {
+    if ((generateRule.workforceId() != user.workforceId())
+        || (generateRule.workgroupId() != user.workgroupId())) {
       return false;
     }
-    for (ImmutableSet<FilterModel> orFilters : rule.filters()) {
+    for (ImmutableSet<FilterModel> orFilters : generateRule.filters()) {
       if (Sets.intersection(
                   ImmutableSet.copyOf(user.skillIds()),
+                  skillIdsAndRoleIdsByFilters.get(orFilters).get(0))
+              .isEmpty()
+          && Sets.intersection(
+                  ImmutableSet.copyOf(user.roleSkillIds()),
                   skillIdsAndRoleIdsByFilters.get(orFilters).get(0))
               .isEmpty()
           && Sets.intersection(
@@ -67,58 +111,19 @@ public class RuleValidation {
     return true;
   }
 
-  private static ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-      mapSkillIdsAndRoleIdsByFilters(ImmutableSet<RuleModel> generatedRules) {
-    ImmutableMap.Builder<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-        skillIdsAndRoleIdsByFiltersBuilder = ImmutableMap.builder();
-    for (RuleModel rule : generatedRules) {
-      for (ImmutableSet<FilterModel> orFilters : rule.filters()) {
-        skillIdsAndRoleIdsByFiltersBuilder.put(
-            orFilters, convertFiltersToSkillIdsAndRoleIds(orFilters));
-      }
-    }
-    return skillIdsAndRoleIdsByFiltersBuilder.build();
-  }
-
   private static ImmutableList<ImmutableSet<Long>> convertFiltersToSkillIdsAndRoleIds(
       ImmutableSet<FilterModel> filters) {
     ImmutableSet.Builder<Long> skillIdsBuilder = ImmutableSet.builder();
     ImmutableSet.Builder<Long> roleIdsBuilder = ImmutableSet.builder();
-    for (FilterModel filter : filters) {
-      if (filter.type() == FilterModel.FilterType.SKILL) {
-        skillIdsBuilder.add(filter.value());
-      } else {
-        roleIdsBuilder.add(filter.value());
-      }
-    }
+    filters.forEach(
+        filter -> {
+          if (filter.type() == FilterModel.FilterType.SKILL) {
+            skillIdsBuilder.add(filter.value());
+          } else {
+            roleIdsBuilder.add(filter.value());
+          }
+        });
     return ImmutableList.of(skillIdsBuilder.build(), roleIdsBuilder.build());
-  }
-
-  public static RuleValidationReport validate(
-      ImmutableSet<RuleModel> generatedRules,
-      ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments) {
-    ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
-        assignedPermissionsByUserPoolAssignment =
-            assignPermissionsBasedOnGeneratedRules(existingUserPoolAssignments, generatedRules);
-    ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions =
-        findUncoveredUsers(existingUserPoolAssignments, assignedPermissionsByUserPoolAssignment);
-    double rulesCoverage =
-        calculateRulesCoverage(
-            usersWithWrongAssignedPermissions.size(), existingUserPoolAssignments.size());
-    ImmutableSet<UserPoolAssignmentModel> usersWithLessAssignedPermissions =
-        findUsersWithLessPermissionsAssigned(
-            usersWithWrongAssignedPermissions, assignedPermissionsByUserPoolAssignment);
-    ImmutableSet<UserPoolAssignmentModel> usersWithMoreAssignedPermissions =
-        findUsersWithMorePermissionsAssigned(
-            usersWithWrongAssignedPermissions, assignedPermissionsByUserPoolAssignment);
-    ImmutableSet<PoolAssignmentModel> uncoveredPoolAssignments =
-        findUncoveredPoolAssignments(existingUserPoolAssignments, generatedRules);
-    return RuleValidationReport.builder()
-        .setRuleCoveragePercentage(rulesCoverage)
-        .setLessCoveredUserPoolAssignments(usersWithLessAssignedPermissions)
-        .setMoreCoveredUserPoolAssignments(usersWithMoreAssignedPermissions)
-        .setUncoveredPoolAssignments(uncoveredPoolAssignments)
-        .build();
   }
 
   private static double calculateRulesCoverage(
@@ -127,10 +132,10 @@ public class RuleValidation {
   }
 
   private static ImmutableSet<UserPoolAssignmentModel> findUncoveredUsers(
-      List<UserPoolAssignmentModel> expectedUserPoolAssignments,
+      ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments,
       ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
           assignedPermissionsByUserPoolAssignment) {
-    return expectedUserPoolAssignments.stream()
+    return existingUserPoolAssignments.stream()
         .filter(
             user ->
                 !(assignedPermissionsByUserPoolAssignment.containsKey(user)
@@ -140,7 +145,7 @@ public class RuleValidation {
   }
 
   private static ImmutableSet<UserPoolAssignmentModel> findUsersWithLessPermissionsAssigned(
-      Set<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
+      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
       ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
           assignedPermissionsByUserPoolAssignment) {
     return usersWithWrongAssignedPermissions.stream()
@@ -153,7 +158,7 @@ public class RuleValidation {
   }
 
   private static ImmutableSet<UserPoolAssignmentModel> findUsersWithMorePermissionsAssigned(
-      Set<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
+      ImmutableSet<UserPoolAssignmentModel> usersWithWrongAssignedPermissions,
       ImmutableSetMultimap<UserPoolAssignmentModel, PoolAssignmentModel>
           assignedPermissionsByUserPoolAssignment) {
     return usersWithWrongAssignedPermissions.stream()
@@ -165,17 +170,17 @@ public class RuleValidation {
   }
 
   private static ImmutableSet<PoolAssignmentModel> findUncoveredPoolAssignments(
-      List<UserPoolAssignmentModel> expectedUserPoolAssignments, ImmutableSet<RuleModel> generatedRules) {
-    ImmutableSet<PoolAssignmentModel> expectedAllPoolAssignments =
-        findExpectedAllPoolAssignments(expectedUserPoolAssignments);
-    ImmutableSet<PoolAssignmentModel> actualAllPoolAssignments = getActualAllPoolAssignments(generatedRules);
+      ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments,
+      ImmutableSet<RuleModel> generatedRules) {
     return ImmutableSet.copyOf(
-        Sets.difference(expectedAllPoolAssignments, actualAllPoolAssignments));
+        Sets.difference(
+            findExpectedAllPoolAssignments(existingUserPoolAssignments),
+            getActualAllPoolAssignments(generatedRules)));
   }
 
   private static ImmutableSet<PoolAssignmentModel> findExpectedAllPoolAssignments(
-      List<UserPoolAssignmentModel> expectedUserPoolAssignments) {
-    return expectedUserPoolAssignments.stream()
+      ImmutableList<UserPoolAssignmentModel> existingUserPoolAssignments) {
+    return existingUserPoolAssignments.stream()
         .map(user -> user.poolAssignments())
         .reduce(ImmutableSet.of(), (union, current) -> Sets.union(union, current).immutableCopy());
   }
