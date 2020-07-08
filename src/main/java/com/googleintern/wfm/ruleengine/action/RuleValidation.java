@@ -1,6 +1,9 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Sets;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -66,10 +69,8 @@ public class RuleValidation {
 
   private ImmutableSet<PoolAssignmentModel> assignPermissions(
       UserModel user, ImmutableSet<RuleModel> generatedRules) {
-    ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-        skillIdsAndRoleIdsByFilters = mapSkillIdsAndRoleIdsByFilters(generatedRules);
     return generatedRules.stream()
-        .filter(rule -> isUserCoveredByRules(rule, user, skillIdsAndRoleIdsByFilters))
+        .filter(rule -> isUserCoveredByRules(rule, user))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()
@@ -82,42 +83,19 @@ public class RuleValidation {
         .collect(toImmutableSet());
   }
 
-  private ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-      mapSkillIdsAndRoleIdsByFilters(ImmutableSet<RuleModel> generatedRules) {
-    ImmutableMap.Builder<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-        skillIdsAndRoleIdsByFiltersBuilder = ImmutableMap.builder();
-    generatedRules.forEach(
-        generatedRule ->
-            generatedRule
-                .filters()
-                .forEach(
-                    orFilters ->
-                        skillIdsAndRoleIdsByFiltersBuilder.put(
-                            orFilters, convertFiltersToSkillIdsAndRoleIds(orFilters))));
-    return skillIdsAndRoleIdsByFiltersBuilder.build();
-  }
-
-  private static boolean isUserCoveredByRules(
-      RuleModel generateRule,
-      UserModel user,
-      ImmutableMap<ImmutableSet<FilterModel>, ImmutableList<ImmutableSet<Long>>>
-          skillIdsAndRoleIdsByFilters) {
+  private static boolean isUserCoveredByRules(RuleModel generateRule, UserModel user) {
     if ((generateRule.workforceId() != user.workforceId())
         || (generateRule.workgroupId() != user.workgroupId())) {
       return false;
     }
     for (ImmutableSet<FilterModel> orFilters : generateRule.filters()) {
-      if (Sets.intersection(
-                  ImmutableSet.copyOf(user.skillIds()),
-                  skillIdsAndRoleIdsByFilters.get(orFilters).get(0))
+      if (Sets.intersection(ImmutableSet.copyOf(user.skillIds()), getSkillIdsFromFilters(orFilters))
               .isEmpty()
           && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleSkillIds()),
-                  skillIdsAndRoleIdsByFilters.get(orFilters).get(0))
+                  ImmutableSet.copyOf(user.roleSkillIds()), getSkillIdsFromFilters(orFilters))
               .isEmpty()
           && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleIds()),
-                  skillIdsAndRoleIdsByFilters.get(orFilters).get(1))
+                  ImmutableSet.copyOf(user.roleIds()), getRoleIdsFromFilters(orFilters))
               .isEmpty()) {
         return false;
       }
@@ -125,19 +103,18 @@ public class RuleValidation {
     return true;
   }
 
-  private ImmutableList<ImmutableSet<Long>> convertFiltersToSkillIdsAndRoleIds(
-      ImmutableSet<FilterModel> filters) {
-    ImmutableSet.Builder<Long> skillIdsBuilder = ImmutableSet.builder();
-    ImmutableSet.Builder<Long> roleIdsBuilder = ImmutableSet.builder();
-    filters.forEach(
-        filter -> {
-          if (filter.type() == FilterModel.FilterType.SKILL) {
-            skillIdsBuilder.add(filter.value());
-          } else {
-            roleIdsBuilder.add(filter.value());
-          }
-        });
-    return ImmutableList.of(skillIdsBuilder.build(), roleIdsBuilder.build());
+  private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
+    return filters.stream()
+        .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
+        .map(filter -> filter.value())
+        .collect(toImmutableSet());
+  }
+
+  private static ImmutableSet<Long> getRoleIdsFromFilters(ImmutableSet<FilterModel> filters) {
+    return filters.stream()
+        .filter(filer -> filer.type() == FilterModel.FilterType.ROLE)
+        .map(filter -> filter.value())
+        .collect(toImmutableSet());
   }
 
   private ImmutableSet<UserModel> findUncoveredUsers(

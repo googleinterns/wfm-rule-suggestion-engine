@@ -2,13 +2,23 @@ package src.test.java.com.googleintern.wfm.ruleengine;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.RuleValidation;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
-/** RuleValidationTest class is used to test the functionality of RuleValidation class. */
-public class RuleValidationTest {
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+public class RuleValidationReportTest {
+
   /** Generated Rules */
   private static final ImmutableList<ImmutableSet<FilterModel>> FILTERS_RULE_1 =
       ImmutableList.<ImmutableSet<FilterModel>>builder()
@@ -153,50 +163,36 @@ public class RuleValidationTest {
               .setPoolAssignments(ImmutableSet.of())
               .build());
 
-  private static final ImmutableSet<UserModel> USERS_WITH_LESS_ASSIGNED_PERMISSIONS =
-      ImmutableSet.of(USERS.get(5));
+  private static final String TEST_CSV_FILE_OUTPUT_PATH = "rule_validation_test_output.csv";
 
-  private static final ImmutableSet<UserModel> USERS_WITH_MORE_ASSIGNED_PERMISSIONS =
-      ImmutableSet.of(USERS.get(4));
-
-  private static final double EXPECTED_RULES_COVERAGE = (double) 5 / 7;
-
-  private static final ImmutableSet<PoolAssignmentModel> EXPECTED_UNCOVERED_POOL_ASSIGNMENTS =
-      ImmutableSet.of(
-          PoolAssignmentModel.builder().setCasePoolId(2000555L).setPermissionSetId(1112L).build());
+  private static final String EXPECTED_CSV_FILE_OUTPUT_PATH =
+      System.getProperty("user.home")
+          + "/Project/wfm-rule-suggestion-engine/src/"
+          + "test/resources/com/googleintern/wfm/ruleengine/csv_rule_validation_expected_results.csv";
 
   @Test
-  public void calculateRulesCoverageTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        Double.toString(EXPECTED_RULES_COVERAGE),
-        Double.toString(ruleValidationReport.ruleCoverage()));
-  }
+  public void writeToCsvFileTest() throws IOException, CsvException {
+    Reader readerForExpectedWrittenResults =
+        Files.newBufferedReader(Paths.get(EXPECTED_CSV_FILE_OUTPUT_PATH));
+    CSVReader csvReaderForExpectedWrittenResults =
+        new CSVReaderBuilder(readerForExpectedWrittenResults).build();
+    List<String[]> expectedWrittenResults = csvReaderForExpectedWrittenResults.readAll();
 
-  @Test
-  public void findUncoveredPoolAssignmentsTest() {
     RuleValidation ruleValidation = new RuleValidation(USERS);
     RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        EXPECTED_UNCOVERED_POOL_ASSIGNMENTS, ruleValidationReport.uncoveredPoolAssignments());
-  }
+    ruleValidationReport.writeToCsvFile(TEST_CSV_FILE_OUTPUT_PATH);
 
-  @Test
-  public void findUsersWithLessAssignedPermissionsTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        USERS_WITH_LESS_ASSIGNED_PERMISSIONS,
-        ruleValidationReport.usersWithLessAssignedPermissions());
-  }
+    Reader readerForActualWrittenResults =
+        Files.newBufferedReader(Paths.get(TEST_CSV_FILE_OUTPUT_PATH));
+    CSVReader csvReaderForActualWrittenResults =
+        new CSVReaderBuilder(readerForActualWrittenResults).build();
+    List<String[]> actualWrittenResults = csvReaderForActualWrittenResults.readAll();
 
-  @Test
-  public void findWrongUsersWithMoreAssignedPermissionsTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        USERS_WITH_MORE_ASSIGNED_PERMISSIONS,
-        ruleValidationReport.usersWithMoreAssignedPermissions());
+    Assert.assertEquals(expectedWrittenResults.size(), actualWrittenResults.size());
+    for (int i = 0; i < actualWrittenResults.size(); i++) {
+      Assert.assertEquals(
+          Arrays.toString(expectedWrittenResults.get(i)),
+          Arrays.toString(actualWrittenResults.get(i)));
+    }
   }
 }
