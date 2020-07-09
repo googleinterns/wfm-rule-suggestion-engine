@@ -12,19 +12,18 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.KarnaughMapComparisio
  * <p>Steps:
  *
  * <ol>
- *   <li>Step 1: Compare every pairs of terms and check whether they can be minimized. If two terms
- *       are mismatched in only one index, they can be minimized.
- *   <li>Step 2: If the pair of terms can be minimized, generate the minimized result that has same
- *       values in every index except giving -1 for the index where the compared terms are
- *       different.(1: Filter related to this index should be presented; 0: Filter related to this
- *       index should not be presented; -1: do not care whether Filter related to this index is
- *       presented or not.)
- *   <li>Step 3: Save minimized results in {@link KarnaughMapComparisionResultModel}. The
+ *   <li>Step 1: Compare every pair of terms and check whether they can be minimized. If two terms
+ *       are mismatched in only one index, they can be minimized. If the pair of terms can be
+ *       minimized, generate the minimized result that has same values in every index except giving
+ *       -1 for the index where the compared terms are different.(1: Filter related to this index
+ *       should be presented; 0: Filter related to this index should not be presented; -1: do not
+ *       care whether Filter related to this index is presented or not.)
+ *   <li>Step 2: Save minimized results in {@link KarnaughMapComparisionResultModel}. The
  *       minimizedResults set stores the results that are produced by minimizing a pair of terms.
  *       The minimizedTerms set stores every terms that can be minimized.
- *   <li>Step 4: Terms that can be minimized are in their simplest form already. Save these terms in
+ *   <li>Step 3: Terms that can be minimized are in their simplest form already. Save these terms in
  *       the finalMinimizedResults.
- *   <li>Step 5: Set termsNeedToMinimize to minimizedResults. Go back to Step 1 and continue looping
+ *   <li>Step 4: Set termsNeedToMinimize to minimizedResults. Go back to Step 1 and continue looping
  *       until there are no more terms in the termsNeedToMinimize.
  * </ol>
  */
