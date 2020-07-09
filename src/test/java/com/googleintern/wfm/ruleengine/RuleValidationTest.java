@@ -2,6 +2,7 @@ package src.test.java.com.googleintern.wfm.ruleengine;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.RuleValidation;
@@ -165,38 +166,31 @@ public class RuleValidationTest {
       ImmutableSet.of(
           PoolAssignmentModel.builder().setCasePoolId(2000555L).setPermissionSetId(1112L).build());
 
-  @Test
-  public void calculateRulesCoverageTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        Double.toString(EXPECTED_RULES_COVERAGE),
-        Double.toString(ruleValidationReport.ruleCoverage()));
-  }
+  private static final ImmutableSetMultimap<UserModel, PoolAssignmentModel>
+      EXPECTED_ASSIGNED_POOL_ASSIGNMENTS_BY_USERS =
+          ImmutableSetMultimap.<UserModel, PoolAssignmentModel>builder()
+              .putAll(USERS.get(0), EXPECTED_POOL_ASSIGNMENTS_USER_0)
+              .putAll(USERS.get(1), EXPECTED_POOL_ASSIGNMENTS_USER_1)
+              .putAll(USERS.get(2), EXPECTED_POOL_ASSIGNMENTS_USER_2)
+              .putAll(USERS.get(3), EXPECTED_POOL_ASSIGNMENTS_USER_3)
+              .putAll(USERS.get(4), EXPECTED_POOL_ASSIGNMENTS_USER_0)
+              .putAll(USERS.get(5), ImmutableSet.of())
+              .putAll(USERS.get(6), ImmutableSet.of())
+              .build();
+
+  private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT =
+      RuleValidationReport.builder()
+          .setAssignedPoolAssignmentsByUsers(EXPECTED_ASSIGNED_POOL_ASSIGNMENTS_BY_USERS)
+          .setRuleCoverage(EXPECTED_RULES_COVERAGE)
+          .setUsersWithLessAssignedPermissions(USERS_WITH_LESS_ASSIGNED_PERMISSIONS)
+          .setUsersWithMoreAssignedPermissions(USERS_WITH_MORE_ASSIGNED_PERMISSIONS)
+          .setUncoveredPoolAssignments(EXPECTED_UNCOVERED_POOL_ASSIGNMENTS)
+          .build();
 
   @Test
-  public void findUncoveredPoolAssignmentsTest() {
+  public void validateTest() {
     RuleValidation ruleValidation = new RuleValidation(USERS);
     RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        EXPECTED_UNCOVERED_POOL_ASSIGNMENTS, ruleValidationReport.uncoveredPoolAssignments());
-  }
-
-  @Test
-  public void findUsersWithLessAssignedPermissionsTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        USERS_WITH_LESS_ASSIGNED_PERMISSIONS,
-        ruleValidationReport.usersWithLessAssignedPermissions());
-  }
-
-  @Test
-  public void findWrongUsersWithMoreAssignedPermissionsTest() {
-    RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(
-        USERS_WITH_MORE_ASSIGNED_PERMISSIONS,
-        ruleValidationReport.usersWithMoreAssignedPermissions());
+    Assert.assertEquals(EXPECTED_RULE_VALIDATION_REPORT, ruleValidationReport);
   }
 }
