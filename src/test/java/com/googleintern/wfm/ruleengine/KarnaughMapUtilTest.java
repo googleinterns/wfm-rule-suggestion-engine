@@ -155,7 +155,7 @@ public class KarnaughMapUtilTest {
     Assert.assertTrue(minimizedTerms.equals(EXPECTED_MINIMIZED_TERMS_CASE_0));
 
     RuleModel rule =
-        KarnaughMapRuleGenerator.singleRuleGenerator(
+        KarnaughMapRuleGenerator.generateSingleRule(
             minimizedTerms,
             filterByIndex,
             WORK_FORCE_ID,
@@ -182,7 +182,7 @@ public class KarnaughMapUtilTest {
     Assert.assertEquals(EXPECTED_SIZE_OF_MINIMIZED_TERMS_CASE_1, minimizedTerms.size());
 
     RuleModel rule =
-        KarnaughMapRuleGenerator.singleRuleGenerator(
+        KarnaughMapRuleGenerator.generateSingleRule(
             minimizedTerms,
             filterByIndex,
             WORK_FORCE_ID,

@@ -53,7 +53,7 @@ public class KarnaughMapRuleGeneratorTest {
   @Test
   public void singleRuleGenerator() {
     RuleModel rule =
-        KarnaughMapRuleGenerator.singleRuleGenerator(
+        KarnaughMapRuleGenerator.generateSingleRule(
             MINIMIZED_TERMS,
             EXPECTED_FILTER_BY_INDEX,
             WORK_FORCE_ID,
