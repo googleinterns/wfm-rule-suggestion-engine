@@ -62,12 +62,12 @@ public class RuleValidation {
     ImmutableSetMultimap.Builder<UserModel, PoolAssignmentModel>
         filtersByUserPoolAssignmentBuilder = ImmutableSetMultimap.builder();
     for (UserModel user : existingUserPoolAssignments) {
-      filtersByUserPoolAssignmentBuilder.putAll(user, assignPermissions(user, generatedRules));
+      filtersByUserPoolAssignmentBuilder.putAll(user, assignedPermissions(user, generatedRules));
     }
     return filtersByUserPoolAssignmentBuilder.build();
   }
 
-  private ImmutableSet<PoolAssignmentModel> assignPermissions(
+  private ImmutableSet<PoolAssignmentModel> assignedPermissions(
       UserModel user, ImmutableSet<RuleModel> generatedRules) {
     return generatedRules.stream()
         .filter(rule -> isUserCoveredByRules(rule, user))
