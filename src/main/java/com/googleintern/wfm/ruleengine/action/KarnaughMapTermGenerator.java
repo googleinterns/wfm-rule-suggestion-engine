@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 /**
  * KarnaughMapTableGenerator class is used to prepare information/variables for Karnaugh Map
  * Reduction algorithm.
@@ -42,17 +44,6 @@ public class KarnaughMapTermGenerator {
     return createFiltersByIndexBiMap(allTypesOfFilters);
   }
 
-  private static ImmutableBiMap<FilterModel, Integer> createFiltersByIndexBiMap(
-      ImmutableSet<FilterModel> allTypesOfFilters) {
-    ImmutableBiMap.Builder<FilterModel, Integer> filterByIndexBuilder = ImmutableBiMap.builder();
-    int index = 0;
-    for (FilterModel filter : allTypesOfFilters) {
-      filterByIndexBuilder.put(filter, index);
-      index = index + 1;
-    }
-    return filterByIndexBuilder.build();
-  }
-
   /**
    * Find all combinations of filters that are not covered by the input data set.
    *
@@ -71,13 +62,13 @@ public class KarnaughMapTermGenerator {
       ImmutableBiMap<FilterModel, Integer> filterByIndex,
       ImmutableSet<ImmutableList<FilterModel>> filters) {
     int totalNumberOfFilters = filterByIndex.keySet().size();
-    List<Integer> filterNumberAllZeros =
+    List<Integer> baseCaseTermWithAllZeros =
         new ArrayList<>(Collections.nCopies(totalNumberOfFilters, 0));
-    ImmutableSet<ImmutableList<Integer>> allFilterPermutations =
-        findAllPossibleTerms(filterNumberAllZeros, totalNumberOfFilters - 1);
+    ImmutableSet<ImmutableList<Integer>> allPossibleTerms =
+        findAllPossibleTerms(baseCaseTermWithAllZeros, totalNumberOfFilters - 1);
     ImmutableSet<ImmutableList<Integer>> allOneTerms =
-        findAllOneTerms(filterByIndex, allFilterPermutations, filters);
-    return ImmutableSet.copyOf(Sets.difference(allFilterPermutations, allOneTerms));
+        findAllOneTerms(filterByIndex, allPossibleTerms, filters);
+    return ImmutableSet.copyOf(Sets.difference(allPossibleTerms, allOneTerms));
   }
 
   private static ImmutableSet<FilterModel> findAllTypesOfFilters(
@@ -91,32 +82,26 @@ public class KarnaughMapTermGenerator {
     return allTypesOfFiltersBuilder.build();
   }
 
-  private static ImmutableSet<ImmutableList<Integer>> findAllIncludedTerms(
-      ImmutableBiMap<FilterModel, Integer> filterByIndex,
-      ImmutableSet<ImmutableList<Integer>> allFilterPermutations,
-      ImmutableList<FilterModel> filters) {
-    ImmutableSet.Builder<Integer> onesIndexBuilder = ImmutableSet.builder();
-    for (FilterModel filter : filters) {
-      onesIndexBuilder.add(filterByIndex.get(filter));
+  private static ImmutableBiMap<FilterModel, Integer> createFiltersByIndexBiMap(
+          ImmutableSet<FilterModel> allTypesOfFilters) {
+    ImmutableBiMap.Builder<FilterModel, Integer> filterByIndexBuilder = ImmutableBiMap.builder();
+    int index = 0;
+    for (FilterModel filter : allTypesOfFilters) {
+      filterByIndexBuilder.put(filter, index);
+      index = index + 1;
     }
-    ImmutableSet<Integer> onesIndex = onesIndexBuilder.build();
-    ImmutableSet.Builder<ImmutableList<Integer>> allIncludedCasesBuilder = ImmutableSet.builder();
-    for (ImmutableList filterPermutation : allFilterPermutations) {
-      if (isTermIncluded(filterPermutation, onesIndex)) {
-        allIncludedCasesBuilder.add(filterPermutation);
-      }
-    }
-    return allIncludedCasesBuilder.build();
+    return filterByIndexBuilder.build();
   }
 
-  private static boolean isTermIncluded(
-      ImmutableList<Integer> filterPermutation, ImmutableSet<Integer> onesIndex) {
-    for (Integer index : onesIndex) {
-      if (filterPermutation.get(index) == 0) {
-        return false;
-      }
-    }
-    return true;
+  private static ImmutableSet<ImmutableList<Integer>> findAllIncludedTerms(
+      ImmutableBiMap<FilterModel, Integer> filterByIndex,
+      ImmutableSet<ImmutableList<Integer>> allTerms,
+      ImmutableList<FilterModel> filters) {
+    ImmutableSet<Integer> onesIndex =
+        filters.stream().map(filter -> filterByIndex.get(filter)).collect(toImmutableSet());
+    return allTerms.stream()
+        .filter(term -> onesIndex.stream().filter(index -> term.get(index) == 0).count() == 0)
+        .collect(toImmutableSet());
   }
 
   private static ImmutableSet<ImmutableList<Integer>> findAllOneTerms(
@@ -132,17 +117,17 @@ public class KarnaughMapTermGenerator {
   }
 
   private static ImmutableSet<ImmutableList<Integer>> findAllPossibleTerms(
-      List<Integer> filterNumber, int index) {
+      List<Integer> term, int index) {
     if (index < 0) {
       return ImmutableSet.of();
     }
     ImmutableSet.Builder<ImmutableList<Integer>> permutationsBuilder = ImmutableSet.builder();
-    filterNumber.set(index, 0);
-    permutationsBuilder.add(ImmutableList.copyOf(filterNumber));
-    permutationsBuilder.addAll(findAllPossibleTerms(filterNumber, index - 1));
-    filterNumber.set(index, 1);
-    permutationsBuilder.add(ImmutableList.copyOf(filterNumber));
-    permutationsBuilder.addAll(findAllPossibleTerms(filterNumber, index - 1));
+    term.set(index, 0);
+    permutationsBuilder.add(ImmutableList.copyOf(term));
+    permutationsBuilder.addAll(findAllPossibleTerms(term, index - 1));
+    term.set(index, 1);
+    permutationsBuilder.add(ImmutableList.copyOf(term));
+    permutationsBuilder.addAll(findAllPossibleTerms(term, index - 1));
     return permutationsBuilder.build();
   }
 }

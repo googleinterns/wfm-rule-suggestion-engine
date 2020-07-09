@@ -8,6 +8,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 /**
  * KarnaughMapRuleGenerator class is used to create rule based on the minimized results from
  * KarnaughMapReduction class.
@@ -26,7 +28,7 @@ import java.util.Set;
  */
 public class KarnaughMapRuleGenerator {
 
-  public static RuleModel singleRuleGenerator(
+  public static RuleModel generateSingleRule(
       ImmutableSet<ImmutableList<Integer>> minimizedTerms,
       ImmutableBiMap<FilterModel, Integer> filterByIndex,
       Long workforceId,
@@ -46,18 +48,9 @@ public class KarnaughMapRuleGenerator {
       ImmutableSet<ImmutableList<Integer>> minimizedTerms,
       ImmutableBiMap<FilterModel, Integer> filterByIndex) {
     return minimizedTerms.stream()
-        .filter(term -> canBeConvertedInToFilters(term))
+        .filter(term -> term.stream().filter(value -> value == 0).count() > 0)
         .map(term -> convertTermToFilters(filterByIndex, term))
-        .collect(ImmutableList.toImmutableList());
-  }
-
-  private static boolean canBeConvertedInToFilters(ImmutableList<Integer> term) {
-    for (Integer value : term) {
-      if (value == 0) {
-        return true;
-      }
-    }
-    return false;
+        .collect(toImmutableList());
   }
 
   private static ImmutableSet<FilterModel> convertTermToFilters(
