@@ -8,8 +8,6 @@ import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.RuleValidation;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
-import javax.naming.NameNotFoundException;
-
 /** RuleValidationTest class is used to test the functionality of RuleValidation class. */
 public class RuleValidationTest {
   /** Generated Rules */
@@ -189,8 +187,6 @@ public class RuleValidationTest {
           .setUncoveredPoolAssignments(EXPECTED_UNCOVERED_POOL_ASSIGNMENTS)
           .build();
 
-  private static final ImmutableList<UserModel> EMPTY_USERS = ImmutableList.of();
-
   private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT_WITH_USERS =
       RuleValidationReport.builder()
           .setAssignedPoolAssignmentsByUsers(
@@ -200,8 +196,6 @@ public class RuleValidationTest {
           .setUsersWithMoreAssignedPermissions(ImmutableSet.of())
           .setUncoveredPoolAssignments(ImmutableSet.of())
           .build();
-
-  private static final ImmutableSet<RuleModel> EMPTY_RULES = ImmutableSet.of();
 
   private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_RULES =
       RuleValidationReport.builder()
@@ -241,7 +235,7 @@ public class RuleValidationTest {
 
   @Test
   public void validateTestWithEmptyUsers() {
-    RuleValidation ruleValidation = new RuleValidation(EMPTY_USERS);
+    RuleValidation ruleValidation = new RuleValidation(ImmutableList.of());
     RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
     Assert.assertEquals(EXPECTED_RULE_VALIDATION_REPORT_WITH_USERS, ruleValidationReport);
   }
@@ -249,14 +243,14 @@ public class RuleValidationTest {
   @Test
   public void validateTestWithEmptyRules() {
     RuleValidation ruleValidation = new RuleValidation(USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(EMPTY_RULES);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(ImmutableSet.of());
     Assert.assertEquals(EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_RULES, ruleValidationReport);
   }
 
   @Test
   public void validateTestWithEmptyRulesAndEmptyUsers() {
-    RuleValidation ruleValidation = new RuleValidation(EMPTY_USERS);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(EMPTY_RULES);
+    RuleValidation ruleValidation = new RuleValidation(ImmutableList.of());
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(ImmutableSet.of());
     Assert.assertEquals(
         EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_USERS_AND_EMPTY_RULES, ruleValidationReport);
   }
