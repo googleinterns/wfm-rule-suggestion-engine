@@ -32,6 +32,24 @@ alias(
 alias(
     name = "RuleValidation",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+<<<<<<< HEAD
+=======
+)
+
+alias(
+    name = "KarnaughMapTermGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
+)
+
+alias(
+    name = "KarnaughMapReduction",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapReduction",
+)
+
+alias(
+    name = "KarnaughMapRuleGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
+>>>>>>> dd72a68... changes for merge conflicts.
 )
 
 # model package
