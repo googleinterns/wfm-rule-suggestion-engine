@@ -1,0 +1,9 @@
+Coverage % for Rule Set:,71.43%
+Case Pool ID,Permission Set ID
+2000555,1112
+Users with Less Assigned Permissions:
+User Id,Workforce Id,Workgroup Id,Role Id,Skill Id,Expected Pool Assignments,Actual Pool Assignments
+5,1024,2050,[],[],"[{""case_pool_id"":""2000555"",""permission_set_id"":""1112""}]",[]
+Users with More Assigned Permissions:
+User Id,Workforce Id,Workgroup Id,Role Id,Skill Id,Expected Pool Assignments,Actual Pool Assignments
+4,1024,2048,[],[],[],"[{""case_pool_id"":""2000543"",""permission_set_id"":""1111""}]"

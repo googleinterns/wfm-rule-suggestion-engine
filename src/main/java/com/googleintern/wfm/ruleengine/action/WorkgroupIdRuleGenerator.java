@@ -4,7 +4,7 @@ import com.google.common.collect.*;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * <ol>
  *   <li>Step 1: Check whether the target work group ID is a valid or not.
- *   <li>Step 2: Get all({@link UserPoolAssignmentModel userPoolAssignments}) associated with the
+ *   <li>Step 2: Get all({@link UserModel userPoolAssignments}) associated with the
  *       target work group ID as an Immutable List and check its size.
  *   <li>Step 3: Loop through all userPoolAssignments in the list and find their common {@link
  *       PoolAssignmentModel}. Store the finding results as an immutable set.
@@ -30,12 +30,12 @@ import java.util.Set;
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generateWorkgroupIdRules(
-      ImmutableListMultimap<Long, UserPoolAssignmentModel> userPoolAssignmentsByWorkGroupId,
+      ImmutableListMultimap<Long, UserModel> userPoolAssignmentsByWorkGroupId,
       Long workgroupId) {
     if (!userPoolAssignmentsByWorkGroupId.containsKey(workgroupId)) {
       return ImmutableSet.of();
     }
-    ImmutableList<UserPoolAssignmentModel> userPoolAssignmentsFromSameWorkGroupId =
+    ImmutableList<UserModel> userPoolAssignmentsFromSameWorkGroupId =
         userPoolAssignmentsByWorkGroupId.get(workgroupId);
     if (userPoolAssignmentsFromSameWorkGroupId.size() == 0) {
       return ImmutableSet.of();
@@ -49,7 +49,7 @@ public class WorkgroupIdRuleGenerator {
   }
 
   private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(
-      List<UserPoolAssignmentModel> userPoolAssignmentsFromSameWorkGroupId) {
+      List<UserModel> userPoolAssignmentsFromSameWorkGroupId) {
     return userPoolAssignmentsFromSameWorkGroupId.stream()
         .map(userPoolAssignment -> userPoolAssignment.poolAssignments())
         .reduce(

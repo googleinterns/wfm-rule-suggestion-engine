@@ -29,6 +29,11 @@ alias(
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
 )
 
+alias(
+    name = "RuleValidation",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+)
+
 # model package
 alias(
     name = "PoolAssignmentModel",
@@ -36,8 +41,8 @@ alias(
 )
 
 alias(
-    name = "UserPoolAssignmentModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserPoolAssignmentModel",
+    name = "UserModel",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:UserModel",
 )
 
 alias(
@@ -48,4 +53,9 @@ alias(
 alias(
     name = "RuleModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
+)
+
+alias(
+    name = "RuleValidationReport",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
 )

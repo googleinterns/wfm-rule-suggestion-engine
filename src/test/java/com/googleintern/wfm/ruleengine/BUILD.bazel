@@ -71,3 +71,28 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
+
+java_test(
+    name = "RuleValidationTest",
+    size = "large",
+    srcs = ["RuleValidationTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.RuleValidationTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_test(
+    name = "RuleValidationReportTest",
+    srcs = ["RuleValidationReportTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.RuleValidationReportTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)

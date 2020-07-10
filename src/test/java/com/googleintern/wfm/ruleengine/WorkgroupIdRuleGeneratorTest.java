@@ -11,7 +11,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdRuleGener
 import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserPoolAssignmentModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.io.IOException;
 
@@ -68,9 +68,9 @@ public class WorkgroupIdRuleGeneratorTest {
 
   @Test
   public void findGeneralRuleForWorkGroupIdTest() throws IOException, CsvException {
-    ImmutableList<UserPoolAssignmentModel> userPoolAssignments =
+    ImmutableList<UserModel> userPoolAssignments =
         CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
-    ImmutableListMultimap<Long, UserPoolAssignmentModel> mapByWorkGroupId =
+    ImmutableListMultimap<Long, UserModel> mapByWorkGroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
 
     ImmutableSet<RuleModel> firstGeneratedRules =
