@@ -30,10 +30,11 @@ alias(
 )
 
 alias(
-<<<<<<< HEAD
     name = "RuleValidation",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
-=======
+)
+
+alias(
     name = "KarnaughMapTermGenerator",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
 )
@@ -46,7 +47,6 @@ alias(
 alias(
     name = "KarnaughMapRuleGenerator",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
->>>>>>> 01780c6... Add KarnaughMapRuleGenerator class.
 )
 
 # model package
@@ -71,13 +71,13 @@ alias(
 )
 
 alias(
-<<<<<<< HEAD
     name = "RuleValidationReport",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
-=======
+)
+
+alias(
     name = "KarnaughMapComparisionResultModel",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
->>>>>>> 509af9a... Add KarnaughMapReduction
 )
 
 # test
