@@ -100,7 +100,7 @@ public class KarnaughMapTermGenerator {
     ImmutableSet<Integer> onesIndex =
         filters.stream().map(filter -> filterByIndex.get(filter)).collect(toImmutableSet());
     return allTerms.stream()
-        .filter(term -> onesIndex.stream().filter(index -> term.get(index) == 0).count() == 0)
+        .filter(term -> onesIndex.stream().noneMatch(index -> term.get(index) == 0))
         .collect(toImmutableSet());
   }
 

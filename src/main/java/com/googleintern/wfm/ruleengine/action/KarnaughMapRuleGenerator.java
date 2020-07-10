@@ -48,7 +48,7 @@ public class KarnaughMapRuleGenerator {
       ImmutableSet<ImmutableList<Integer>> minimizedTerms,
       ImmutableBiMap<FilterModel, Integer> filterByIndex) {
     return minimizedTerms.stream()
-        .filter(term -> term.stream().filter(value -> value == 0).count() > 0)
+        .filter(term -> term.stream().anyMatch(value -> value == 0))
         .map(term -> convertTermToFilters(filterByIndex, term))
         .collect(toImmutableList());
   }
