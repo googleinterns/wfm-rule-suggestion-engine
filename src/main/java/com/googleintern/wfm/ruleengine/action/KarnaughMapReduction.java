@@ -72,6 +72,9 @@ public class KarnaughMapReduction {
     int difference = 0;
     for (int index = 0; index < term1.size(); index++) {
       if (term1.get(index) != term2.get(index)) {
+        if(term1.get(index) == -1 || term2.get(index) == -1){
+          return false;
+        }
         difference = difference + 1;
       }
       if (difference > 1) {
