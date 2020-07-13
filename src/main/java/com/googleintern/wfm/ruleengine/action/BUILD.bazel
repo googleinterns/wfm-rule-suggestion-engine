@@ -1,13 +1,4 @@
 java_binary(
-    name = "RuleSuggestionService",
-    srcs = ["RuleSuggestionService.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-    ],
-)
-
-java_binary(
     name = "CsvParser",
     srcs = ["CsvParser.java"],
     visibility = ["//visibility:public"],
