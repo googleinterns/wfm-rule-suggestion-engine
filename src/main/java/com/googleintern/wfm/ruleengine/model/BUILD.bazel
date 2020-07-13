@@ -48,21 +48,11 @@ java_binary(
     ],
 )
 
-java_binary(
-    name = "KarnaughMapComparisionResultModel",
-    srcs = ["KarnaughMapComparisionResultModel.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
-    ],
-)
-
 java_library(
     name = "model_dependencies",
     visibility = ["//visibility:public"],
     exports = [
         "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:PoolAssignmentModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",

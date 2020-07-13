@@ -147,33 +147,8 @@ java_plugin(
 )
 
 java_binary(
-<<<<<<< HEAD
     name = "FiltersReduction",
     srcs = ["FiltersReduction.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
-    name = "KarnaughMapReduction",
-    srcs = ["KarnaughMapReduction.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
-    name = "KarnaughMapRuleGenerator",
-    srcs = ["KarnaughMapRuleGenerator.java"],
-=======
-    name = "ProductOfSumReduction",
-    srcs = ["ProductOfSumReduction.java"],
->>>>>>> de1922b... Delete previous K-Map POS algorithm.
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
