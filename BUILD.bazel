@@ -26,7 +26,7 @@ alias(
 
 alias(
     name = "WorkgroupIdRuleGenerator",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
 )
 
 alias(
@@ -58,11 +58,6 @@ alias(
 alias(
     name = "RuleValidationReport",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
-)
-
-alias(
-    name = "KarnaughMapComparisionResultModel",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:KarnaughMapComparisionResultModel",
 )
 
 # test

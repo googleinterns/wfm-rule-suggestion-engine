@@ -1,0 +1,19 @@
+java_binary(
+    name = "WorkgroupIdRuleGenerator",
+    srcs = ["WorkgroupIdRuleGenerator.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_binary(
+    name = "CasePoolIdAndPermissionIdRuleGenerator",
+    srcs = ["CasePoolIdAndPermissionIdRuleGenerator.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)

@@ -52,16 +52,6 @@ java_binary(
 )
 
 java_binary(
-    name = "WorkgroupIdRuleGenerator",
-    srcs = ["WorkgroupIdRuleGenerator.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
     name = "RuleValidation",
     srcs = ["RuleValidation.java"],
     visibility = ["//visibility:public"],
@@ -157,8 +147,8 @@ java_plugin(
 )
 
 java_binary(
-    name = "ProductOfSumReduction",
-    srcs = ["ProductOfSumReduction.java"],
+    name = "FiltersReduction",
+    srcs = ["FiltersReduction.java"],
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",

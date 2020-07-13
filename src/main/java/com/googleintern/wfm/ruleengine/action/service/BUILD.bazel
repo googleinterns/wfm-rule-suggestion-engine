@@ -28,9 +28,10 @@ java_library(
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvWriter",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:ProductOfSumReduction",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:FiltersReduction",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:CasePoolIdAndPermissionIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
     ],
 )

@@ -1,4 +1,4 @@
-package src.main.java.com.googleintern.wfm.ruleengine.action;
+package src.main.java.com.googleintern.wfm.ruleengine.action.generator;
 
 import com.google.common.collect.*;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
