@@ -124,42 +124,4 @@ java_test(
     ],
 )
 
-java_test(
-    name = "KarnaughMapReductionTest",
-    size = "large",
-    srcs = ["KarnaughMapReductionTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.KarnaughMapReductionTest",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapReduction",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
 
-java_test(
-    name = "KarnaughMapRuleGeneratorTest",
-    size = "large",
-    srcs = ["KarnaughMapRuleGeneratorTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.KarnaughMapRuleGeneratorTest",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_test(
-    name = "KarnaughMapUtilTest",
-    srcs = ["KarnaughMapUtilTest.java"],
-    test_class = "src.test.java.com.googleintern.wfm.ruleengine.KarnaughMapUtilTest",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapReduction",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)

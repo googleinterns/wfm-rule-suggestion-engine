@@ -146,6 +146,7 @@ java_plugin(
 )
 
 java_binary(
+<<<<<<< HEAD
     name = "FiltersReduction",
     srcs = ["FiltersReduction.java"],
     visibility = ["//visibility:public"],
@@ -168,6 +169,10 @@ java_binary(
 java_binary(
     name = "KarnaughMapRuleGenerator",
     srcs = ["KarnaughMapRuleGenerator.java"],
+=======
+    name = "ProductOfSumReduction",
+    srcs = ["ProductOfSumReduction.java"],
+>>>>>>> de1922b... Delete previous K-Map POS algorithm.
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
