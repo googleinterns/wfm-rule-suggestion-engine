@@ -1,7 +1,7 @@
 # action package
 alias(
     name = "RuleSuggestionService_deploy.jar",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action/service:RuleSuggestionService",
 )
 
 alias(
@@ -32,21 +32,6 @@ alias(
 alias(
     name = "RuleValidation",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
-)
-
-alias(
-    name = "KarnaughMapTermGenerator",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapTermGenerator",
-)
-
-alias(
-    name = "KarnaughMapReduction",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapReduction",
-)
-
-alias(
-    name = "KarnaughMapRuleGenerator",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:KarnaughMapRuleGenerator",
 )
 
 # model package
@@ -104,24 +89,4 @@ alias(
 alias(
     name = "WorkgroupIdRuleGeneratorTest",
     actual = "//src/test/java/com/googleintern/wfm/ruleengine:WorkgroupIdRuleGeneratorTest",
-)
-
-alias(
-    name = "KarnaughMapTermGeneratorTest",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapTermGeneratorTest",
-)
-
-alias(
-    name = "KarnaughMapRuleGeneratorTest",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapRuleGeneratorTest",
-)
-
-alias(
-    name = "KarnaughMapReductionTest",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapReductionTest",
-)
-
-alias(
-    name = "KarnaughMapUtilTest",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:KarnaughMapUtilTest",
 )

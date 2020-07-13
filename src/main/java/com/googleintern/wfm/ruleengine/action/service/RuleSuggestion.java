@@ -3,10 +3,7 @@ package src.main.java.com.googleintern.wfm.ruleengine.action.service;
 import com.google.common.collect.*;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.action.*;
-import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
 import java.io.IOException;
 
@@ -14,15 +11,13 @@ public class RuleSuggestion implements RuleSuggestionService {
   @Override
   public String suggestRules(String csvFilePath) throws IOException, CsvException {
     ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(csvFilePath);
-    System.out.println("Size of userPoolAssignments: " + userPoolAssignments.size());
 
     ImmutableList<UserModel> validUserPoolAssignments =
         DataProcessor.filterValidData(userPoolAssignments);
-    System.out.println("Size of validUserPoolAssignments: " + validUserPoolAssignments.size());
+    System.out.println(validUserPoolAssignments.size());
 
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
-    System.out.println("Number of workgroup IDs: " + usersByWorkgroupId.keySet().size());
 
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
 
@@ -31,36 +26,35 @@ public class RuleSuggestion implements RuleSuggestionService {
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId, workgroupId);
       rulesBuilder.addAll(generalRulesForWorkgroupId);
       ImmutableSet<PoolAssignmentModel> coveredPoolAssignments =
-              findPoolAssignmentsCoveredByRules(generalRulesForWorkgroupId);
+          findPoolAssignmentsCoveredByRules(generalRulesForWorkgroupId);
 
       ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
           filtersByCasePoolIdAndPermissionSetId =
               CasePoolIdAndPermissionIdGroupingUtil.groupByCasePoolIdAndPermissionSetId(
                   usersByWorkgroupId.get(workgroupId));
-      System.out.println("------------------------------------------------------------------------");
-      System.out.println("Workgroup ID: " + workgroupId);
-      System.out.println("Number of covered pool assignments: " + coveredPoolAssignments.size());
-      System.out.println("Number of pool assignments: " + filtersByCasePoolIdAndPermissionSetId.keySet().size());
+
       for (PoolAssignmentModel poolAssignment : filtersByCasePoolIdAndPermissionSetId.keySet()) {
-        if (coveredPoolAssignments.contains(poolAssignment)) continue;
-        System.out.println("PoolAssignment: " + poolAssignment.casePoolId() + "   " + poolAssignment.permissionSetId());
-//        ImmutableBiMap<FilterModel, Integer> filterByIndex =
-//                KarnaughMapTermGenerator.mapFiltersByIndex(
-//                        filtersByCasePoolIdAndPermissionSetId, poolAssignment);
-//        System.out.println("Number of different filters: " + filterByIndex.keySet().size());
-        rulesBuilder.add(
-            karnaughMapAlgorithm(
-                filtersByCasePoolIdAndPermissionSetId, poolAssignment, workgroupId, workgroupId));
+        if (coveredPoolAssignments.contains(poolAssignment)) {
+          continue;
+        }
+        rulesBuilder.addAll(
+            ProductOfSumReduction(
+                filtersByCasePoolIdAndPermissionSetId, poolAssignment, 1033L, workgroupId));
       }
     }
     ImmutableSet<RuleModel> rules = rulesBuilder.build();
-    System.out.println("-------------------------------------------------------------------------");
-    System.out.println("Number of Rules: " + rules.size());
 
     String CSV_OUTPUT_FILE_PATH =
-            System.getProperty("user.home")
-                    + "/Project/wfm-rule-suggestion-engine/output/generated_rules.csv";
+        System.getProperty("user.home")
+            + "/Project/wfm-rule-suggestion-engine/output/generated_rules.csv";
     CsvWriter.writeDataIntoCsvFile(CSV_OUTPUT_FILE_PATH, rules.asList());
+
+    String CSV_VALIDATION_RESULT_FILE_PATH =
+        System.getProperty("user.home")
+            + "/Project/wfm-rule-suggestion-engine/output/validate_results.csv";
+    RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(rules);
+    ruleValidationReport.writeToCsvFile(CSV_VALIDATION_RESULT_FILE_PATH);
     return null;
   }
 
@@ -80,30 +74,16 @@ public class RuleSuggestion implements RuleSuggestionService {
     return coveredPoolAssignmentsBuilder.build();
   }
 
-  private RuleModel karnaughMapAlgorithm(
+  private ImmutableSet<RuleModel> ProductOfSumReduction(
       ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
           filtersByCasePoolIdAndPermissionSetId,
       PoolAssignmentModel poolAssignment,
       Long workforceId,
       Long workgroupId) {
-    ImmutableBiMap<FilterModel, Integer> filterByIndex =
-        KarnaughMapTermGenerator.mapFiltersByIndex(
-            filtersByCasePoolIdAndPermissionSetId, poolAssignment);
-    System.out.println("Number of different filters: " + filterByIndex.keySet().size());
-    ImmutableSet<ImmutableList<Integer>> allZeroTerms =
-        KarnaughMapTermGenerator.findAllZeroTerms(
-            filterByIndex, filtersByCasePoolIdAndPermissionSetId.get(poolAssignment));
-    System.out.println("Finish finding all zero terms.");
-    ImmutableSet<ImmutableList<Integer>> minimizedTerms =
-        KarnaughMapReduction.minimizeKMapTerms(allZeroTerms);
-    System.out.println("Finish Minimizing.");
-    return KarnaughMapRuleGenerator.generateSingleRule(
-        minimizedTerms,
-        filterByIndex,
-        workforceId,
-        workgroupId,
-        poolAssignment.casePoolId(),
-        ImmutableSet.of(poolAssignment.casePoolId()));
+    ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
+        ProductOfSumReduction.reduce(filtersByCasePoolIdAndPermissionSetId, poolAssignment);
+    return ProductOfSumReduction.generateRules(
+        workforceId, workgroupId, poolAssignment, reducedFilters);
   }
 
   @Override

@@ -157,28 +157,8 @@ java_plugin(
 )
 
 java_binary(
-    name = "KarnaughMapTermGenerator",
-    srcs = ["KarnaughMapTermGenerator.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
-    name = "KarnaughMapReduction",
-    srcs = ["KarnaughMapReduction.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
-    name = "KarnaughMapRuleGenerator",
-    srcs = ["KarnaughMapRuleGenerator.java"],
+    name = "ProductOfSumReduction",
+    srcs = ["ProductOfSumReduction.java"],
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
