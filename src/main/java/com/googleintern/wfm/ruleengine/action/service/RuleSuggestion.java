@@ -3,6 +3,8 @@ package src.main.java.com.googleintern.wfm.ruleengine.action.service;
 import com.google.common.collect.*;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.action.*;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 
 import java.io.IOException;
@@ -81,8 +83,8 @@ public class RuleSuggestion implements RuleSuggestionService {
       Long workforceId,
       Long workgroupId) {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
-        ProductOfSumReduction.reduce(filtersByCasePoolIdAndPermissionSetId, poolAssignment);
-    return ProductOfSumReduction.generateRules(
+        FiltersReduction.reduce(filtersByCasePoolIdAndPermissionSetId, poolAssignment);
+    return CasePoolIdAndPermissionIdRuleGenerator.generateRules(
         workforceId, workgroupId, poolAssignment, reducedFilters);
   }
 

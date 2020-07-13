@@ -123,5 +123,3 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
-
-
