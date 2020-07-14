@@ -35,6 +35,9 @@ public class FilterReductionTest {
           .setPermissionSetId(PERMISSION_SET_ID)
           .build();
 
+  private static final PoolAssignmentModel NONEXISTENT_POOL_ASSIGNMENT =
+      PoolAssignmentModel.builder().setCasePoolId(CASE_POOL_ID).setPermissionSetId(1122L).build();
+
   private static final ImmutableSet<ImmutableList<FilterModel>> FILTERS =
       ImmutableSet.of(
           ImmutableList.of(FILTER_0, FILTER_4, FILTER_5),
@@ -44,7 +47,7 @@ public class FilterReductionTest {
           ImmutableList.of(FILTER_0, FILTER_1, FILTER_3));
 
   private static final ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-      FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID =
+      FILTERS_BY_POOL_ASSIGNMENTS =
           ImmutableSetMultimap.<PoolAssignmentModel, ImmutableList<FilterModel>>builder()
               .putAll(POOL_ASSIGNMENT, FILTERS)
               .build();
@@ -58,26 +61,36 @@ public class FilterReductionTest {
           ImmutableSet.of(FILTER_0, FILTER_1, FILTER_3));
 
   private static final int
-      EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID =
-          0;
+      EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_POOL_ASSIGNMENTS = 0;
+
+  private static final int EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_NONEXISTENT_POOL_ASSIGNMENT = 0;
 
   @Test
   public void reduceTest() {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
-        FiltersReduction.reduce(FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID, POOL_ASSIGNMENT);
+        FiltersReduction.reduce(FILTERS_BY_POOL_ASSIGNMENTS, POOL_ASSIGNMENT);
     Assert.assertEquals(EXPECTED_NUMBER_OF_REDUCED_FILTERS, reducedFilters.size());
     Assert.assertTrue(reducedFilters.equals(EXPECTED_REDUCED_FILTERS));
   }
 
   @Test
-  public void reduceTest_WithEmptyFiltersByCasePoolIdAndPermissionSetId() {
+  public void reduceTest_WithEmptyFiltersByPoolAssignments() {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
         FiltersReduction.reduce(
             ImmutableSetMultimap.<PoolAssignmentModel, ImmutableList<FilterModel>>builder().build(),
             POOL_ASSIGNMENT);
     Assert.assertEquals(
-        EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID,
+        EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_POOL_ASSIGNMENTS,
         reducedFilters.size());
+    Assert.assertTrue(reducedFilters.equals(ImmutableList.of()));
+  }
+
+  @Test
+  public void reduceTest_WithNonexistentPoolAssignment() {
+    ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
+        FiltersReduction.reduce(FILTERS_BY_POOL_ASSIGNMENTS, NONEXISTENT_POOL_ASSIGNMENT);
+    Assert.assertEquals(
+        EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_NONEXISTENT_POOL_ASSIGNMENT, reducedFilters.size());
     Assert.assertTrue(reducedFilters.equals(ImmutableList.of()));
   }
 }

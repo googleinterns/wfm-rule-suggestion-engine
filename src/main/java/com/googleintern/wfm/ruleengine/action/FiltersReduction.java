@@ -18,22 +18,24 @@ import java.util.List;
  * <ol>
  *   <li>Step 1: Find all filter groups that are associated with the target {@link
  *       PoolAssignmentModel}.
- *   <li>Step 2: For each filter group i, if the reducedFilterResults list is empty, add to the list
- *       and continue. If the reducedFilterResults is not empty, loop through every filter group j
- *       in the list and compare filter group i with filter group j. If filter group j includes all
- *       elements in filter group i, filter group j is not a minimized group and can be removed from
- *       reducedFilterResults list. Filter group i will be added to the list. On the other hand, if
- *       filter group i includes all elements in filter group j, filter group i is not a minimized
- *       group. Stop looping through the reducedFilterResults list and move to another filter group.
+ *   <li>Step 2: For each {@link FilterModel} set i, if the reducedFilterResults list is empty, add
+ *       to the list and continue. If the reducedFilterResults is not empty, loop through every
+ *       {@link FilterModel} set j stored in the list and compare {@link FilterModel} set i with
+ *       filter group j. If {@link FilterModel} set j includes all elements in {@link FilterModel}
+ *       set i, {@link FilterModel} set j is not a minimized group and can be removed from
+ *       reducedFilterResults list. The {@link FilterModel} set i will be added to the list. On the
+ *       other hand, if {@link FilterModel} set i includes all elements in filter group j, filter
+ *       group i is not a minimized group. Stop looping through the reducedFilterResults list and
+ *       move to another filter group.
  * </ol>
  */
 public class FiltersReduction {
   public static ImmutableList<ImmutableSet<FilterModel>> reduce(
       ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-          filtersByCasePoolIdAndPermissionSetId,
+          filtersByPoolAssignments,
       PoolAssignmentModel targetPoolAssignment) {
     ImmutableSet<ImmutableList<FilterModel>> filters =
-        filtersByCasePoolIdAndPermissionSetId.get(targetPoolAssignment);
+        filtersByPoolAssignments.get(targetPoolAssignment);
     List<ImmutableSet<FilterModel>> reducedFilterResults = new ArrayList<>();
     for (ImmutableList<FilterModel> currentFilters : filters) {
       if (reducedFilterResults.isEmpty()) {

@@ -11,8 +11,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * CasePoolIdAndPermissionIdRuleGenerator class is used to create rules based on reduced {@link
- * FilterModel} results from the {@link
- * src.main.java.com.googleintern.wfm.ruleengine.action.FiltersReduction} class.
+ * FilterModel} results from the FiltersReduction class.
  */
 public class CasePoolIdAndPermissionIdRuleGenerator {
   public static ImmutableSet<RuleModel> generateRules(
