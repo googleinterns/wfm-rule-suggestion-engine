@@ -9,6 +9,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.FiltersReduction;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 
+/** FilterReductionTest class is used to test the functionality of FilterReduction class. */
 public class FilterReductionTest {
 
   private static final FilterModel FILTER_0 =
@@ -56,11 +57,27 @@ public class FilterReductionTest {
           ImmutableSet.of(FILTER_2, FILTER_3, FILTER_0),
           ImmutableSet.of(FILTER_0, FILTER_1, FILTER_3));
 
+  private static final int
+      EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID =
+          0;
+
   @Test
   public void reduceTest() {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
         FiltersReduction.reduce(FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID, POOL_ASSIGNMENT);
     Assert.assertEquals(EXPECTED_NUMBER_OF_REDUCED_FILTERS, reducedFilters.size());
     Assert.assertTrue(reducedFilters.equals(EXPECTED_REDUCED_FILTERS));
+  }
+
+  @Test
+  public void reduceTest_WithEmptyFiltersByCasePoolIdAndPermissionSetId() {
+    ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
+        FiltersReduction.reduce(
+            ImmutableSetMultimap.<PoolAssignmentModel, ImmutableList<FilterModel>>builder().build(),
+            POOL_ASSIGNMENT);
+    Assert.assertEquals(
+        EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID,
+        reducedFilters.size());
+    Assert.assertTrue(reducedFilters.equals(ImmutableList.of()));
   }
 }

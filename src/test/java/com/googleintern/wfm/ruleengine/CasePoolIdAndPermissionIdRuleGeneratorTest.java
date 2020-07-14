@@ -9,6 +9,10 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
+/**
+ * CasePoolIdAndPermissionIdRuleGeneratorTest class is used to test the functionality of the
+ * CasePoolIdAndPermissionIdRuleGenerator class.
+ */
 public class CasePoolIdAndPermissionIdRuleGeneratorTest {
 
   private static final FilterModel FILTER_0 =
@@ -81,6 +85,8 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
                       ImmutableSet.of(FILTER_3)))
               .build());
 
+  private static final int EXPECTED_NUMBER_OF_RULES_WITH_EMPTY_REDUCED_FILTERS = 0;
+
   @Test
   public void generateRulesTest() {
     ImmutableSet<RuleModel> generatedRules =
@@ -88,5 +94,14 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
             WORK_FORCE_ID, WORK_GROUP_ID, POOL_ASSIGNMENT, EXPECTED_REDUCED_FILTERS);
     Assert.assertEquals(EXPECTED_NUMBER_OF_RULES, generatedRules.size());
     Assert.assertTrue(generatedRules.equals(EXPECTED_RULES));
+  }
+
+  @Test
+  public void generateRulesTest_WithEmptyReducedFilters() {
+    ImmutableSet<RuleModel> generatedRules =
+        CasePoolIdAndPermissionIdRuleGenerator.generateRules(
+            WORK_FORCE_ID, WORK_GROUP_ID, POOL_ASSIGNMENT, ImmutableList.of());
+    Assert.assertEquals(EXPECTED_NUMBER_OF_RULES_WITH_EMPTY_REDUCED_FILTERS, generatedRules.size());
+    Assert.assertTrue(generatedRules.equals(ImmutableSet.of()));
   }
 }
