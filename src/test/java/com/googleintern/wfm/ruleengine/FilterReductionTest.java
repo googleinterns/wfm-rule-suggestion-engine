@@ -67,6 +67,10 @@ public class FilterReductionTest {
 
   private static final int EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_NONEXISTENT_POOL_ASSIGNMENT = 0;
 
+  private static final int
+      EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_CASE_POOL_ID_AND_PERMISSION_SET_ID =
+          0;
+
   @Test
   public void reduceTest() {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
