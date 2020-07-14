@@ -89,7 +89,6 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
                       ImmutableSet.of(FILTER_3)))
               .build());
 
-
   private static final int EXPECTED_NUMBER_OF_RULES_WITH_EMPTY_REDUCED_FILTERS = 0;
 
   @Test
