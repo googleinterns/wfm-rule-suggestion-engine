@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
@@ -52,6 +53,7 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
   private static final ImmutableSet<RuleModel> EXPECTED_RULES =
       ImmutableSet.of(
           RuleModel.builder()
+              .setRuleId(0L)
               .setWorkforceId(WORK_FORCE_ID)
               .setWorkgroupId(WORK_GROUP_ID)
               .setCasePoolId(CASE_POOL_ID)
@@ -63,6 +65,7 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
                       ImmutableSet.of(FILTER_5)))
               .build(),
           RuleModel.builder()
+              .setRuleId(1L)
               .setWorkforceId(WORK_FORCE_ID)
               .setWorkgroupId(WORK_GROUP_ID)
               .setCasePoolId(CASE_POOL_ID)
@@ -74,6 +77,7 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
                       ImmutableSet.of(FILTER_0)))
               .build(),
           RuleModel.builder()
+              .setRuleId(2L)
               .setWorkforceId(WORK_FORCE_ID)
               .setWorkgroupId(WORK_GROUP_ID)
               .setCasePoolId(CASE_POOL_ID)
@@ -89,18 +93,24 @@ public class CasePoolIdAndPermissionIdRuleGeneratorTest {
 
   @Test
   public void generateRulesTest() {
+    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     ImmutableSet<RuleModel> generatedRules =
         CasePoolIdAndPermissionIdRuleGenerator.generateRules(
-            WORK_FORCE_ID, WORK_GROUP_ID, POOL_ASSIGNMENT, EXPECTED_REDUCED_FILTERS);
+            WORK_FORCE_ID,
+            WORK_GROUP_ID,
+            POOL_ASSIGNMENT,
+            EXPECTED_REDUCED_FILTERS,
+            ruleIdGenerator);
     Assert.assertEquals(EXPECTED_NUMBER_OF_RULES, generatedRules.size());
     Assert.assertTrue(generatedRules.equals(EXPECTED_RULES));
   }
 
   @Test
   public void generateRulesTest_WithEmptyReducedFilters() {
+    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     ImmutableSet<RuleModel> generatedRules =
         CasePoolIdAndPermissionIdRuleGenerator.generateRules(
-            WORK_FORCE_ID, WORK_GROUP_ID, POOL_ASSIGNMENT, ImmutableList.of());
+            WORK_FORCE_ID, WORK_GROUP_ID, POOL_ASSIGNMENT, ImmutableList.of(), ruleIdGenerator);
     Assert.assertEquals(EXPECTED_NUMBER_OF_RULES_WITH_EMPTY_REDUCED_FILTERS, generatedRules.size());
     Assert.assertTrue(generatedRules.equals(ImmutableSet.of()));
   }

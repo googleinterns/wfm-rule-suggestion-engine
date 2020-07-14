@@ -4,6 +4,7 @@ import com.google.common.collect.*;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.action.*;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
@@ -83,7 +84,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
-
+    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId));
@@ -131,10 +132,11 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       SetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> filterByPoolAssignment,
       PoolAssignmentModel poolAssignment,
       Long workforceId,
-      Long workgroupId) {
+      Long workgroupId,
+      RuleIdGenerator ruleIdGenerator) {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
         FiltersReduction.reduce(filterByPoolAssignment, poolAssignment);
     return CasePoolIdAndPermissionIdRuleGenerator.generateRules(
-        workforceId, workgroupId, poolAssignment, reducedFilters);
+        workforceId, workgroupId, poolAssignment, reducedFilters, ruleIdGenerator);
   }
 }

@@ -7,6 +7,7 @@ import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
@@ -16,8 +17,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 import java.io.IOException;
 
 /**
- * WorkgroupIdRuleGeneratorTest is used to test the functionality of the
- * WorkgroupIdRuleGenerator class.
+ * WorkgroupIdRuleGeneratorTest is used to test the functionality of the WorkgroupIdRuleGenerator
+ * class.
  */
 public class WorkgroupIdRuleGeneratorTest {
   private static final String TEST_CSV_FILE_PATH =
@@ -32,11 +33,12 @@ public class WorkgroupIdRuleGeneratorTest {
   /**
    * Expected general rules for Workgroup ID = 1122.
    *
-   * Permissions have different case pool ID values.
+   * <p>Permissions have different case pool ID values.
    */
   private static final ImmutableSet<RuleModel> EXPECTED_FIRST_GENERATED_RULES =
       ImmutableSet.of(
           RuleModel.builder()
+              .setRuleId(0L)
               .setWorkforceId(1024L)
               .setWorkgroupId(1122L)
               .setCasePoolId(2000543L)
@@ -44,6 +46,7 @@ public class WorkgroupIdRuleGeneratorTest {
               .setFilters(emptyFilters)
               .build(),
           RuleModel.builder()
+              .setRuleId(1L)
               .setWorkforceId(1024L)
               .setWorkgroupId(1122L)
               .setCasePoolId(2000555L)
@@ -54,11 +57,12 @@ public class WorkgroupIdRuleGeneratorTest {
   /**
    * Expected general rules for Workgroup ID = 2233.
    *
-   * Permissions have the same case pool ID, but different permission set IDs.
+   * <p>Permissions have the same case pool ID, but different permission set IDs.
    */
   private static final ImmutableSet<RuleModel> EXPECTED_SECOND_GENERATED_RULES =
       ImmutableSet.of(
           RuleModel.builder()
+              .setRuleId(0L)
               .setWorkforceId(1024L)
               .setWorkgroupId(2233L)
               .setCasePoolId(2000543L)
@@ -68,16 +72,17 @@ public class WorkgroupIdRuleGeneratorTest {
 
   @Test
   public void findGeneralRuleForWorkGroupIdTest() throws IOException, CsvException {
-    ImmutableList<UserModel> userPoolAssignments =
-        CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
+    ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableListMultimap<Long, UserModel> mapByWorkGroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
+    RuleIdGenerator firstRuleIdGenerator = new RuleIdGenerator();
 
     ImmutableSet<RuleModel> firstGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
             mapByWorkGroupId.get(EXPECTED_FIRST_WORKGROUP_ID));
     Assert.assertEquals(EXPECTED_FIRST_GENERATED_RULES, firstGeneratedRules);
 
+    RuleIdGenerator secondRuleIdGenerator = new RuleIdGenerator();
     ImmutableSet<RuleModel> secondGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
             mapByWorkGroupId.get(EXPECTED_SECOND_WORKGROUP_ID));

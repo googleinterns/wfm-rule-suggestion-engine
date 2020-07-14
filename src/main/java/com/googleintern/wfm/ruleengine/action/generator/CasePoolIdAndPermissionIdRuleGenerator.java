@@ -19,11 +19,17 @@ public class CasePoolIdAndPermissionIdRuleGenerator {
       Long workforceId,
       Long workgroupId,
       PoolAssignmentModel poolAssignment,
+<<<<<<< HEAD
       List<ImmutableSet<FilterModel>> filters) {
+=======
+      ImmutableList<ImmutableSet<FilterModel>> filters,
+      RuleIdGenerator ruleIdGenerator) {
+>>>>>>> dc844fb... Add Rule Id to Rule Model
     return filters.stream()
         .map(
             filtersGroup ->
                 RuleModel.builder()
+                    .setRuleId(ruleIdGenerator.getRuleId())
                     .setWorkforceId(workforceId)
                     .setWorkgroupId(workgroupId)
                     .setCasePoolId(poolAssignment.casePoolId())

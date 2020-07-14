@@ -33,7 +33,7 @@ public class CsvWriter {
   private static final String ROLE_ID_PREFIX = "role_id:";
   private static final String[] CSV_FILE_HEADER =
       new String[] {
-        "Workforce ID", "Workgroup ID", "Case Pool ID", "Permission Set IDs", "Filters"
+        "Rule ID", "Workforce ID", "Workgroup ID", "Case Pool ID", "Permission Set IDs", "Filters"
       };
 
   /**
@@ -60,12 +60,13 @@ public class CsvWriter {
   }
 
   private static String[] convertRuleToRow(final RuleModel rule) {
+    String ruleId = Long.toString(rule.ruleId());
     String workforceId = Long.toString(rule.workforceId());
     String workgroupId = Long.toString(rule.workgroupId());
     String casePoolId = Long.toString(rule.casePoolId());
     String permissionIds = convertPermissionSetIdsToCell(rule.permissionSetIds());
     String filterIds = convertFilterIdsToCell(rule.filters());
-    return new String[] {workforceId, workgroupId, casePoolId, permissionIds, filterIds};
+    return new String[] {ruleId, workforceId, workgroupId, casePoolId, permissionIds, filterIds};
   }
 
   private static String convertPermissionSetIdsToCell(ImmutableSet<Long> permissionSetIds) {
