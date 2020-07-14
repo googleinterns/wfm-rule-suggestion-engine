@@ -104,12 +104,23 @@ public abstract class RuleValidationReport {
             "Workgroup Id",
             "Role Id",
             "Skill Id",
-            "Wrong Assigned Pool Assignments",
-            "Related Rules"
+            "More Assigned Pool Assignments",
+            "Relative Rules"
           });
 
   private static final String[] POOL_ASSIGNMENT_HEADER =
       new String[] {"Case Pool ID", "Permission Set ID"};
+
+  private static final String[] WRONG_USER_POOL_ASSIGNMENT_HEADER =
+      new String[] {
+        "User Id",
+        "Workforce Id",
+        "Workgroup Id",
+        "Role Id",
+        "Skill Id",
+        "Expected Pool Assignments",
+        "Actual Pool Assignments"
+      };
 
   private static final String PERCENTAGE_SIGN = "%";
 
@@ -257,17 +268,15 @@ public abstract class RuleValidationReport {
 
   private static String convertRulesToCsvString(ImmutableSet<RuleModel> rules) {
     StringBuilder rulesStringBuilder = new StringBuilder();
-    rulesStringBuilder.append(Separator.SQUARE_BRACKET_LEFT.symbol);
     rulesStringBuilder.append(Separator.CURLY_BRACKET_LEFT.symbol);
     for (RuleModel rule : rules) {
-      rulesStringBuilder.append(rulesStringBuilder.length() == 2 ? "" : Separator.COMMA.symbol);
+      rulesStringBuilder.append(rulesStringBuilder.length() == 1 ? "" : Separator.COMMA.symbol);
       rulesStringBuilder.append(
-          RULE_ID_PREFIX
-              + rule.ruleId()
-              + Separator.DOUBLE_QUOTATION_MARK.symbol
+          Separator.CURLY_BRACKET_LEFT.symbol
+              + rule.toString()
               + Separator.CURLY_BRACKET_RIGHT.symbol);
     }
-    rulesStringBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
+    rulesStringBuilder.append(Separator.CURLY_BRACKET_RIGHT.symbol);
     return rulesStringBuilder.toString();
   }
 
@@ -316,8 +325,44 @@ public abstract class RuleValidationReport {
     for (PoolAssignmentModel poolAssignment : poolAssignments) {
       ImmutableSet<RuleModel> rules = rulesByPoolAssignments.get(poolAssignment);
       rulesAssignedMorePermissionsBuilder.addAll(
-          rules.stream().filter(rule -> rule.isUserCoveredByRule(user)).collect(toImmutableSet()));
+          rules.stream()
+              .filter(rule -> isUserCoveredByRules(rule, user))
+              .collect(toImmutableSet()));
     }
     return rulesAssignedMorePermissionsBuilder.build();
+  }
+
+  private static boolean isUserCoveredByRules(RuleModel generateRule, UserModel user) {
+    if ((generateRule.workforceId() != user.workforceId())
+        || (generateRule.workgroupId() != user.workgroupId())) {
+      return false;
+    }
+    for (ImmutableSet<FilterModel> orFilters : generateRule.filters()) {
+      if (Sets.intersection(ImmutableSet.copyOf(user.skillIds()), getSkillIdsFromFilters(orFilters))
+              .isEmpty()
+          && Sets.intersection(
+                  ImmutableSet.copyOf(user.roleSkillIds()), getSkillIdsFromFilters(orFilters))
+              .isEmpty()
+          && Sets.intersection(
+                  ImmutableSet.copyOf(user.roleIds()), getRoleIdsFromFilters(orFilters))
+              .isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
+    return filters.stream()
+        .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
+        .map(filter -> filter.value())
+        .collect(toImmutableSet());
+  }
+
+  private static ImmutableSet<Long> getRoleIdsFromFilters(ImmutableSet<FilterModel> filters) {
+    return filters.stream()
+        .filter(filer -> filer.type() == FilterModel.FilterType.ROLE)
+        .map(filter -> filter.value())
+        .collect(toImmutableSet());
   }
 }
