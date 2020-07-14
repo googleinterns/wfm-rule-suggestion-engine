@@ -104,23 +104,12 @@ public abstract class RuleValidationReport {
             "Workgroup Id",
             "Role Id",
             "Skill Id",
-            "More Assigned Pool Assignments",
+            "Wrong Assigned Pool Assignments",
             "Relative Rules"
           });
 
   private static final String[] POOL_ASSIGNMENT_HEADER =
       new String[] {"Case Pool ID", "Permission Set ID"};
-
-  private static final String[] WRONG_USER_POOL_ASSIGNMENT_HEADER =
-      new String[] {
-        "User Id",
-        "Workforce Id",
-        "Workgroup Id",
-        "Role Id",
-        "Skill Id",
-        "Expected Pool Assignments",
-        "Actual Pool Assignments"
-      };
 
   private static final String PERCENTAGE_SIGN = "%";
 
@@ -272,9 +261,7 @@ public abstract class RuleValidationReport {
     for (RuleModel rule : rules) {
       rulesStringBuilder.append(rulesStringBuilder.length() == 1 ? "" : Separator.COMMA.symbol);
       rulesStringBuilder.append(
-          Separator.CURLY_BRACKET_LEFT.symbol
-              + rule.toString()
-              + Separator.CURLY_BRACKET_RIGHT.symbol);
+          RULE_ID_PREFIX + rule.ruleId() + Separator.DOUBLE_QUOTATION_MARK.symbol);
     }
     rulesStringBuilder.append(Separator.CURLY_BRACKET_RIGHT.symbol);
     return rulesStringBuilder.toString();

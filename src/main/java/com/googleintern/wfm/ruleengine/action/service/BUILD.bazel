@@ -32,6 +32,7 @@ java_library(
         "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
         "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:CasePoolIdAndPermissionIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:RuleIdGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:ruleIdGenerator_dependency",
     ],

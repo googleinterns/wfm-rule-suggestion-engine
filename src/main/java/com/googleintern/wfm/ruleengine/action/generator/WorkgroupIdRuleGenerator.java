@@ -1,7 +1,9 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action.generator;
 
-import com.google.common.collect.*;
-import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Sets;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;

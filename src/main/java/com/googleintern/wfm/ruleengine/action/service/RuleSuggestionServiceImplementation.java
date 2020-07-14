@@ -81,7 +81,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
-
+    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
