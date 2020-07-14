@@ -49,7 +49,6 @@ public class FilterReductionTest {
           ImmutableList.of(FILTER_0, FILTER_1, FILTER_3));
 
   private static final ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-
       FILTERS_BY_POOL_ASSIGNMENTS =
           ImmutableSetMultimap.<PoolAssignmentModel, ImmutableList<FilterModel>>builder()
               .putAll(POOL_ASSIGNMENT, FILTERS)
