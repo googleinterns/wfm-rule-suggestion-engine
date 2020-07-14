@@ -43,6 +43,7 @@ public class RuleValidation {
         findUncoveredUsers(assignedPermissionsByUser);
 
     return RuleValidationReport.builder()
+        .setGeneratedRules(generatedRules)
         .setAssignedPoolAssignmentsByUsers(assignedPermissionsByUser)
         .setRuleCoverage(
             (existingUserPoolAssignments.size() - usersWithWrongAssignedPermissions.size())

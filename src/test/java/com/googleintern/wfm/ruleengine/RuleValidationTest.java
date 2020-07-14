@@ -180,6 +180,7 @@ public class RuleValidationTest {
 
   private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT =
       RuleValidationReport.builder()
+          .setGeneratedRules(RULES)
           .setAssignedPoolAssignmentsByUsers(EXPECTED_ASSIGNED_POOL_ASSIGNMENTS_BY_USERS)
           .setRuleCoverage(EXPECTED_RULES_COVERAGE)
           .setUsersWithLessAssignedPermissions(USERS_WITH_LESS_ASSIGNED_PERMISSIONS)
@@ -187,8 +188,9 @@ public class RuleValidationTest {
           .setUncoveredPoolAssignments(EXPECTED_UNCOVERED_POOL_ASSIGNMENTS)
           .build();
 
-  private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT_WITH_USERS =
+  private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_USERS =
       RuleValidationReport.builder()
+          .setGeneratedRules(RULES)
           .setAssignedPoolAssignmentsByUsers(
               ImmutableSetMultimap.<UserModel, PoolAssignmentModel>builder().build())
           .setRuleCoverage(0d / 0d)
@@ -199,6 +201,7 @@ public class RuleValidationTest {
 
   private static final RuleValidationReport EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_RULES =
       RuleValidationReport.builder()
+          .setGeneratedRules(ImmutableSet.of())
           .setAssignedPoolAssignmentsByUsers(
               ImmutableSetMultimap.<UserModel, PoolAssignmentModel>builder().build())
           .setRuleCoverage((double) 2 / 7)
@@ -218,6 +221,7 @@ public class RuleValidationTest {
   private static final RuleValidationReport
       EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_USERS_AND_EMPTY_RULES =
           RuleValidationReport.builder()
+              .setGeneratedRules(ImmutableSet.of())
               .setAssignedPoolAssignmentsByUsers(
                   ImmutableSetMultimap.<UserModel, PoolAssignmentModel>builder().build())
               .setRuleCoverage(0d / 0d)
@@ -237,7 +241,7 @@ public class RuleValidationTest {
   public void validateTestWithEmptyUsers() {
     RuleValidation ruleValidation = new RuleValidation(ImmutableList.of());
     RuleValidationReport ruleValidationReport = ruleValidation.validate(RULES);
-    Assert.assertEquals(EXPECTED_RULE_VALIDATION_REPORT_WITH_USERS, ruleValidationReport);
+    Assert.assertEquals(EXPECTED_RULE_VALIDATION_REPORT_WITH_EMPTY_USERS, ruleValidationReport);
   }
 
   @Test
