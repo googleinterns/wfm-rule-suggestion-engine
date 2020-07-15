@@ -86,7 +86,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
-          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId, workgroupId);
+          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId));
       rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
       ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
           findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
