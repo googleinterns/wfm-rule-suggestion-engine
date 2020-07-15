@@ -71,7 +71,7 @@ public class RuleValidation {
   private ImmutableSet<PoolAssignmentModel> assignedPermissions(
       UserModel user, ImmutableSet<RuleModel> generatedRules) {
     return generatedRules.stream()
-        .filter(rule -> isUserCoveredByRules(rule, user))
+        .filter(rule -> rule.isUserCoveredByRules(user))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()
@@ -81,40 +81,6 @@ public class RuleValidation {
                                 .setCasePoolId(rule.casePoolId())
                                 .setPermissionSetId(permissionSetId)
                                 .build()))
-        .collect(toImmutableSet());
-  }
-
-  private static boolean isUserCoveredByRules(RuleModel generateRule, UserModel user) {
-    if ((generateRule.workforceId() != user.workforceId())
-        || (generateRule.workgroupId() != user.workgroupId())) {
-      return false;
-    }
-    for (ImmutableSet<FilterModel> orFilters : generateRule.filters()) {
-      if (Sets.intersection(ImmutableSet.copyOf(user.skillIds()), getSkillIdsFromFilters(orFilters))
-              .isEmpty()
-          && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleSkillIds()), getSkillIdsFromFilters(orFilters))
-              .isEmpty()
-          && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleIds()), getRoleIdsFromFilters(orFilters))
-              .isEmpty()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
-    return filters.stream()
-        .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
-        .map(filter -> filter.value())
-        .collect(toImmutableSet());
-  }
-
-  private static ImmutableSet<Long> getRoleIdsFromFilters(ImmutableSet<FilterModel> filters) {
-    return filters.stream()
-        .filter(filer -> filer.type() == FilterModel.FilterType.ROLE)
-        .map(filter -> filter.value())
         .collect(toImmutableSet());
   }
 

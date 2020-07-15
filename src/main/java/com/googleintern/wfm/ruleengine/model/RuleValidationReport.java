@@ -294,44 +294,8 @@ public abstract class RuleValidationReport {
     for (PoolAssignmentModel poolAssignment : poolAssignments) {
       ImmutableSet<RuleModel> rules = rulesByPoolAssignments.get(poolAssignment);
       rulesAssignedMorePermissionsBuilder.addAll(
-          rules.stream()
-              .filter(rule -> isUserCoveredByRules(rule, user))
-              .collect(toImmutableSet()));
+          rules.stream().filter(rule -> rule.isUserCoveredByRules(user)).collect(toImmutableSet()));
     }
     return rulesAssignedMorePermissionsBuilder.build();
-  }
-
-  private static boolean isUserCoveredByRules(RuleModel generateRule, UserModel user) {
-    if ((generateRule.workforceId() != user.workforceId())
-        || (generateRule.workgroupId() != user.workgroupId())) {
-      return false;
-    }
-    for (ImmutableSet<FilterModel> orFilters : generateRule.filters()) {
-      if (Sets.intersection(ImmutableSet.copyOf(user.skillIds()), getSkillIdsFromFilters(orFilters))
-              .isEmpty()
-          && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleSkillIds()), getSkillIdsFromFilters(orFilters))
-              .isEmpty()
-          && Sets.intersection(
-                  ImmutableSet.copyOf(user.roleIds()), getRoleIdsFromFilters(orFilters))
-              .isEmpty()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
-    return filters.stream()
-        .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
-        .map(filter -> filter.value())
-        .collect(toImmutableSet());
-  }
-
-  private static ImmutableSet<Long> getRoleIdsFromFilters(ImmutableSet<FilterModel> filters) {
-    return filters.stream()
-        .filter(filer -> filer.type() == FilterModel.FilterType.ROLE)
-        .map(filter -> filter.value())
-        .collect(toImmutableSet());
   }
 }

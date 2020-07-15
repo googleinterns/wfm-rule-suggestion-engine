@@ -29,18 +29,7 @@ import java.util.Set;
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generateWorkgroupIdRules(
-<<<<<<< HEAD
-      List<UserModel> userPoolAssignmentsFromSameWorkGroupId) {
-=======
-      ImmutableListMultimap<Long, UserModel> userPoolAssignmentsByWorkGroupId,
-      Long workgroupId,
-      RuleIdGenerator ruleIdGenerator) {
-    if (!userPoolAssignmentsByWorkGroupId.containsKey(workgroupId)) {
-      return ImmutableSet.of();
-    }
-    ImmutableList<UserModel> userPoolAssignmentsFromSameWorkGroupId =
-        userPoolAssignmentsByWorkGroupId.get(workgroupId);
->>>>>>> dc844fb... Add Rule Id to Rule Model
+      List<UserModel> userPoolAssignmentsFromSameWorkGroupId, RuleIdGenerator ruleIdGenerator) {
     if (userPoolAssignmentsFromSameWorkGroupId.size() == 0) {
       return ImmutableSet.of();
     }
@@ -48,16 +37,11 @@ public class WorkgroupIdRuleGenerator {
         findCommonPermissionsInsideOneWorkgroup(userPoolAssignmentsFromSameWorkGroupId);
     ImmutableSetMultimap<Long, Long> permissionGroup =
         groupPermissionByCasePoolId(permissionIntersections);
-<<<<<<< HEAD
     return createGeneralRuleForWorkgroupId(
         permissionGroup,
         userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId(),
-        userPoolAssignmentsFromSameWorkGroupId.get(0).workgroupId());
-=======
-    Long workforceId = userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId();
-    return createGeneralRuleForWorkgroupId(
-        permissionGroup, workforceId, workgroupId, ruleIdGenerator);
->>>>>>> dc844fb... Add Rule Id to Rule Model
+        userPoolAssignmentsFromSameWorkGroupId.get(0).workgroupId(),
+        ruleIdGenerator);
   }
 
   private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(

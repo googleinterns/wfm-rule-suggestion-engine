@@ -79,13 +79,13 @@ public class WorkgroupIdRuleGeneratorTest {
 
     ImmutableSet<RuleModel> firstGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
-            mapByWorkGroupId.get(EXPECTED_FIRST_WORKGROUP_ID));
+            mapByWorkGroupId.get(EXPECTED_FIRST_WORKGROUP_ID), firstRuleIdGenerator);
     Assert.assertEquals(EXPECTED_FIRST_GENERATED_RULES, firstGeneratedRules);
 
     RuleIdGenerator secondRuleIdGenerator = new RuleIdGenerator();
     ImmutableSet<RuleModel> secondGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
-            mapByWorkGroupId.get(EXPECTED_SECOND_WORKGROUP_ID));
+            mapByWorkGroupId.get(EXPECTED_SECOND_WORKGROUP_ID), secondRuleIdGenerator);
     Assert.assertEquals(EXPECTED_SECOND_GENERATED_RULES, secondGeneratedRules);
   }
 }

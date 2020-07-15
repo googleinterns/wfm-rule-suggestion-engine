@@ -87,7 +87,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
-          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId));
+          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId), ruleIdGenerator);
       rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
       ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
           findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
@@ -106,7 +106,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
                 filtersByPoolAssignments,
                 poolAssignment,
                 validUserPoolAssignments.get(0).workforceId(),
-                workgroupId));
+                workgroupId, ruleIdGenerator));
       }
     }
     return rulesBuilder.build();
