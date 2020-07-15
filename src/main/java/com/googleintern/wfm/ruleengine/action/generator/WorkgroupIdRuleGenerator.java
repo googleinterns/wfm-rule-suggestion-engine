@@ -16,15 +16,14 @@ import java.util.Set;
  * <p>Steps:
  *
  * <ol>
- *   <li>Step 1: Check whether the target work group ID is a valid or not.
- *   <li>Step 2: Get all({@link UserModel userPoolAssignments}) associated with the target work
- *       group ID as an Immutable List and check its size.
- *   <li>Step 3: Loop through all userPoolAssignments in the list and find their common {@link
+ *   <li>Step 1: Check the size of ({@link UserModel userPoolAssignmentsFromSameWorkGroupId}). If it
+ *       does not have a valid size, return an empty set.
+ *   <li>Step 2: Loop through all userPoolAssignments in the list and find their common {@link
  *       PoolAssignmentModel}. Store the finding results as an immutable set.
- *   <li>Step 4: Group the finding result from step 3 by Case Pool ID. Store the grouping results in
+ *   <li>Step 3: Group the finding result from step 3 by Case Pool ID. Store the grouping results in
  *       an immutable set multimap where key represent Case Pool IDs and values represent Permission
  *       Set IDs.
- *   <li>Step 5: Form Rules based on the grouping results from step 4.
+ *   <li>Step 4: Form Rules based on the grouping results from step 3.
  * </ol>
  */
 public class WorkgroupIdRuleGenerator {
