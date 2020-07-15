@@ -13,7 +13,6 @@ import java.util.Set;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
-<<<<<<< HEAD
  * FiltersReduction class is used to minimize/reduce/simplify the filters set for each {@link
  * PoolAssignmentModel}.
  */
