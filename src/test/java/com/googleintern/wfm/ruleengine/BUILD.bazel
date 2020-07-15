@@ -68,6 +68,7 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:ruleIdGenerator_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
@@ -117,6 +118,8 @@ java_test(
     deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:CasePoolIdAndPermissionIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:ruleIdGenerator_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )

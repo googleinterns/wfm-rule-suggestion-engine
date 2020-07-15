@@ -35,6 +35,7 @@ public class CsvWriterTest {
       ImmutableList.of(OR_FILTER_IDS_RULE_0);
   private static final RuleModel RULE_0 =
       RuleModel.builder()
+          .setRuleId(0L)
           .setWorkforceId(0)
           .setWorkgroupId(0)
           .setCasePoolId(0)
@@ -52,6 +53,7 @@ public class CsvWriterTest {
       ImmutableList.of(OR_FILTER_IDS_RULE_1);
   private static final RuleModel RULE_1 =
       RuleModel.builder()
+          .setRuleId(1L)
           .setWorkforceId(1024)
           .setWorkgroupId(2048)
           .setCasePoolId(200054)
@@ -79,6 +81,7 @@ public class CsvWriterTest {
       ImmutableList.of(OR_FILTER_IDS_INDEX_1_RULE_2, OR_FILTER_IDS_INDEX_2_RULE_2);
   private static final RuleModel RULE_2 =
       RuleModel.builder()
+          .setRuleId(2L)
           .setWorkforceId(1024)
           .setWorkgroupId(2048)
           .setCasePoolId(200054)
@@ -105,6 +108,7 @@ public class CsvWriterTest {
       ImmutableList.of(OR_FILTER_IDS_INDEX_1_RULE_3, OR_FILTER_IDS_INDEX_2_RULE_3);
   private static final RuleModel RULE_3 =
       RuleModel.builder()
+          .setRuleId(3L)
           .setWorkforceId(1024)
           .setWorkgroupId(2048)
           .setCasePoolId(200054)

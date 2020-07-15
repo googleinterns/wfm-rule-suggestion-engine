@@ -53,6 +53,7 @@ public class RuleValidationReportTest {
   private static final ImmutableSet<RuleModel> RULES =
       ImmutableSet.of(
           RuleModel.builder()
+              .setRuleId(0L)
               .setWorkforceId(1024L)
               .setWorkgroupId(2048L)
               .setCasePoolId(2000543L)
@@ -60,6 +61,7 @@ public class RuleValidationReportTest {
               .setFilters(ImmutableList.of())
               .build(),
           RuleModel.builder()
+              .setRuleId(1L)
               .setWorkforceId(1024L)
               .setWorkgroupId(2048L)
               .setCasePoolId(2000543L)
@@ -67,6 +69,7 @@ public class RuleValidationReportTest {
               .setFilters(FILTERS_RULE_1)
               .build(),
           RuleModel.builder()
+              .setRuleId(2L)
               .setWorkforceId(1024L)
               .setWorkgroupId(2050L)
               .setCasePoolId(2000408L)

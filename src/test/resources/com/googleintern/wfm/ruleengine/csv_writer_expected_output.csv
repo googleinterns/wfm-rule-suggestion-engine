@@ -1,5 +1,5 @@
-Workforce ID,Workgroup ID,Case Pool ID,Permission Set IDs,Filters
-0,0,0,[],[]
-1024,2048,200054,[3344],[{skill_id:2020}]
-1024,2048,200054,"[3344,2045]","[{skill_id:2020,role_id:2011,skill_id:2033};{skill_id:1990,role_id:1995,skill_id:1998}]"
-1024,2048,200054,"[2020,2011,2033,2056]","[{skill_id:2020,role_id:2011,skill_id:2033};{skill_id:2056}]"
+Rule ID,Workforce ID,Workgroup ID,Case Pool ID,Permission Set IDs,Filters
+0,0,0,0,[],[]
+1,1024,2048,200054,[3344],[{skill_id:2020}]
+2,1024,2048,200054,"[3344,2045]","[{skill_id:2020,role_id:2011,skill_id:2033};{skill_id:1990,role_id:1995,skill_id:1998}]"
+3,1024,2048,200054,"[2020,2011,2033,2056]","[{skill_id:2020,role_id:2011,skill_id:2033};{skill_id:2056}]"

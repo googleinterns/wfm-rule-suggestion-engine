@@ -235,13 +235,17 @@ public abstract class RuleValidationReport {
 
   private static String convertRulesToCsvString(ImmutableSet<RuleModel> rules) {
     StringBuilder rulesStringBuilder = new StringBuilder();
+    rulesStringBuilder.append(Separator.SQUARE_BRACKET_LEFT.symbol);
     rulesStringBuilder.append(Separator.CURLY_BRACKET_LEFT.symbol);
     for (RuleModel rule : rules) {
-      rulesStringBuilder.append(rulesStringBuilder.length() == 1 ? "" : Separator.COMMA.symbol);
+      rulesStringBuilder.append(rulesStringBuilder.length() == 2 ? "" : Separator.COMMA.symbol);
       rulesStringBuilder.append(
-          RULE_ID_PREFIX + rule.ruleId() + Separator.DOUBLE_QUOTATION_MARK.symbol);
+          RULE_ID_PREFIX
+              + rule.ruleId()
+              + Separator.DOUBLE_QUOTATION_MARK.symbol
+              + Separator.CURLY_BRACKET_RIGHT.symbol);
     }
-    rulesStringBuilder.append(Separator.CURLY_BRACKET_RIGHT.symbol);
+    rulesStringBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
     return rulesStringBuilder.toString();
   }
 
