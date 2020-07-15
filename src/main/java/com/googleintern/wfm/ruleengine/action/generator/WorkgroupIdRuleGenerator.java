@@ -30,12 +30,12 @@ import java.util.Set;
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generateWorkgroupIdRules(
-      ImmutableListMultimap<Long, UserModel> userPoolAssignmentsByWorkGroupId,
+      ListMultimap<Long, UserModel> userPoolAssignmentsByWorkGroupId,
       Long workgroupId) {
     if (!userPoolAssignmentsByWorkGroupId.containsKey(workgroupId)) {
       return ImmutableSet.of();
     }
-    ImmutableList<UserModel> userPoolAssignmentsFromSameWorkGroupId =
+    List<UserModel> userPoolAssignmentsFromSameWorkGroupId =
         userPoolAssignmentsByWorkGroupId.get(workgroupId);
     if (userPoolAssignmentsFromSameWorkGroupId.size() == 0) {
       return ImmutableSet.of();

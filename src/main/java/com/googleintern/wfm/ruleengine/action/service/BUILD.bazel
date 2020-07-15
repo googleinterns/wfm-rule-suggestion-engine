@@ -8,9 +8,9 @@ java_binary(
 )
 
 java_binary(
-    name = "RuleSuggestion",
-    srcs = ["RuleSuggestion.java"],
-    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.service.RuleSuggestion",
+    name = "RuleSuggestionServiceImplementation",
+    srcs = ["RuleSuggestionServiceImplementation.java"],
+    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.service.RuleSuggestionServiceImplementation",
     visibility = ["//visibility:public"],
     deps = [
         ":RuleSuggestionService",

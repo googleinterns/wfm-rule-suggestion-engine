@@ -1,9 +1,6 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action.service;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.*;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.action.*;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
@@ -12,11 +9,14 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /** RuleSuggestionService class is used to suggest rules based on the input data reading. */
-public class RuleSuggestion implements RuleSuggestionService {
+public class RuleSuggestionServiceImplementation implements RuleSuggestionService {
   private static final String CSV_INPUT_FILE_PATH =
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/data/support_test_agents_anonymized.csv";
@@ -30,7 +30,7 @@ public class RuleSuggestion implements RuleSuggestionService {
           + "/Project/wfm-rule-suggestion-engine/output/generated_rules.csv";
 
   public static void main(String[] args) throws IOException, CsvException {
-    RuleSuggestion ruleSuggestion = new RuleSuggestion();
+    RuleSuggestionServiceImplementation ruleSuggestion = new RuleSuggestionServiceImplementation();
     ruleSuggestion.suggestRules(CSV_INPUT_FILE_PATH);
   }
 
@@ -73,40 +73,46 @@ public class RuleSuggestion implements RuleSuggestionService {
 
   @Override
   public String suggestRules(String csvFilePath, int percentage) {
-    return null;
+    throw new NotImplementedException();
   }
 
-  private ImmutableSet<RuleModel> suggestRules(ImmutableList<UserModel> validUserPoolAssignments) {
+  private ImmutableSet<RuleModel> suggestRules(List<UserModel> validUserPoolAssignments) {
+    if (validUserPoolAssignments.isEmpty()) {
+      return ImmutableSet.of();
+    }
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
 
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
-      ImmutableSet<RuleModel> generalRulesForWorkgroupId =
+      ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId, workgroupId);
-      rulesBuilder.addAll(generalRulesForWorkgroupId);
-      ImmutableSet<PoolAssignmentModel> coveredPoolAssignments =
-          findPoolAssignmentsCoveredByRules(generalRulesForWorkgroupId);
+      rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
+      ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
+          findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
 
       ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-          filtersByCasePoolIdAndPermissionSetId =
+          filtersByPoolAssignments =
               CasePoolIdAndPermissionIdGroupingUtil.groupByCasePoolIdAndPermissionSetId(
                   usersByWorkgroupId.get(workgroupId));
 
-      for (PoolAssignmentModel poolAssignment : filtersByCasePoolIdAndPermissionSetId.keySet()) {
-        if (coveredPoolAssignments.contains(poolAssignment)) {
+      for (PoolAssignmentModel poolAssignment : filtersByPoolAssignments.keySet()) {
+        if (poolAssignmentCoveredByWorkgroupIdRules.contains(poolAssignment)) {
           continue;
         }
         rulesBuilder.addAll(
             reduceFiltersToCreateRules(
-                filtersByCasePoolIdAndPermissionSetId, poolAssignment, 1033L, workgroupId));
+                filtersByPoolAssignments,
+                poolAssignment,
+                validUserPoolAssignments.get(0).workforceId(),
+                workgroupId));
       }
     }
     return rulesBuilder.build();
   }
 
   private ImmutableSet<PoolAssignmentModel> findPoolAssignmentsCoveredByRules(
-      ImmutableSet<RuleModel> generalRulesForWorkgroupId) {
+      Set<RuleModel> generalRulesForWorkgroupId) {
     ImmutableSet.Builder<PoolAssignmentModel> coveredPoolAssignmentsBuilder =
         ImmutableSet.builder();
     for (RuleModel rule : generalRulesForWorkgroupId) {
@@ -122,13 +128,12 @@ public class RuleSuggestion implements RuleSuggestionService {
   }
 
   private ImmutableSet<RuleModel> reduceFiltersToCreateRules(
-      ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>>
-          filtersByCasePoolIdAndPermissionSetId,
+      SetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> filterByPoolAssignment,
       PoolAssignmentModel poolAssignment,
       Long workforceId,
       Long workgroupId) {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
-        FiltersReduction.reduce(filtersByCasePoolIdAndPermissionSetId, poolAssignment);
+        FiltersReduction.reduce(filterByPoolAssignment, poolAssignment);
     return CasePoolIdAndPermissionIdRuleGenerator.generateRules(
         workforceId, workgroupId, poolAssignment, reducedFilters);
   }
