@@ -46,7 +46,7 @@ public abstract class RuleModel {
 
     public abstract RuleModel build();
   }
-
+  
   enum Separator {
     SEMICOLON(";"),
     COMMA(","),
@@ -93,7 +93,6 @@ public abstract class RuleModel {
     String filterIds = convertFiltersToCsvString(filters());
     return new String[] {ruleId, workforceId, workgroupId, casePoolId, permissionIds, filterIds};
   }
-
   private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
     return filters.stream()
         .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
