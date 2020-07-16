@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 /**
  * FiltersReduction class is used to minimize the size of filter groups that can lead to permission
  * assignments.
@@ -48,24 +50,19 @@ public class FiltersReduction {
   private static List<ImmutableSet<FilterModel>> updateReducedFilterResults(
       List<ImmutableSet<FilterModel>> reducedFilterResults,
       ImmutableList<FilterModel> currentFilters) {
-    if (reducedFilterResults.isEmpty()) {
+    ImmutableList<ImmutableSet<FilterModel>> reducedFiltersCoveredByCurrentFilters =
+        reducedFilterResults.stream()
+            .filter(reducedFilters -> reducedFilters.containsAll(currentFilters))
+            .collect(toImmutableList());
+    ImmutableList<ImmutableSet<FilterModel>> reducedFiltersIncludedCurrentFilters =
+        reducedFilterResults.stream()
+            .filter(reducedFilters -> currentFilters.containsAll(reducedFilters))
+            .collect(toImmutableList());
+    if (!reducedFiltersCoveredByCurrentFilters.isEmpty()
+        || reducedFiltersIncludedCurrentFilters.isEmpty()) {
       reducedFilterResults.add(ImmutableSet.copyOf(currentFilters));
-      return reducedFilterResults;
+      reducedFilterResults.removeAll(reducedFiltersCoveredByCurrentFilters);
     }
-    boolean canBeAdded = true;
-    List<ImmutableSet<FilterModel>> removedFilters = new ArrayList<>();
-    for (ImmutableSet<FilterModel> reducedFilters : reducedFilterResults) {
-      if (reducedFilters.containsAll(currentFilters)) {
-        removedFilters.add(reducedFilters);
-      } else if (currentFilters.containsAll(reducedFilters)) {
-        canBeAdded = false;
-        break;
-      }
-    }
-    if (canBeAdded) {
-      reducedFilterResults.add(ImmutableSet.copyOf(currentFilters));
-    }
-    reducedFilterResults.removeAll(removedFilters);
     return reducedFilterResults;
   }
 }
