@@ -105,7 +105,7 @@ public abstract class RuleValidationReport {
             "Role Id",
             "Skill Id",
             "Wrong Assigned Pool Assignments",
-            "Relative Rules"
+            "Related Rules"
           });
 
   private static final String[] POOL_ASSIGNMENT_HEADER =

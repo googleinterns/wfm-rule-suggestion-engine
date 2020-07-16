@@ -7,7 +7,6 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolId
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
-import src.test.java.com.googleintern.wfm.ruleengine.RuleValidationReportTest;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
