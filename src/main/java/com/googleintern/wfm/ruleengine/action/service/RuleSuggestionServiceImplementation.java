@@ -6,10 +6,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.*;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
-import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.*;
+import src.test.java.com.googleintern.wfm.ruleengine.RuleValidationReportTest;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
@@ -62,8 +60,10 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
-    ruleValidation.validate(rules).writeToCsvFile(CSV_OUTPUT_FILE_PATH);
-    return null;
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(rules);
+    ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
+
+    return ruleValidationReport.convertRuleValidationReportToString();
   }
 
   @Override
@@ -81,7 +81,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
-          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId), ruleIdGenerator);
+          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
+              usersByWorkgroupId.get(workgroupId), ruleIdGenerator);
       rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
       ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
           findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
@@ -100,7 +101,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
                 filtersByPoolAssignments,
                 poolAssignment,
                 validUserPoolAssignments.get(0).workforceId(),
-                workgroupId, ruleIdGenerator));
+                workgroupId,
+                ruleIdGenerator));
       }
     }
     return rulesBuilder.build();
