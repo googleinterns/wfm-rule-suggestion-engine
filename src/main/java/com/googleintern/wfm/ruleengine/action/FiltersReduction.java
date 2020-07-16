@@ -2,10 +2,6 @@ package src.main.java.com.googleintern.wfm.ruleengine.action;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-<<<<<<< HEAD
-=======
-import com.google.common.collect.ImmutableSetMultimap;
->>>>>>> fda48e4... Changes for code review comments.
 import com.google.common.collect.SetMultimap;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
