@@ -59,7 +59,6 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
         DataProcessor.filterValidData(userPoolAssignments);
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
-
     ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
