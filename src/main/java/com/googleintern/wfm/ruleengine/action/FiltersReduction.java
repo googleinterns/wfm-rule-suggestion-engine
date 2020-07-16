@@ -46,7 +46,7 @@ public class FiltersReduction {
     }
     return ImmutableList.copyOf(reducedFilters);
   }
-
+  
   /**
    * Update the reducedFilters list using the input parameter currentFilters
    *
