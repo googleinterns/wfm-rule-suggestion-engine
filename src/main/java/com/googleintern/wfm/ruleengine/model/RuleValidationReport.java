@@ -77,6 +77,11 @@ public abstract class RuleValidationReport {
   /** Constant string variables used for result outputs. */
   private static final String RULE_COVERAGE_PERCENT_HEADER = "Coverage % for Rule Set:";
 
+  private static final String[] RULE_HEADER =
+      new String[] {
+        "Rule ID", "Workforce ID", "Workgroup ID", "Case Pool ID", "Permission Set IDs", "Filters"
+      };
+
   private static final ImmutableList<String[]> USERS_WITH_LESS_ASSIGNED_PERMISSIONS_HEADER =
       ImmutableList.of(
           new String[] {"Users with Less Assigned Permissions:"},
@@ -131,6 +136,8 @@ public abstract class RuleValidationReport {
   private ImmutableList<String[]> convertRuleValidationReportToCsvRows() {
     return ImmutableList.<String[]>builder()
         .add(convertRuleCoverageToCsvString())
+        .add(RULE_HEADER)
+        .addAll(convertRulesToCsvRows())
         .add(POOL_ASSIGNMENT_HEADER)
         .addAll(convertUncoveredPoolAssignmentsToCsvRows())
         .addAll(USERS_WITH_LESS_ASSIGNED_PERMISSIONS_HEADER)
@@ -144,6 +151,12 @@ public abstract class RuleValidationReport {
     return new String[] {
       RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage() * 100) + PERCENTAGE_SIGN
     };
+  }
+
+  private ImmutableList<String[]> convertRulesToCsvRows() {
+    ImmutableList.Builder<String[]> rulesCsvRowsBuilder = ImmutableList.builder();
+    generatedRules().forEach(rule -> rulesCsvRowsBuilder.add(rule.convertRuleToCsvRow()));
+    return rulesCsvRowsBuilder.build();
   }
 
   private ImmutableList<String[]> convertUncoveredPoolAssignmentsToCsvRows() {

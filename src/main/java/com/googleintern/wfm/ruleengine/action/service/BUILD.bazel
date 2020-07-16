@@ -26,7 +26,6 @@ java_library(
     exports = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvWriter",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:FiltersReduction",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",

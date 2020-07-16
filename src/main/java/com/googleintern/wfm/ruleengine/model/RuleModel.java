@@ -47,6 +47,24 @@ public abstract class RuleModel {
     public abstract RuleModel build();
   }
 
+  enum Separator {
+    SEMICOLON(";"),
+    COMMA(","),
+    SQUARE_BRACKET_LEFT("["),
+    SQUARE_BRACKET_RIGHT("]"),
+    CURLY_BRACKET_LEFT("{"),
+    CURLY_BRACKET_RIGHT("}");
+
+    final String symbol;
+
+    Separator(String symbol) {
+      this.symbol = symbol;
+    }
+  }
+
+  private static final String SKILL_ID_PREFIX = "skill_id:";
+  private static final String ROLE_ID_PREFIX = "role_id:";
+
   public boolean isUserCoveredByRules(UserModel user) {
     if ((workforceId() != user.workforceId()) || (workgroupId() != user.workgroupId())) {
       return false;
@@ -66,6 +84,16 @@ public abstract class RuleModel {
     return true;
   }
 
+  public String[] convertRuleToCsvRow() {
+    String ruleId = Long.toString(ruleId());
+    String workforceId = Long.toString(workforceId());
+    String workgroupId = Long.toString(workgroupId());
+    String casePoolId = Long.toString(casePoolId());
+    String permissionIds = convertPermissionSetIdsToCsvString(permissionSetIds());
+    String filterIds = convertFilterIdsToCsvString(filters());
+    return new String[] {ruleId, workforceId, workgroupId, casePoolId, permissionIds, filterIds};
+  }
+
   private static ImmutableSet<Long> getSkillIdsFromFilters(ImmutableSet<FilterModel> filters) {
     return filters.stream()
         .filter(filer -> filer.type() == FilterModel.FilterType.SKILL)
@@ -78,5 +106,45 @@ public abstract class RuleModel {
         .filter(filer -> filer.type() == FilterModel.FilterType.ROLE)
         .map(filter -> filter.value())
         .collect(toImmutableSet());
+  }
+
+  private static String convertPermissionSetIdsToCsvString(ImmutableSet<Long> permissionSetIds) {
+    StringBuilder permissionIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
+    for (Long permissionSetId : permissionSetIds) {
+      if (permissionIdsBuilder.length() > 1) {
+        permissionIdsBuilder.append(Separator.COMMA.symbol);
+      }
+      permissionIdsBuilder.append(permissionSetId);
+    }
+    permissionIdsBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
+    return permissionIdsBuilder.toString();
+  }
+
+  private static String convertFilterIdsToCsvString(List<ImmutableSet<FilterModel>> filters) {
+    StringBuilder filterIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
+    for (final ImmutableSet<FilterModel> filterSet : filters) {
+      if (filterIdsBuilder.length() > 1) {
+        filterIdsBuilder.append(Separator.SEMICOLON.symbol);
+      }
+      StringBuilder currFilterIdsBuilder = new StringBuilder();
+      for (final FilterModel filter : filterSet) {
+        currFilterIdsBuilder.append(
+            currFilterIdsBuilder.length() > 0
+                ? Separator.COMMA.symbol
+                : Separator.CURLY_BRACKET_LEFT.symbol);
+        if (filter.type() == FilterModel.FilterType.SKILL) {
+          currFilterIdsBuilder.append(SKILL_ID_PREFIX);
+        } else if (filter.type() == FilterModel.FilterType.ROLE) {
+          currFilterIdsBuilder.append(ROLE_ID_PREFIX);
+        }
+        currFilterIdsBuilder.append(filter.value());
+      }
+      filterIdsBuilder.append(
+          currFilterIdsBuilder.toString().isEmpty()
+              ? ""
+              : currFilterIdsBuilder.toString() + Separator.CURLY_BRACKET_RIGHT.symbol);
+    }
+    filterIdsBuilder.append(Separator.SQUARE_BRACKET_RIGHT.symbol);
+    return filterIdsBuilder.toString();
   }
 }

@@ -22,13 +22,9 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/data/support_test_agents_anonymized.csv";
 
-  private static final String CSV_VALIDATION_RESULT_FILE_PATH =
-      System.getProperty("user.home")
-          + "/Project/wfm-rule-suggestion-engine/output/validate_results.csv";
-
   private static final String CSV_OUTPUT_FILE_PATH =
       System.getProperty("user.home")
-          + "/Project/wfm-rule-suggestion-engine/output/generated_rules.csv";
+          + "/Project/wfm-rule-suggestion-engine/output/rule_suggestion_results.csv";
 
   public static void main(String[] args) throws IOException, CsvException {
     RuleSuggestionServiceImplementation ruleSuggestion = new RuleSuggestionServiceImplementation();
@@ -65,10 +61,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
-    CsvWriter.writeDataIntoCsvFile(CSV_OUTPUT_FILE_PATH, rules.asList());
-
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
-    ruleValidation.validate(rules).writeToCsvFile(CSV_VALIDATION_RESULT_FILE_PATH);
+    ruleValidation.validate(rules).writeToCsvFile(CSV_OUTPUT_FILE_PATH);
     return null;
   }
 

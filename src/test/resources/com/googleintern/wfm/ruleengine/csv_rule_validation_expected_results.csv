@@ -1,4 +1,8 @@
 Coverage % for Rule Set:,71.43%
+Rule ID,Workforce ID,Workgroup ID,Case Pool ID,Permission Set IDs,Filters
+0,1024,2048,2000543,[1111],[]
+1,1024,2048,2000543,"[1156,2233]",[{skill_id:2020};{role_id:1880}]
+2,1024,2050,2000408,[30456],"[{skill_id:1997,skill_id:2088}]"
 Case Pool ID,Permission Set ID
 2000555,1112
 Users with Less Assigned Permissions:
