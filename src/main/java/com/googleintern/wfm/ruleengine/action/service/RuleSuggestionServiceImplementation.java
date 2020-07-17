@@ -58,8 +58,10 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
+    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
+
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(rules);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
     ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
 
     return ruleValidationReport.convertRuleValidationReportToString();

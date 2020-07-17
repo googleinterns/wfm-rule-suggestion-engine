@@ -11,7 +11,7 @@ public class RuleIdGenerator {
     this.ruleId = 0L;
   }
 
-  public long getRuleId(){
-      return ruleId++;
+  public long getRuleId() {
+    return ruleId++;
   }
 }
