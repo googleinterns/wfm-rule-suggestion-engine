@@ -41,6 +41,8 @@ public class FilterReductionTest {
   private static final ImmutableSet<ImmutableList<FilterModel>> FILTERS =
       ImmutableSet.of(
           ImmutableList.of(FILTER_0, FILTER_4, FILTER_5),
+          ImmutableList.of(FILTER_0, FILTER_5, FILTER_4),
+          ImmutableList.of(FILTER_0, FILTER_5, FILTER_4),
           ImmutableList.of(FILTER_0, FILTER_1, FILTER_4, FILTER_5),
           ImmutableList.of(FILTER_2, FILTER_5, FILTER_4, FILTER_1, FILTER_3, FILTER_0),
           ImmutableList.of(FILTER_2, FILTER_3, FILTER_0),
