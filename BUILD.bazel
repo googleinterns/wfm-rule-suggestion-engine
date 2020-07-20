@@ -1,7 +1,7 @@
 # action package
 alias(
     name = "RuleSuggestionService_deploy.jar",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleSuggestionService",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action/service:RuleSuggestionService",
 )
 
 alias(
@@ -26,7 +26,7 @@ alias(
 
 alias(
     name = "WorkgroupIdRuleGenerator",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
+    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
 )
 
 alias(
@@ -58,4 +58,30 @@ alias(
 alias(
     name = "RuleValidationReport",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleValidationReport",
+)
+
+# test
+alias(
+    name = "CsvParserTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvParserTest",
+)
+
+alias(
+    name = "CsvWriterTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvWriterTest",
+)
+
+alias(
+    name = "DataProcessorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:DataProcessorTest",
+)
+
+alias(
+    name = "GroupingUtilTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:GroupingUtilTest",
+)
+
+alias(
+    name = "WorkgroupIdRuleGeneratorTest",
+    actual = "//src/test/java/com/googleintern/wfm/ruleengine:WorkgroupIdRuleGeneratorTest",
 )

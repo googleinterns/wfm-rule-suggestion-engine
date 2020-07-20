@@ -1,0 +1,37 @@
+java_binary(
+    name = "RuleSuggestionService",
+    srcs = ["RuleSuggestionService.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+    ],
+)
+
+java_binary(
+    name = "RuleSuggestionServiceImplementation",
+    srcs = ["RuleSuggestionServiceImplementation.java"],
+    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.service.RuleSuggestionServiceImplementation",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":RuleSuggestionService",
+        ":action_depedency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_library(
+    name = "action_depedency",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvWriter",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:FiltersReduction",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:CasePoolIdAndPermissionIdRuleGenerator",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
+    ],
+)

@@ -1,4 +1,4 @@
-package src.main.java.com.googleintern.wfm.ruleengine.action;
+package src.main.java.com.googleintern.wfm.ruleengine.action.generator;
 
 import com.google.common.collect.*;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
@@ -16,27 +16,20 @@ import java.util.Set;
  * <p>Steps:
  *
  * <ol>
- *   <li>Step 1: Check whether the target work group ID is a valid or not.
- *   <li>Step 2: Get all({@link UserModel userPoolAssignments}) associated with the
- *       target work group ID as an Immutable List and check its size.
- *   <li>Step 3: Loop through all userPoolAssignments in the list and find their common {@link
+ *   <li>Step 1: Check the size of ({@link UserModel userPoolAssignmentsFromSameWorkGroupId}). If it
+ *       does not have a valid size, return an empty set.
+ *   <li>Step 2: Loop through all userPoolAssignments in the list and find their common {@link
  *       PoolAssignmentModel}. Store the finding results as an immutable set.
- *   <li>Step 4: Group the finding result from step 3 by Case Pool ID. Store the grouping results in
+ *   <li>Step 3: Group the finding result from step 3 by Case Pool ID. Store the grouping results in
  *       an immutable set multimap where key represent Case Pool IDs and values represent Permission
  *       Set IDs.
- *   <li>Step 5: Form Rules based on the grouping results from step 4.
+ *   <li>Step 4: Form Rules based on the grouping results from step 3.
  * </ol>
  */
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generateWorkgroupIdRules(
-      ImmutableListMultimap<Long, UserModel> userPoolAssignmentsByWorkGroupId,
-      Long workgroupId) {
-    if (!userPoolAssignmentsByWorkGroupId.containsKey(workgroupId)) {
-      return ImmutableSet.of();
-    }
-    ImmutableList<UserModel> userPoolAssignmentsFromSameWorkGroupId =
-        userPoolAssignmentsByWorkGroupId.get(workgroupId);
+      List<UserModel> userPoolAssignmentsFromSameWorkGroupId) {
     if (userPoolAssignmentsFromSameWorkGroupId.size() == 0) {
       return ImmutableSet.of();
     }
@@ -44,8 +37,10 @@ public class WorkgroupIdRuleGenerator {
         findCommonPermissionsInsideOneWorkgroup(userPoolAssignmentsFromSameWorkGroupId);
     ImmutableSetMultimap<Long, Long> permissionGroup =
         groupPermissionByCasePoolId(permissionIntersections);
-    Long workforceId = userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId();
-    return createGeneralRuleForWorkgroupId(permissionGroup, workforceId, workgroupId);
+    return createGeneralRuleForWorkgroupId(
+        permissionGroup,
+        userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId(),
+        userPoolAssignmentsFromSameWorkGroupId.get(0).workgroupId());
   }
 
   private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(

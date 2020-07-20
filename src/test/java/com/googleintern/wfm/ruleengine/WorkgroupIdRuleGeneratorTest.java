@@ -7,7 +7,7 @@ import com.opencsv.exceptions.CsvException;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
-import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdRuleGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
@@ -75,12 +75,12 @@ public class WorkgroupIdRuleGeneratorTest {
 
     ImmutableSet<RuleModel> firstGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
-            mapByWorkGroupId, EXPECTED_FIRST_WORKGROUP_ID);
+            mapByWorkGroupId.get(EXPECTED_FIRST_WORKGROUP_ID));
     Assert.assertEquals(EXPECTED_FIRST_GENERATED_RULES, firstGeneratedRules);
 
     ImmutableSet<RuleModel> secondGeneratedRules =
         WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
-            mapByWorkGroupId, EXPECTED_SECOND_WORKGROUP_ID);
+            mapByWorkGroupId.get(EXPECTED_SECOND_WORKGROUP_ID));
     Assert.assertEquals(EXPECTED_SECOND_GENERATED_RULES, secondGeneratedRules);
   }
 }

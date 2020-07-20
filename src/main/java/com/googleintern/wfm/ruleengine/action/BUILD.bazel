@@ -1,13 +1,4 @@
 java_binary(
-    name = "RuleSuggestionService",
-    srcs = ["RuleSuggestionService.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-    ],
-)
-
-java_binary(
     name = "CsvParser",
     srcs = ["CsvParser.java"],
     visibility = ["//visibility:public"],
@@ -53,16 +44,6 @@ java_binary(
 java_binary(
     name = "CasePoolIdAndPermissionIdGroupingUtil",
     srcs = ["CasePoolIdAndPermissionIdGroupingUtil.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
-    ],
-)
-
-java_binary(
-    name = "WorkgroupIdRuleGenerator",
-    srcs = ["WorkgroupIdRuleGenerator.java"],
     visibility = ["//visibility:public"],
     deps = [
         ":maven_dependency",
@@ -162,5 +143,15 @@ java_plugin(
     deps = [
         "@maven//:com_google_auto_value_auto_value",
         "@maven//:com_google_auto_value_auto_value_annotations",
+    ],
+)
+
+java_binary(
+    name = "FiltersReduction",
+    srcs = ["FiltersReduction.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )

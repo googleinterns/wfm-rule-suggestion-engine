@@ -66,8 +66,8 @@ java_test(
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CsvParser",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:DataProcessor",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
-        "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdRuleGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:WorkgroupIdRuleGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
@@ -93,6 +93,30 @@ java_test(
     deps = [
         "//src/main/java/com/googleintern/wfm/ruleengine/action:RuleValidation",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_test(
+    name = "FilterReductionTest",
+    srcs = ["FilterReductionTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.FilterReductionTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:FiltersReduction",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_test(
+    name = "CasePoolIdAndPermissionIdRuleGeneratorTest",
+    srcs = ["CasePoolIdAndPermissionIdRuleGeneratorTest.java"],
+    test_class = "src.test.java.com.googleintern.wfm.ruleengine.CasePoolIdAndPermissionIdRuleGeneratorTest",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:CasePoolIdAndPermissionIdRuleGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )
