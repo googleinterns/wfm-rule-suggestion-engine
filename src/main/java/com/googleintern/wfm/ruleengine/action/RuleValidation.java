@@ -71,7 +71,7 @@ public class RuleValidation {
   private ImmutableSet<PoolAssignmentModel> assignedPermissions(
       UserModel user, ImmutableSet<RuleModel> generatedRules) {
     return generatedRules.stream()
-        .filter(rule -> rule.isUserCoveredByRules(user))
+        .filter(rule -> rule.isUserCoveredByRule(user))
         .flatMap(
             rule ->
                 rule.permissionSetIds().stream()

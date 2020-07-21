@@ -65,7 +65,7 @@ public abstract class RuleModel {
   private static final String SKILL_ID_PREFIX = "skill_id:";
   private static final String ROLE_ID_PREFIX = "role_id:";
 
-  public boolean isUserCoveredByRules(UserModel user) {
+  public boolean isUserCoveredByRule(UserModel user) {
     if ((workforceId() != user.workforceId()) || (workgroupId() != user.workgroupId())) {
       return false;
     }
@@ -90,7 +90,7 @@ public abstract class RuleModel {
     String workgroupId = Long.toString(workgroupId());
     String casePoolId = Long.toString(casePoolId());
     String permissionIds = convertPermissionSetIdsToCsvString(permissionSetIds());
-    String filterIds = convertFilterIdsToCsvString(filters());
+    String filterIds = convertFiltersToCsvString(filters());
     return new String[] {ruleId, workforceId, workgroupId, casePoolId, permissionIds, filterIds};
   }
 
@@ -120,7 +120,7 @@ public abstract class RuleModel {
     return permissionIdsBuilder.toString();
   }
 
-  private static String convertFilterIdsToCsvString(List<ImmutableSet<FilterModel>> filters) {
+  private static String convertFiltersToCsvString(List<ImmutableSet<FilterModel>> filters) {
     StringBuilder filterIdsBuilder = new StringBuilder(Separator.SQUARE_BRACKET_LEFT.symbol);
     for (final ImmutableSet<FilterModel> filterSet : filters) {
       if (filterIdsBuilder.length() > 1) {

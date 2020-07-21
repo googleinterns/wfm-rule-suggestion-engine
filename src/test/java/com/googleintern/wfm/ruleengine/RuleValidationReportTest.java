@@ -17,6 +17,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * RuleValidationReportTest class is used to test the functionality of the RuleValidationReport
+ * class.
+ */
 public class RuleValidationReportTest {
 
   /** Generated Rules */

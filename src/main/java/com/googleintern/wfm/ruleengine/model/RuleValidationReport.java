@@ -316,7 +316,7 @@ public abstract class RuleValidationReport {
     for (PoolAssignmentModel poolAssignment : poolAssignments) {
       ImmutableSet<RuleModel> rules = rulesByPoolAssignments.get(poolAssignment);
       rulesAssignedMorePermissionsBuilder.addAll(
-          rules.stream().filter(rule -> rule.isUserCoveredByRules(user)).collect(toImmutableSet()));
+          rules.stream().filter(rule -> rule.isUserCoveredByRule(user)).collect(toImmutableSet()));
     }
     return rulesAssignedMorePermissionsBuilder.build();
   }
