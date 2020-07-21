@@ -237,22 +237,20 @@ public abstract class RuleValidationReport {
       UserModel user,
       ImmutableSet<PoolAssignmentModel> wrongAssignedPoolPermissions,
       boolean isMorePermissions) {
-    List<String> csvRow = new ArrayList<>();
-    csvRow.addAll(
-        List.of(
-            Long.toString(user.userId()),
-            Long.toString(user.workforceId()),
-            Long.toString(user.workgroupId()),
-            convertRoleIdsToCsvString(user.roleIds()),
-            convertSkillIdsToCsvString(user.skillIds(), user.roleSkillIds()),
-            convertPoolAssignmentsToCsvString(wrongAssignedPoolPermissions)));
+    String[] csvRow = new String[isMorePermissions ? 7 : 6];
+    csvRow[0] = Long.toString(user.userId());
+    csvRow[1] = Long.toString(user.workforceId());
+    csvRow[2] = Long.toString(user.workgroupId());
+    csvRow[3] = convertRoleIdsToCsvString(user.roleIds());
+    csvRow[4] = convertSkillIdsToCsvString(user.skillIds(), user.roleSkillIds());
+    csvRow[5] = convertPoolAssignmentsToCsvString(wrongAssignedPoolPermissions);
     if (isMorePermissions) {
-      csvRow.add(
+      csvRow[6] =
           convertRulesToCsvString(
               findRulesAssignedMorePermissions(
-                  groupRulesByPoolAssignments(), user, wrongAssignedPoolPermissions)));
+                  groupRulesByPoolAssignments(), user, wrongAssignedPoolPermissions));
     }
-    return csvRow.toArray(String[]::new);
+    return csvRow;
   }
 
   private static String convertRulesToCsvString(ImmutableSet<RuleModel> rules) {
