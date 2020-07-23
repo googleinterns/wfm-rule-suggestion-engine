@@ -3,6 +3,7 @@ package src.main.java.com.googleintern.wfm.ruleengine.model;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.*;
 import com.opencsv.CSVWriter;
+import org.junit.Rule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -146,7 +147,7 @@ public abstract class RuleValidationReport {
     return ImmutableList.<String[]>builder()
         .add(convertRuleCoverageToCsvString())
         .add(RULE_HEADER)
-        .addAll(convertRulesToCsvRows())
+        .addAll(generatedRules().stream().map(RuleModel::toCSVRows).collect(toImmutableList()))
         .add(POOL_ASSIGNMENT_HEADER)
         .addAll(convertUncoveredPoolAssignmentsToCsvRows())
         .addAll(USERS_WITH_LESS_ASSIGNED_PERMISSIONS_HEADER)
@@ -160,12 +161,6 @@ public abstract class RuleValidationReport {
     return new String[] {
       RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage() * 100) + PERCENTAGE_SIGN
     };
-  }
-
-  private ImmutableList<String[]> convertRulesToCsvRows() {
-    ImmutableList.Builder<String[]> rulesCsvRowsBuilder = ImmutableList.builder();
-    generatedRules().forEach(rule -> rulesCsvRowsBuilder.add(rule.toCSVRows()));
-    return rulesCsvRowsBuilder.build();
   }
 
   private ImmutableList<String[]> convertUncoveredPoolAssignmentsToCsvRows() {
