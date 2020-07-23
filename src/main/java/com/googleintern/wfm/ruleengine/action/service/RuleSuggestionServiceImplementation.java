@@ -23,6 +23,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/output/rule_suggestion_results.csv";
 
+  private static RuleIdGenerator RULE_ID_GENERATOR = new RuleIdGenerator();
+
   public static void main(String[] args) throws IOException, CsvException {
     RuleSuggestionServiceImplementation ruleSuggestion = new RuleSuggestionServiceImplementation();
     ruleSuggestion.suggestRules(CSV_INPUT_FILE_PATH);
@@ -58,7 +60,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
-    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
+    ImmutableSet<RuleModel> concentratedRules =
+        RuleConcentration.concentrate(rules, RULE_ID_GENERATOR);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
     RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
@@ -79,11 +82,11 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
-    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
+
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
-              usersByWorkgroupId.get(workgroupId), ruleIdGenerator);
+              usersByWorkgroupId.get(workgroupId), RULE_ID_GENERATOR);
       rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
       ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
           findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
@@ -103,7 +106,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
                 poolAssignment,
                 validUserPoolAssignments.get(0).workforceId(),
                 workgroupId,
-                ruleIdGenerator));
+                RULE_ID_GENERATOR));
       }
     }
     return rulesBuilder.build();

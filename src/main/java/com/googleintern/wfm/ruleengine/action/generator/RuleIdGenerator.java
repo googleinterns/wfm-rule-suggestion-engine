@@ -14,4 +14,8 @@ public class RuleIdGenerator {
   public long getRuleId() {
     return ruleId++;
   }
+
+  public void setRuleId(int ruleId) {
+    this.ruleId = ruleId;
+  }
 }

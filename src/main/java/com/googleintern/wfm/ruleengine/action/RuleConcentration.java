@@ -8,6 +8,9 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGene
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMultimap;
+
 /**
  * RuleConcentration class is used to decrease the number of generated rules by combining rules from
  * the same workgroup Id, same case Pool Id and same filters.
@@ -24,14 +27,17 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
  * </ol>
  */
 public class RuleConcentration {
-  public static ImmutableSet<RuleModel> concentrate(ImmutableSet<RuleModel> generatedRules) {
+  public static ImmutableSet<RuleModel> concentrate(
+      ImmutableSet<RuleModel> generatedRules, RuleIdGenerator ruleIdGenerator) {
     ImmutableSetMultimap<Long, RuleModel> rulesByWorkgroupId =
-        mapRulesByWorkgroupId(generatedRules);
-    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
+        generatedRules.stream()
+            .collect(toImmutableSetMultimap(rule -> rule.workgroupId(), rule -> rule));
+    ruleIdGenerator.setRuleId(0);
     ImmutableSet.Builder<RuleModel> concentratedRulesBuilder = ImmutableSet.builder();
     for (Long workgroupId : rulesByWorkgroupId.keySet()) {
       ImmutableSetMultimap<Long, RuleModel> rulesByCasePoolId =
-          mapRulesByCasePoolId(rulesByWorkgroupId.get(workgroupId));
+          rulesByWorkgroupId.get(workgroupId).stream()
+              .collect(toImmutableSetMultimap(rule -> rule.casePoolId(), rule -> rule));
       for (Long casePoolId : rulesByCasePoolId.keySet()) {
         concentratedRulesBuilder.addAll(
             generateConcentratedRules(
@@ -39,22 +45,6 @@ public class RuleConcentration {
       }
     }
     return concentratedRulesBuilder.build();
-  }
-
-  private static ImmutableSetMultimap<Long, RuleModel> mapRulesByWorkgroupId(
-      ImmutableSet<RuleModel> generatedRules) {
-    ImmutableSetMultimap.Builder<Long, RuleModel> rulesByWorkgroupIdBuilder =
-        ImmutableSetMultimap.builder();
-    generatedRules.forEach(rule -> rulesByWorkgroupIdBuilder.put(rule.workgroupId(), rule));
-    return rulesByWorkgroupIdBuilder.build();
-  }
-
-  private static ImmutableSetMultimap<Long, RuleModel> mapRulesByCasePoolId(
-      ImmutableSet<RuleModel> rulesForSameWorkgroup) {
-    ImmutableSetMultimap.Builder<Long, RuleModel> rulesByCasePoolIdBuilder =
-        ImmutableSetMultimap.builder();
-    rulesForSameWorkgroup.forEach(rule -> rulesByCasePoolIdBuilder.put(rule.casePoolId(), rule));
-    return rulesByCasePoolIdBuilder.build();
   }
 
   private static ImmutableListMultimap<ImmutableList<ImmutableSet<FilterModel>>, RuleModel>
@@ -77,17 +67,13 @@ public class RuleConcentration {
               .setWorkforceId(sameFiltersRules.get(0).workforceId())
               .setWorkgroupId(sameFiltersRules.get(0).workgroupId())
               .setCasePoolId(sameFiltersRules.get(0).casePoolId())
-              .setPermissionSetIds(concentratePermissionSetIds(sameFiltersRules))
+              .setPermissionSetIds(
+                  sameFiltersRules.stream()
+                      .flatMap(rule -> rule.permissionSetIds().stream())
+                      .collect(toImmutableSet()))
               .setFilters(filters)
               .build());
     }
     return concentratedRulesBuilder.build();
-  }
-
-  private static ImmutableSet<Long> concentratePermissionSetIds(
-      ImmutableList<RuleModel> sameFiltersRules) {
-    ImmutableSet.Builder<Long> permissionSetIdsBuilder = ImmutableSet.builder();
-    sameFiltersRules.forEach(rule -> permissionSetIdsBuilder.addAll(rule.permissionSetIds()));
-    return permissionSetIdsBuilder.build();
   }
 }

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.RuleConcentration;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
@@ -138,16 +139,20 @@ public class RuleConcentrationTest {
 
   private static final int EXPECTED_NUMBER_OF_CONCENTRATED_RULES_WITH_EMPTY_INPUT = 0;
 
+  private static RuleIdGenerator RULE_ID_GENERATOR = new RuleIdGenerator();
+
   @Test
   public void ruleConcentrationTest() {
-    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(RULES);
+    ImmutableSet<RuleModel> concentratedRules =
+        RuleConcentration.concentrate(RULES, RULE_ID_GENERATOR);
     Assert.assertEquals(EXPECTED_NUMBER_OF_CONCENTRATED_RULES, concentratedRules.size());
     Assert.assertTrue(concentratedRules.equals(EXPECTED_CONCENTRATED_RULES));
   }
 
   @Test
   public void ruleConcentrationTest_WithEmptyRules() {
-    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(ImmutableSet.of());
+    ImmutableSet<RuleModel> concentratedRules =
+        RuleConcentration.concentrate(ImmutableSet.of(), RULE_ID_GENERATOR);
     Assert.assertEquals(
         EXPECTED_NUMBER_OF_CONCENTRATED_RULES_WITH_EMPTY_INPUT, concentratedRules.size());
     Assert.assertTrue(concentratedRules.isEmpty());
