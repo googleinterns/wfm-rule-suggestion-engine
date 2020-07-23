@@ -60,8 +60,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
-    ImmutableSet<RuleModel> concentratedRules =
-        RuleConcentration.concentrate(rules, RULE_ID_GENERATOR);
+    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
     RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);

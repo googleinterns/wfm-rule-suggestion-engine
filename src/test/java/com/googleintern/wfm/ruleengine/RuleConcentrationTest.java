@@ -139,12 +139,10 @@ public class RuleConcentrationTest {
 
   private static final int EXPECTED_NUMBER_OF_CONCENTRATED_RULES_WITH_EMPTY_INPUT = 0;
 
-  private static RuleIdGenerator RULE_ID_GENERATOR = new RuleIdGenerator();
-
   @Test
   public void ruleConcentrationTest() {
     ImmutableSet<RuleModel> concentratedRules =
-        RuleConcentration.concentrate(RULES, RULE_ID_GENERATOR);
+        RuleConcentration.concentrate(RULES);
     Assert.assertEquals(EXPECTED_NUMBER_OF_CONCENTRATED_RULES, concentratedRules.size());
     Assert.assertTrue(concentratedRules.equals(EXPECTED_CONCENTRATED_RULES));
   }
@@ -152,7 +150,7 @@ public class RuleConcentrationTest {
   @Test
   public void ruleConcentrationTest_WithEmptyRules() {
     ImmutableSet<RuleModel> concentratedRules =
-        RuleConcentration.concentrate(ImmutableSet.of(), RULE_ID_GENERATOR);
+        RuleConcentration.concentrate(ImmutableSet.of());
     Assert.assertEquals(
         EXPECTED_NUMBER_OF_CONCENTRATED_RULES_WITH_EMPTY_INPUT, concentratedRules.size());
     Assert.assertTrue(concentratedRules.isEmpty());

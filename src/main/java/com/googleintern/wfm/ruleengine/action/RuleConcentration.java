@@ -24,16 +24,16 @@ import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMulti
  *   <li>Step 3: For rules having the same workgroup Id and the same case pool Id, group them by
  *       filters.
  *   <li>Step 4: For rules having the same workgroup Id, the same case pool Id and same filters,
- *       combine their permission set Ids to form a new rules.
+ *       combine their permission set Ids to form a new rules. Rule Ids for new rules are separated
+ *       from input parameter generatedRules and start from 0 again.
  * </ol>
  */
 public class RuleConcentration {
-  public static ImmutableSet<RuleModel> concentrate(
-      ImmutableSet<RuleModel> generatedRules, RuleIdGenerator ruleIdGenerator) {
+  public static ImmutableSet<RuleModel> concentrate(ImmutableSet<RuleModel> generatedRules) {
     ImmutableSetMultimap<Long, RuleModel> rulesByWorkgroupId =
         generatedRules.stream()
             .collect(toImmutableSetMultimap(rule -> rule.workgroupId(), rule -> rule));
-    ruleIdGenerator.setRuleId(0);
+    RuleIdGenerator ruleIdGenerator = new RuleIdGenerator();
     ImmutableSet.Builder<RuleModel> concentratedRulesBuilder = ImmutableSet.builder();
     for (Long workgroupId : rulesByWorkgroupId.keySet()) {
       ImmutableSetMultimap<Long, RuleModel> rulesByCasePoolId =
