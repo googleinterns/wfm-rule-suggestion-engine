@@ -8,6 +8,7 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGene
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMultimap;
 
@@ -41,18 +42,12 @@ public class RuleConcentration {
       for (Long casePoolId : rulesByCasePoolId.keySet()) {
         concentratedRulesBuilder.addAll(
             generateConcentratedRules(
-                mapRulesByFilters(rulesByCasePoolId.get(casePoolId)), ruleIdGenerator));
+                rulesByCasePoolId.get(casePoolId).stream()
+                    .collect(toImmutableListMultimap(rule -> rule.filters(), rule -> rule)),
+                ruleIdGenerator));
       }
     }
     return concentratedRulesBuilder.build();
-  }
-
-  private static ImmutableListMultimap<ImmutableList<ImmutableSet<FilterModel>>, RuleModel>
-      mapRulesByFilters(ImmutableSet<RuleModel> rulesForSameCasePoolId) {
-    ImmutableListMultimap.Builder<ImmutableList<ImmutableSet<FilterModel>>, RuleModel>
-        rulesByFiltersBuilder = ImmutableListMultimap.builder();
-    rulesForSameCasePoolId.forEach(rule -> rulesByFiltersBuilder.put(rule.filters(), rule));
-    return rulesByFiltersBuilder.build();
   }
 
   private static ImmutableSet<RuleModel> generateConcentratedRules(
