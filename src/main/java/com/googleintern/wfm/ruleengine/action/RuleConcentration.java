@@ -56,18 +56,20 @@ public class RuleConcentration {
     ImmutableSet.Builder<RuleModel> concentratedRulesBuilder = ImmutableSet.builder();
     for (ImmutableList<ImmutableSet<FilterModel>> filters : rulesByFilters.keySet()) {
       ImmutableList<RuleModel> sameFiltersRules = rulesByFilters.get(filters);
-      concentratedRulesBuilder.add(
-          RuleModel.builder()
-              .setRuleId(ruleIdGenerator.getRuleId())
-              .setWorkforceId(sameFiltersRules.get(0).workforceId())
-              .setWorkgroupId(sameFiltersRules.get(0).workgroupId())
-              .setCasePoolId(sameFiltersRules.get(0).casePoolId())
-              .setPermissionSetIds(
-                  sameFiltersRules.stream()
-                      .flatMap(rule -> rule.permissionSetIds().stream())
-                      .collect(toImmutableSet()))
-              .setFilters(filters)
-              .build());
+      if (!sameFiltersRules.isEmpty()) {
+        concentratedRulesBuilder.add(
+            RuleModel.builder()
+                .setRuleId(ruleIdGenerator.getRuleId())
+                .setWorkforceId(sameFiltersRules.get(0).workforceId())
+                .setWorkgroupId(sameFiltersRules.get(0).workgroupId())
+                .setCasePoolId(sameFiltersRules.get(0).casePoolId())
+                .setPermissionSetIds(
+                    sameFiltersRules.stream()
+                        .flatMap(rule -> rule.permissionSetIds().stream())
+                        .collect(toImmutableSet()))
+                .setFilters(filters)
+                .build());
+      }
     }
     return concentratedRulesBuilder.build();
   }

@@ -9,6 +9,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 /**
  * WorkgroupIdRuleGenerator class is used to create rules that can apply to all users from the same
  * work group.
@@ -69,21 +71,17 @@ public class WorkgroupIdRuleGenerator {
       Long workforceId,
       Long workgroupId,
       RuleIdGenerator ruleIdGenerator) {
-    ImmutableList<ImmutableSet<FilterModel>> emptyFilters =
-        ImmutableList.<ImmutableSet<FilterModel>>builder().build();
-    ImmutableSet.Builder<RuleModel> generalRulesForWorkgroupBuilder =
-        ImmutableSet.<RuleModel>builder();
-    for (Long casePoolId : permissions.keySet()) {
-      generalRulesForWorkgroupBuilder.add(
-          RuleModel.builder()
-              .setRuleId(ruleIdGenerator.getRuleId())
-              .setWorkforceId(workforceId)
-              .setWorkgroupId(workgroupId)
-              .setCasePoolId(casePoolId)
-              .setPermissionSetIds(permissions.get(casePoolId))
-              .setFilters(emptyFilters)
-              .build());
-    }
-    return generalRulesForWorkgroupBuilder.build();
+    return permissions.keySet().stream()
+        .map(
+            casePoolId ->
+                RuleModel.builder()
+                    .setRuleId(ruleIdGenerator.getRuleId())
+                    .setWorkforceId(workforceId)
+                    .setWorkgroupId(workgroupId)
+                    .setCasePoolId(casePoolId)
+                    .setPermissionSetIds(permissions.get(casePoolId))
+                    .setFilters(ImmutableList.<ImmutableSet<FilterModel>>builder().build())
+                    .build())
+        .collect(toImmutableSet());
   }
 }
