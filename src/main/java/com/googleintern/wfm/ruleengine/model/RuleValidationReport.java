@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -165,7 +164,7 @@ public abstract class RuleValidationReport {
 
   private ImmutableList<String[]> convertRulesToCsvRows() {
     ImmutableList.Builder<String[]> rulesCsvRowsBuilder = ImmutableList.builder();
-    generatedRules().forEach(rule -> rulesCsvRowsBuilder.add(rule.convertRuleToCsvRow()));
+    generatedRules().forEach(rule -> rulesCsvRowsBuilder.add(rule.toCSVRows()));
     return rulesCsvRowsBuilder.build();
   }
 
