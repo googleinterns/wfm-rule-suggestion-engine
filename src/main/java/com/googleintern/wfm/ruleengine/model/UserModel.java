@@ -7,6 +7,8 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 /** UserPoolAssignmentModel class is used to store a row of data from input file. */
 @AutoValue
 public abstract class UserModel {
@@ -49,5 +51,19 @@ public abstract class UserModel {
     public abstract Builder setPoolAssignments(Set<PoolAssignmentModel> poolAssignments);
 
     public abstract UserModel build();
+  }
+
+  public ImmutableSet<Long> findConflictUsers(ImmutableList<UserModel> users) {
+    return users.stream()
+        .filter(
+            comparedUser ->
+                workforceId() == comparedUser.workforceId()
+                    && workgroupId() == comparedUser.workgroupId()
+                    && skillIds().containsAll(comparedUser.skillIds())
+                    && roleIds().containsAll(comparedUser.roleIds())
+                    && roleSkillIds().containsAll(comparedUser.roleSkillIds())
+                    && !poolAssignments().containsAll(comparedUser.poolAssignments()))
+        .map(comparedUser -> comparedUser.userId())
+        .collect(toImmutableSet());
   }
 }

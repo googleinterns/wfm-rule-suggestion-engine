@@ -3,17 +3,16 @@ package src.main.java.com.googleintern.wfm.ruleengine.action;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
-import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMultimap;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /** DataProcessor class is used to filter out invalid or conflict data. */
 public class DataProcessor {
 
   /** Filter out user data with invalid workgroup Id values(< 0). */
-  public static ImmutableList<UserModel> filterValidData(ImmutableList<UserModel> rawData) {
+  public static ImmutableList<UserModel> filterUsersWithValidWorkgroupId(
+      ImmutableList<UserModel> rawData) {
     ImmutableList.Builder<UserModel> validDataBuilder = ImmutableList.<UserModel>builder();
 
     for (final UserModel data : rawData) {
@@ -35,14 +34,16 @@ public class DataProcessor {
     }
   }
 
-  public static ImmutableSet<UserModel> removeAllCoveredConflictUsers(
-      ImmutableList<UserModel> users, ImmutableSet<Long> coveredConflictUsers) {
-    return users.stream()
+  public static ImmutableList<UserModel> removeConflictUsers(
+      ImmutableList<UserModel> rawUserData) {
+    ImmutableSet<Long> coveredConflictUsers =
+        collectAllCoveredConflictUserIds(findConflictUserIdPairs(rawUserData));
+    return rawUserData.stream()
         .filter(user -> !coveredConflictUsers.contains(user.userId()))
-        .collect(toImmutableSet());
+        .collect(toImmutableList());
   }
 
-  public static ImmutableSet<Long> collectAllCoveredConflictUsers(
+  private static ImmutableSet<Long> collectAllCoveredConflictUserIds(
       ImmutableSetMultimap<Long, Long> conflictUserPairs) {
     ImmutableSet.Builder<Long> coveredConflictUsers = ImmutableSet.builder();
     conflictUserPairs
@@ -54,47 +55,14 @@ public class DataProcessor {
   /**
    * key userId: filter{a, b, c}, permission{1, 2} value userId: filter{a, b}, permission{1, 2, 3}
    */
-  public static ImmutableSetMultimap<Long, Long> findConflictUserPairs(
-      ImmutableList<UserModel> users) {
+  private static ImmutableSetMultimap<Long, Long> findConflictUserIdPairs(
+      ImmutableList<UserModel> rawUserData) {
     ImmutableSetMultimap.Builder<Long, Long> conflictUserPairsBuilder =
         ImmutableSetMultimap.builder();
-    users.forEach(
+    rawUserData.forEach(
         currentUser ->
             conflictUserPairsBuilder.putAll(
-                currentUser.userId(), findConflictUsers(currentUser, users)));
+                currentUser.userId(), currentUser.findConflictUsers(rawUserData)));
     return conflictUserPairsBuilder.build();
-  }
-
-  private static ImmutableSet<Long> findConflictUsers(
-      UserModel currentUser, ImmutableList<UserModel> users) {
-    return users.stream()
-        .filter(
-            comparedUser ->
-                currentUser.skillIds().containsAll(comparedUser.skillIds())
-                    && currentUser.roleIds().containsAll(comparedUser.roleIds())
-                    && currentUser.roleSkillIds().containsAll(comparedUser.roleSkillIds())
-                    && !currentUser.poolAssignments().containsAll(comparedUser.poolAssignments()))
-        .map(comparedUser -> comparedUser.userId())
-        .collect(toImmutableSet());
-  }
-
-  private static ImmutableSet<FilterModel> convertSkillIdRoleIdToFilter(UserModel user) {
-    ImmutableSet.Builder<FilterModel> filtersBuilder = ImmutableSet.builder();
-    for (Long roleId : user.roleIds()) {
-      filtersBuilder.add(
-          FilterModel.builder().setType(FilterModel.FilterType.ROLE).setValue(roleId).build());
-    }
-    for (Long skillId : user.skillIds()) {
-      filtersBuilder.add(
-          FilterModel.builder().setType(FilterModel.FilterType.SKILL).setValue(skillId).build());
-    }
-    for (Long roleSkillId : user.roleSkillIds()) {
-      filtersBuilder.add(
-          FilterModel.builder()
-              .setType(FilterModel.FilterType.SKILL)
-              .setValue(roleSkillId)
-              .build());
-    }
-    return filtersBuilder.build();
   }
 }

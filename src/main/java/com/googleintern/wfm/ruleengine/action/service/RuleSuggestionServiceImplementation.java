@@ -7,7 +7,6 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolId
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.model.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +26,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
   public static void main(String[] args) throws IOException, CsvException {
     RuleSuggestionServiceImplementation ruleSuggestion = new RuleSuggestionServiceImplementation();
-    ruleSuggestion.suggestRules(CSV_INPUT_FILE_PATH);
+    ruleSuggestion.suggestRules(CSV_INPUT_FILE_PATH, false);
   }
 
   /**
@@ -55,13 +54,14 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
   public String suggestRules(String csvFilePath) throws IOException, CsvException {
     ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(csvFilePath);
 
-    ImmutableList<UserModel> validUserPoolAssignments =
-        DataProcessor.filterValidData(userPoolAssignments);
+    ImmutableList<UserModel> usersWithValidWorkgroupId =
+        DataProcessor.filterUsersWithValidWorkgroupId(userPoolAssignments);
 
-    ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
+    ImmutableSet<RuleModel> rules = suggestRules(usersWithValidWorkgroupId);
+
     ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
 
-    RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
+    RuleValidation ruleValidation = new RuleValidation(usersWithValidWorkgroupId);
     RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
     ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
 
@@ -69,8 +69,27 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
   }
 
   @Override
-  public String suggestRules(String csvFilePath, int percentage) {
-    throw new NotImplementedException();
+  public String suggestRules(String csvFilePath, boolean assignMorePermissions)
+      throws IOException, CsvException {
+    ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(csvFilePath);
+
+    ImmutableList<UserModel> usersWithValidWorkgroupId =
+        DataProcessor.filterUsersWithValidWorkgroupId(userPoolAssignments);
+
+    ImmutableList<UserModel> validUsers =
+        assignMorePermissions == true
+            ? usersWithValidWorkgroupId
+            : DataProcessor.removeConflictUsers(usersWithValidWorkgroupId);
+
+    ImmutableSet<RuleModel> rules = suggestRules(validUsers);
+
+    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
+
+    RuleValidation ruleValidation = new RuleValidation(validUsers);
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
+    ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
+
+    return ruleValidationReport.convertRuleValidationReportToString();
   }
 
   private ImmutableSet<RuleModel> suggestRules(List<UserModel> validUserPoolAssignments) {
