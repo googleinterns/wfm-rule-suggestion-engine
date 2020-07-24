@@ -53,17 +53,12 @@ public abstract class UserModel {
     public abstract UserModel build();
   }
 
-  public ImmutableSet<Long> findConflictUsers(ImmutableList<UserModel> users) {
-    return users.stream()
-        .filter(
-            comparedUser ->
-                workforceId() == comparedUser.workforceId()
-                    && workgroupId() == comparedUser.workgroupId()
-                    && skillIds().containsAll(comparedUser.skillIds())
-                    && roleIds().containsAll(comparedUser.roleIds())
-                    && roleSkillIds().containsAll(comparedUser.roleSkillIds())
-                    && !poolAssignments().containsAll(comparedUser.poolAssignments()))
-        .map(comparedUser -> comparedUser.userId())
-        .collect(toImmutableSet());
+  public boolean isConflictUserPair(UserModel comparedUser) {
+    return workforceId() == comparedUser.workforceId()
+        && workgroupId() == comparedUser.workgroupId()
+        && skillIds().containsAll(comparedUser.skillIds())
+        && roleIds().containsAll(comparedUser.roleIds())
+        && roleSkillIds().containsAll(comparedUser.roleSkillIds())
+        && !poolAssignments().containsAll(comparedUser.poolAssignments());
   }
 }
