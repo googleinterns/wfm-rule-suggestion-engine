@@ -80,7 +80,7 @@ public class WorkgroupIdRuleGenerator {
                     .setWorkgroupId(workgroupId)
                     .setCasePoolId(casePoolId)
                     .setPermissionSetIds(permissions.get(casePoolId))
-                    .setFilters(ImmutableList.<ImmutableSet<FilterModel>>builder().build())
+                    .setFilters(ImmutableList.of())
                     .build())
         .collect(toImmutableSet());
   }
