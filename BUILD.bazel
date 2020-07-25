@@ -67,11 +67,6 @@ alias(
 )
 
 alias(
-    name = "CsvWriterTest",
-    actual = "//src/test/java/com/googleintern/wfm/ruleengine:CsvWriterTest",
-)
-
-alias(
     name = "DataProcessorTest",
     actual = "//src/test/java/com/googleintern/wfm/ruleengine:DataProcessorTest",
 )

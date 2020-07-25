@@ -9,6 +9,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 /**
  * WorkgroupIdRuleGenerator class is used to create rules that can apply to all users from the same
  * work group.
@@ -29,7 +31,7 @@ import java.util.Set;
 public class WorkgroupIdRuleGenerator {
   /** Generate rules that can apply to all users from the same workgroup Id. */
   public static ImmutableSet<RuleModel> generateWorkgroupIdRules(
-      List<UserModel> userPoolAssignmentsFromSameWorkGroupId) {
+      List<UserModel> userPoolAssignmentsFromSameWorkGroupId, RuleIdGenerator ruleIdGenerator) {
     if (userPoolAssignmentsFromSameWorkGroupId.size() == 0) {
       return ImmutableSet.of();
     }
@@ -40,7 +42,8 @@ public class WorkgroupIdRuleGenerator {
     return createGeneralRuleForWorkgroupId(
         permissionGroup,
         userPoolAssignmentsFromSameWorkGroupId.get(0).workforceId(),
-        userPoolAssignmentsFromSameWorkGroupId.get(0).workgroupId());
+        userPoolAssignmentsFromSameWorkGroupId.get(0).workgroupId(),
+        ruleIdGenerator);
   }
 
   private static ImmutableSet<PoolAssignmentModel> findCommonPermissionsInsideOneWorkgroup(
@@ -64,22 +67,21 @@ public class WorkgroupIdRuleGenerator {
   }
 
   private static ImmutableSet<RuleModel> createGeneralRuleForWorkgroupId(
-      ImmutableSetMultimap<Long, Long> permissions, Long workforceId, Long workgroupId) {
-    ImmutableList<ImmutableSet<FilterModel>> emptyFilters =
-        ImmutableList.<ImmutableSet<FilterModel>>builder().build();
-    ImmutableSet.Builder<RuleModel> generalRulesForWorkgroupBuilder =
-        ImmutableSet.<RuleModel>builder();
-    permissions.forEach(
-        (casePoolId, permissionId) -> {
-          generalRulesForWorkgroupBuilder.add(
-              RuleModel.builder()
-                  .setWorkforceId(workforceId)
-                  .setWorkgroupId(workgroupId)
-                  .setCasePoolId(casePoolId)
-                  .setPermissionSetIds(permissions.get(casePoolId))
-                  .setFilters(emptyFilters)
-                  .build());
-        });
-    return generalRulesForWorkgroupBuilder.build();
+      ImmutableSetMultimap<Long, Long> permissions,
+      Long workforceId,
+      Long workgroupId,
+      RuleIdGenerator ruleIdGenerator) {
+    return permissions.keySet().stream()
+        .map(
+            casePoolId ->
+                RuleModel.builder()
+                    .setRuleId(ruleIdGenerator.getRuleId())
+                    .setWorkforceId(workforceId)
+                    .setWorkgroupId(workgroupId)
+                    .setCasePoolId(casePoolId)
+                    .setPermissionSetIds(permissions.get(casePoolId))
+                    .setFilters(ImmutableList.of())
+                    .build())
+        .collect(toImmutableSet());
   }
 }

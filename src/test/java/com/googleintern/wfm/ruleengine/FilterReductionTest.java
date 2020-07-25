@@ -61,7 +61,7 @@ public class FilterReductionTest {
           ImmutableSet.of(FILTER_0, FILTER_4, FILTER_5),
           ImmutableSet.of(FILTER_2, FILTER_3, FILTER_0),
           ImmutableSet.of(FILTER_0, FILTER_1, FILTER_3));
-
+  
   private static final int
       EXPECTED_NUMBER_OF_REDUCED_FILTER_WITH_EMPTY_FILTERS_BY_POOL_ASSIGNMENTS = 0;
 

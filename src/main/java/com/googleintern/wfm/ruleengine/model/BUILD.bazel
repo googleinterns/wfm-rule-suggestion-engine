@@ -33,6 +33,7 @@ java_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":FilterModel",
+        ":UserModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
     ],
 )
@@ -42,7 +43,9 @@ java_binary(
     srcs = ["RuleValidationReport.java"],
     visibility = ["//visibility:public"],
     deps = [
+        ":FilterModel",
         ":PoolAssignmentModel",
+        ":RuleModel",
         ":UserModel",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:maven_dependency",
     ],

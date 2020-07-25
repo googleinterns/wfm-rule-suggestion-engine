@@ -4,11 +4,9 @@ import com.google.common.collect.*;
 import com.opencsv.exceptions.CsvException;
 import src.main.java.com.googleintern.wfm.ruleengine.action.*;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.CasePoolIdAndPermissionIdRuleGenerator;
+import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
-import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
-import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
+import src.main.java.com.googleintern.wfm.ruleengine.model.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
@@ -21,13 +19,11 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       System.getProperty("user.home")
           + "/Project/wfm-rule-suggestion-engine/data/support_test_agents_anonymized.csv";
 
-  private static final String CSV_VALIDATION_RESULT_FILE_PATH =
-      System.getProperty("user.home")
-          + "/Project/wfm-rule-suggestion-engine/output/validate_results.csv";
-
   private static final String CSV_OUTPUT_FILE_PATH =
       System.getProperty("user.home")
-          + "/Project/wfm-rule-suggestion-engine/output/generated_rules.csv";
+          + "/Project/wfm-rule-suggestion-engine/output/rule_suggestion_results.csv";
+
+  private static RuleIdGenerator RULE_ID_GENERATOR = new RuleIdGenerator();
 
   public static void main(String[] args) throws IOException, CsvException {
     RuleSuggestionServiceImplementation ruleSuggestion = new RuleSuggestionServiceImplementation();
@@ -64,11 +60,13 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
 
-    CsvWriter.writeDataIntoCsvFile(CSV_OUTPUT_FILE_PATH, rules.asList());
+    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
-    ruleValidation.validate(rules).writeToCsvFile(CSV_VALIDATION_RESULT_FILE_PATH);
-    return null;
+    RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
+    ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
+
+    return ruleValidationReport.convertRuleValidationReportToString();
   }
 
   @Override
@@ -86,7 +84,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
 
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
-          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(usersByWorkgroupId.get(workgroupId));
+          WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
+              usersByWorkgroupId.get(workgroupId), RULE_ID_GENERATOR);
       rulesBuilder.addAll(workgroupIdRulesWithEmptyFilters);
       ImmutableSet<PoolAssignmentModel> poolAssignmentCoveredByWorkgroupIdRules =
           findPoolAssignmentsCoveredByRules(workgroupIdRulesWithEmptyFilters);
@@ -105,7 +104,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
                 filtersByPoolAssignments,
                 poolAssignment,
                 validUserPoolAssignments.get(0).workforceId(),
-                workgroupId));
+                workgroupId,
+                RULE_ID_GENERATOR));
       }
     }
     return rulesBuilder.build();
@@ -131,10 +131,11 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       SetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> filterByPoolAssignment,
       PoolAssignmentModel poolAssignment,
       Long workforceId,
-      Long workgroupId) {
+      Long workgroupId,
+      RuleIdGenerator ruleIdGenerator) {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
         FiltersReduction.reduce(filterByPoolAssignment, poolAssignment);
     return CasePoolIdAndPermissionIdRuleGenerator.generateRules(
-        workforceId, workgroupId, poolAssignment, reducedFilters);
+        workforceId, workgroupId, poolAssignment, reducedFilters, ruleIdGenerator);
   }
 }

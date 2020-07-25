@@ -9,18 +9,6 @@ java_binary(
 )
 
 java_binary(
-    name = "CsvWriter",
-    srcs = ["CsvWriter.java"],
-    main_class = "src.main.java.com.googleintern.wfm.ruleengine.action.CsvWriter",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":maven_dependency",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:FilterModel",
-        "//src/main/java/com/googleintern/wfm/ruleengine/model:RuleModel",
-    ],
-)
-
-java_binary(
     name = "DataProcessor",
     srcs = ["DataProcessor.java"],
     visibility = ["//visibility:public"],
@@ -58,6 +46,17 @@ java_binary(
     deps = [
         ":maven_dependency",
         "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
+        "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
+    ],
+)
+
+java_binary(
+    name = "RuleConcentration",
+    srcs = ["RuleConcentration.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":maven_dependency",
+        "//src/main/java/com/googleintern/wfm/ruleengine/action/generator:RuleIdGenerator",
         "//src/main/java/com/googleintern/wfm/ruleengine/model:model_dependencies",
     ],
 )

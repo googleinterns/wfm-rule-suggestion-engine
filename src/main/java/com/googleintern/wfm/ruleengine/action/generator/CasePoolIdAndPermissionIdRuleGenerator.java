@@ -1,6 +1,5 @@
 package src.main.java.com.googleintern.wfm.ruleengine.action.generator;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
@@ -20,11 +19,13 @@ public class CasePoolIdAndPermissionIdRuleGenerator {
       Long workforceId,
       Long workgroupId,
       PoolAssignmentModel poolAssignment,
-      List<ImmutableSet<FilterModel>> filters) {
+      List<ImmutableSet<FilterModel>> filters,
+      RuleIdGenerator ruleIdGenerator) {
     return filters.stream()
         .map(
             filtersGroup ->
                 RuleModel.builder()
+                    .setRuleId(ruleIdGenerator.getRuleId())
                     .setWorkforceId(workforceId)
                     .setWorkgroupId(workgroupId)
                     .setCasePoolId(poolAssignment.casePoolId())
