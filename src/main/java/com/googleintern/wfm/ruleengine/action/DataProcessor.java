@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -14,8 +15,7 @@ import static java.util.stream.Collectors.toSet;
 public class DataProcessor {
 
   /** Filter out user data with invalid workgroup Id values(< 0). */
-  public static ImmutableList<UserModel> filterUsersWithValidWorkgroupId(
-      ImmutableList<UserModel> rawData) {
+  public static ImmutableList<UserModel> filterUsersWithValidWorkgroupId(List<UserModel> rawData) {
     return rawData.stream().filter(data -> data.workgroupId() > 0).collect(toImmutableList());
   }
 
@@ -32,14 +32,14 @@ public class DataProcessor {
    * 2 are included in the types for User 0. However, User 1 and 2 have a different permission CCCC
    * that is not included in User 0.
    */
-  public static ImmutableList<UserModel> removeConflictUsers(ImmutableList<UserModel> rawUserData) {
+  public static ImmutableList<UserModel> removeConflictUsers(List<UserModel> rawUserData) {
     ImmutableSet<Long> coveredConflictUsers = findConflictUserIdPairs(rawUserData);
     return rawUserData.stream()
         .filter(user -> !coveredConflictUsers.contains(user.userId()))
         .collect(toImmutableList());
   }
 
-  private static ImmutableSet<Long> findConflictUserIdPairs(ImmutableList<UserModel> rawUserData) {
+  private static ImmutableSet<Long> findConflictUserIdPairs(List<UserModel> rawUserData) {
     Set<Long> dirtyUsers = new HashSet<Long>();
     Set<Long> visitedUsers = new HashSet<Long>();
 
@@ -55,7 +55,7 @@ public class DataProcessor {
                       !visitedUsers.contains(comparedUser.userId())
                           && !dirtyUsers.contains(comparedUser.userId())
                           && currentUser.isConflictUserPair(comparedUser))
-              .map(comparedUser -> comparedUser.userId())
+              .map(UserModel::userId)
               .collect(toSet()));
     }
     return ImmutableSet.copyOf(dirtyUsers);
