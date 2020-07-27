@@ -84,7 +84,7 @@ public abstract class RuleModel {
     return true;
   }
 
-  public String[] convertRuleToCsvRow() {
+  public String[] toCSVRows() {
     String ruleId = Long.toString(ruleId());
     String workforceId = Long.toString(workforceId());
     String workgroupId = Long.toString(workgroupId());

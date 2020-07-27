@@ -3,6 +3,7 @@ package src.main.java.com.googleintern.wfm.ruleengine.model;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.*;
 import com.opencsv.CSVWriter;
+import org.junit.Rule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -146,13 +147,13 @@ public abstract class RuleValidationReport {
     return ImmutableList.<String[]>builder()
         .add(convertRuleCoverageToCsvString())
         .add(RULE_HEADER)
-        .addAll(convertRulesToCsvRows())
+        .addAll(generatedRules().stream().map(RuleModel::toCSVRows).collect(toImmutableList()))
         .add(POOL_ASSIGNMENT_HEADER)
         .addAll(convertUncoveredPoolAssignmentsToCsvRows())
         .addAll(USERS_WITH_LESS_ASSIGNED_PERMISSIONS_HEADER)
-        .addAll(convertUsersWithLessAssignedPoolAssignmentsToCsvRows())
+        .addAll(convertUsersWithIncorrectPoolAssignmentsToCsvRows(false))
         .addAll(USERS_WITH_MORE_ASSIGNED_PERMISSIONS_HEADER)
-        .addAll(convertUsersWithMoreAssignedPoolAssignmentsToCsvRows())
+        .addAll(convertUsersWithIncorrectPoolAssignmentsToCsvRows(true))
         .build();
   }
 
@@ -160,12 +161,6 @@ public abstract class RuleValidationReport {
     return new String[] {
       RULE_COVERAGE_PERCENT_HEADER, String.format("%.2f", ruleCoverage() * 100) + PERCENTAGE_SIGN
     };
-  }
-
-  private ImmutableList<String[]> convertRulesToCsvRows() {
-    ImmutableList.Builder<String[]> rulesCsvRowsBuilder = ImmutableList.builder();
-    generatedRules().forEach(rule -> rulesCsvRowsBuilder.add(rule.convertRuleToCsvRow()));
-    return rulesCsvRowsBuilder.build();
   }
 
   private ImmutableList<String[]> convertUncoveredPoolAssignmentsToCsvRows() {
@@ -205,54 +200,51 @@ public abstract class RuleValidationReport {
     return skillIdBuilder.toString();
   }
 
-  private ImmutableList<String[]> convertUsersWithLessAssignedPoolAssignmentsToCsvRows() {
-    return usersWithLessAssignedPermissions().stream()
-        .map(
-            user ->
-                new String[] {
-                  Long.toString(user.userId()),
-                  Long.toString(user.workforceId()),
-                  Long.toString(user.workgroupId()),
-                  convertRoleIdsToCsvString(user.roleIds()),
-                  convertSkillIdsToCsvString(user.skillIds(), user.roleSkillIds()),
-                  convertPoolAssignmentsToCsvString(
+  private ImmutableList<String[]> convertUsersWithIncorrectPoolAssignmentsToCsvRows(
+      boolean isMorePermissions) {
+    if (isMorePermissions) {
+      return usersWithMoreAssignedPermissions().stream()
+          .map(
+              user ->
+                  convertUserWithIncorrectPoolAssignmentsToCsvRow(
+                      user,
+                      Sets.difference(
+                              assignedPoolAssignmentsByUsers().get(user), user.poolAssignments())
+                          .immutableCopy(),
+                      true))
+          .collect(toImmutableList());
+    } else {
+      return usersWithLessAssignedPermissions().stream()
+          .map(
+              user ->
+                  convertUserWithIncorrectPoolAssignmentsToCsvRow(
+                      user,
                       Sets.difference(
                               user.poolAssignments(), assignedPoolAssignmentsByUsers().get(user))
-                          .immutableCopy())
-                })
-        .collect(toImmutableList());
+                          .immutableCopy(),
+                      false))
+          .collect(toImmutableList());
+    }
   }
 
-  private ImmutableList<String[]> convertUsersWithMoreAssignedPoolAssignmentsToCsvRows() {
-    ImmutableSetMultimap<PoolAssignmentModel, RuleModel> rulesByPoolAssignments =
-        groupRulesByPoolAssignments();
-    return usersWithMoreAssignedPermissions().stream()
-        .map(
-            user ->
-                convertUserWithMoreAssignedPoolAssignmentsToCsvRow(
-                    user,
-                    rulesByPoolAssignments,
-                    Sets.difference(
-                            assignedPoolAssignmentsByUsers().get(user), user.poolAssignments())
-                        .immutableCopy()))
-        .collect(toImmutableList());
-  }
-
-  private String[] convertUserWithMoreAssignedPoolAssignmentsToCsvRow(
+  private String[] convertUserWithIncorrectPoolAssignmentsToCsvRow(
       UserModel user,
-      ImmutableSetMultimap<PoolAssignmentModel, RuleModel> rulesByPoolAssignments,
-      ImmutableSet<PoolAssignmentModel> wrongAssignedPoolPermissions) {
-    return new String[] {
-      Long.toString(user.userId()),
-      Long.toString(user.workforceId()),
-      Long.toString(user.workgroupId()),
-      convertRoleIdsToCsvString(user.roleIds()),
-      convertSkillIdsToCsvString(user.skillIds(), user.roleSkillIds()),
-      convertPoolAssignmentsToCsvString(wrongAssignedPoolPermissions),
-      convertRulesToCsvString(
-          findRulesAssignedMorePermissions(
-              rulesByPoolAssignments, user, wrongAssignedPoolPermissions))
-    };
+      ImmutableSet<PoolAssignmentModel> wrongAssignedPoolPermissions,
+      boolean isMorePermissions) {
+    String[] csvRow = new String[isMorePermissions ? 7 : 6];
+    csvRow[0] = Long.toString(user.userId());
+    csvRow[1] = Long.toString(user.workforceId());
+    csvRow[2] = Long.toString(user.workgroupId());
+    csvRow[3] = convertRoleIdsToCsvString(user.roleIds());
+    csvRow[4] = convertSkillIdsToCsvString(user.skillIds(), user.roleSkillIds());
+    csvRow[5] = convertPoolAssignmentsToCsvString(wrongAssignedPoolPermissions);
+    if (isMorePermissions) {
+      csvRow[6] =
+          convertRulesToCsvString(
+              findRulesAssignedMorePermissions(
+                  groupRulesByPoolAssignments(), user, wrongAssignedPoolPermissions));
+    }
+    return csvRow;
   }
 
   private static String convertRulesToCsvString(ImmutableSet<RuleModel> rules) {

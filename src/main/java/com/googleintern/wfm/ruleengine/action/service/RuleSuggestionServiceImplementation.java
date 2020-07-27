@@ -59,7 +59,6 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
         DataProcessor.filterValidData(userPoolAssignments);
 
     ImmutableSet<RuleModel> rules = suggestRules(validUserPoolAssignments);
-
     ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
 
     RuleValidation ruleValidation = new RuleValidation(validUserPoolAssignments);
@@ -81,7 +80,6 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
         WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
-
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =
           WorkgroupIdRuleGenerator.generateWorkgroupIdRules(
@@ -104,8 +102,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
                 filtersByPoolAssignments,
                 poolAssignment,
                 validUserPoolAssignments.get(0).workforceId(),
-                workgroupId,
-                RULE_ID_GENERATOR));
+                workgroupId));
       }
     }
     return rulesBuilder.build();
@@ -131,11 +128,10 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       SetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> filterByPoolAssignment,
       PoolAssignmentModel poolAssignment,
       Long workforceId,
-      Long workgroupId,
-      RuleIdGenerator ruleIdGenerator) {
+      Long workgroupId) {
     ImmutableList<ImmutableSet<FilterModel>> reducedFilters =
         FiltersReduction.reduce(filterByPoolAssignment, poolAssignment);
     return CasePoolIdAndPermissionIdRuleGenerator.generateRules(
-        workforceId, workgroupId, poolAssignment, reducedFilters, ruleIdGenerator);
+        workforceId, workgroupId, poolAssignment, reducedFilters, RULE_ID_GENERATOR);
   }
 }
