@@ -2,11 +2,13 @@ package src.main.java.com.googleintern.wfm.ruleengine.action;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSetMultimap;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.toSet;
 
 /** DataProcessor class is used to filter out invalid or conflict data. */
 public class DataProcessor {
@@ -14,12 +16,7 @@ public class DataProcessor {
   /** Filter out user data with invalid workgroup Id values(< 0). */
   public static ImmutableList<UserModel> filterUsersWithValidWorkgroupId(
       ImmutableList<UserModel> rawData) {
-    ImmutableList.Builder<UserModel> validDataBuilder = ImmutableList.<UserModel>builder();
-
-    for (final UserModel data : rawData) {
-      if (data.workgroupId() > 0) validDataBuilder.add(data);
-    }
-    return validDataBuilder.build();
+    return rawData.stream().filter(data -> data.workgroupId() > 0).collect(toImmutableList());
   }
 
   /**
@@ -36,34 +33,31 @@ public class DataProcessor {
    * that is not included in User 0.
    */
   public static ImmutableList<UserModel> removeConflictUsers(ImmutableList<UserModel> rawUserData) {
-    ImmutableSet<Long> coveredConflictUsers =
-        collectAllCoveredConflictUserIds(findConflictUserIdPairs(rawUserData));
+    ImmutableSet<Long> coveredConflictUsers = findConflictUserIdPairs(rawUserData);
     return rawUserData.stream()
         .filter(user -> !coveredConflictUsers.contains(user.userId()))
         .collect(toImmutableList());
   }
 
-  private static ImmutableSet<Long> collectAllCoveredConflictUserIds(
-      ImmutableSetMultimap<Long, Long> conflictUserPairs) {
-    ImmutableSet.Builder<Long> coveredConflictUsers = ImmutableSet.builder();
-    conflictUserPairs
-        .keySet()
-        .forEach(key -> coveredConflictUsers.addAll(conflictUserPairs.get(key)));
-    return coveredConflictUsers.build();
-  }
+  private static ImmutableSet<Long> findConflictUserIdPairs(ImmutableList<UserModel> rawUserData) {
+    Set<Long> dirtyUsers = new HashSet<Long>();
+    Set<Long> visitedUsers = new HashSet<Long>();
 
-  private static ImmutableSetMultimap<Long, Long> findConflictUserIdPairs(
-      ImmutableList<UserModel> rawUserData) {
-    ImmutableSetMultimap.Builder<Long, Long> conflictUserPairsBuilder =
-        ImmutableSetMultimap.builder();
-    rawUserData.forEach(
-        currentUser ->
-            conflictUserPairsBuilder.putAll(
-                currentUser.userId(),
-                rawUserData.stream()
-                    .filter(comparedUser -> currentUser.isConflictUserPair(comparedUser))
-                    .map(comparedUser -> comparedUser.userId())
-                    .collect(toImmutableSet())));
-    return conflictUserPairsBuilder.build();
+    for (UserModel currentUser : rawUserData) {
+      if (dirtyUsers.contains(currentUser.userId())) {
+        continue;
+      }
+      visitedUsers.add(currentUser.userId());
+      dirtyUsers.addAll(
+          rawUserData.stream()
+              .filter(
+                  comparedUser ->
+                      !visitedUsers.contains(comparedUser.userId())
+                          && !dirtyUsers.contains(comparedUser.userId())
+                          && currentUser.isConflictUserPair(comparedUser))
+              .map(comparedUser -> comparedUser.userId())
+              .collect(toSet()));
+    }
+    return ImmutableSet.copyOf(dirtyUsers);
   }
 }

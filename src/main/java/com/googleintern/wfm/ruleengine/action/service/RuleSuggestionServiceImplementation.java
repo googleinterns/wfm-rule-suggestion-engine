@@ -52,20 +52,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
    */
   @Override
   public String suggestRules(String csvFilePath) throws IOException, CsvException {
-    ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(csvFilePath);
-
-    ImmutableList<UserModel> usersWithValidWorkgroupId =
-        DataProcessor.filterUsersWithValidWorkgroupId(userPoolAssignments);
-
-    ImmutableSet<RuleModel> rules = suggestRules(usersWithValidWorkgroupId);
-
-    ImmutableSet<RuleModel> concentratedRules = RuleConcentration.concentrate(rules);
-
-    RuleValidation ruleValidation = new RuleValidation(usersWithValidWorkgroupId);
-    RuleValidationReport ruleValidationReport = ruleValidation.validate(concentratedRules);
-    ruleValidationReport.writeToCsvFile(CSV_OUTPUT_FILE_PATH);
-
-    return ruleValidationReport.convertRuleValidationReportToString();
+    return suggestRules(csvFilePath, true);
   }
 
   @Override
