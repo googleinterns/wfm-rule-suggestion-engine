@@ -77,7 +77,7 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
         DataProcessor.filterUsersWithValidWorkgroupId(userPoolAssignments);
 
     ImmutableList<UserModel> validUsers =
-        assignMorePermissions == true
+        assignMorePermissions
             ? usersWithValidWorkgroupId
             : DataProcessor.removeConflictUsers(usersWithValidWorkgroupId);
 
