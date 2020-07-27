@@ -2,73 +2,130 @@
 
 ## Background
 
-Nowadays, agents in the Workforce Management receive access to pools via a manual provisioning process. The admins need to manually select and decide the pool and permissions to be assigned to a selected list of agents. Alternatively, admins need to conclude from existing data of permissions/pool assignments and manually write rules to enable the automatic permissions/pool
+Nowadays, agents in the Workforce Management receive access to pools via a
+manual provisioning process. The admins need to manually select and decide the
+pool and permissions to be assigned to a selected list of agents. Alternatively,
+admins need to conclude from existing data of permissions/pool assignments and
+manually write rules to enable the automatic permissions/pool
 assignment.
 
-Due to the situation above, a system of automatically summarizing rules from existing data is needed to reduce the workload and simplify the procedure an admin needs to make onboarding a large number of agents. Admins need to provide past data about agents’ skills and their permissions/pools assignments in the csv format. The algorithm will look at these data to create general rules. Newly generated rules will also be produced in csv format for future reference.
+Due to the situation above, a system of automatically summarizing rules from
+existing data is needed to reduce the workload and simplify the procedure an
+admin needs to make onboarding a large number of agents. Admins need to provide
+past data about agents’ skills and their permissions/pools assignments in the
+csv format. The algorithm will look at these data to create general rules. Newly
+generated rules will also be produced in csv format for future reference.
 ***
 ## How to use the Rule Suggestion Engine
 ### Input Data
 
-The input data are stored in a csv file. The input csv file should contain columns including user ID, role IDs, skill IDs, role skill IDs, workforce ID, workgroup ID and Pool Assignments.
+The input data are stored in a csv file. The input csv file should contain
+columns including user ID, role IDs, skill IDs, role skill IDs, workforce ID,
+workgroup ID and Pool Assignments.
 
-- The "skill IDs" column should contain data in the format: ```[{"skill_id":"###"},{"skill_id":"###"}]```.
-- The "role skill IDs" column should contain data in the format: ```[{"proficiency":##,"skill_id":"###"}]``` or ```[{"skill_id":"###"}]```.
-- The "Pool Assignments" column should contain data in the format: ```[{"cases_pool_id":"###","permission_set_id":"###"}]```.
+- The "skill IDs" column should contain data in the format:
+```[{"skill_id":"###"},{"skill_id":"###"}]```.
+- The "role skill IDs" column should contain data in the format:
+```[{"proficiency":##,"skill_id":"###"}]``` or ```[{"skill_id":"###"}]```.
+- The "Pool Assignments" column should contain data in the format:
+```[{"cases_pool_id":"###","permission_set_id":"###"}]```.
 
 *Note: "###" represents decimal numbers(double variables).*
 
 ### Output Data
 
-The output data are also stored in a new csv file. The output csv file is called "rule_validation_results", which is located in the output diretory. The contents in the output csv file includes:
-- **Rule Coverage Percentage**: Percentage of users that the generated rules cover/perdict correctly.
+The output data are also stored in a new csv file. The output csv file is called
+"rule_validation_results", which is located in the output diretory. The contents
+in the output csv file includes:
+- **Rule Coverage Percentage**: Percentage of users that the generated rules
+cover/predict correctly.
 - **Rules**: Newly generated rules from the input csv data file.
-- **Uncovered Pool Assignments**: Pool Assignments that have no rule to guarantee.
-- **Users With Less Assigned Permissions**: Users that have fewer permissions assigned after applying generated rules.
-- **Users With More Assigned Permissions**: Users that have more permissions assigned after applying generated rules.
+- **Uncovered Pool Assignments**: Pool Assignments that have no rule to
+guarantee.
+- **Users With Less Assigned Permissions**: Users that have fewer permissions
+assigned after applying generated rules.
+- **Users With More Assigned Permissions**: Users that have more permissions
+assigned after applying generated rules.
 
 ### Running Rule Suggestion Engine
 
-The Rule Suggestion Engine can be run by calling the ```String suggestRule(String csvFilePath)``` function in the ```RuleSuggestionServiceImplementation``` class. The input parameter ```csvFilePath``` is the file location of the input csv file. If the ```csvFilePath``` is invalid, ```IOException``` and ```CsvException``` will be thrown.
+The Rule Suggestion Engine can be run by calling the ```String
+suggestRule(String csvFilePath)``` function in the
+```RuleSuggestionServiceImplementation``` class. The input parameter
+```csvFilePath``` is the file location of the input csv file. If the
+```csvFilePath``` is invalid, ```IOException``` and ```CsvException``` will be
+thrown.
 
-The output string from the Rule Suggestion Engine includes the same contents decribed in the output data section.
+The output string from the Rule Suggestion Engine includes the same contents
+decribed in the output data section.
 
 ***
 ## Rule Suggestion Engine Logic
 #### Step 1: CSV Parser
-The CsvParser class retrieves information from the input csv file and store the data as instances of the UserModel. This step also filters out/ignores the redundant or irrelevant information in the input csv file. For example:
-- The "proficiency" element in the "role skill ID" column is not relevant to the Rule Suggestion Engine.
+The CsvParser class retrieves information from the input csv file and store the
+data as instances of the UserModel. This step also filters out/ignores the
+redundant or irrelevant information in the input csv file. For example:
+- The "proficiency" element in the "role skill ID" column is not relevant to the
+Rule Suggestion Engine.
 
 #### Step 2: Data Processing
-The Data Processing step is used to filter out invalid data. Readings from the input csv file may contain invalid values for workgroup ID instances of the UserModel.
+The Data Processing step is used to filter out invalid data. Readings from the
+input csv file may contain invalid values for workgroup ID instances of the
+UserModel.
 
 #### Step 3: Grouping Data
-One rule is operated on a particular workgroup ID and a particular pool ID. First, instances of the UserModel will be grouped by Workgroup Id and checked whether there exists general rules that can apply to all users from the same work group. If such rules exist, create new rules based on the work group level. Second, users from the same work group will be further grouped by their [Case Pool IDs, Permission Set IDs]. In this grouping strategy, redudant information such as user ID, workforce ID, and workgroup ID are ignored. Role IDs, Skill IDs and Role Skill IDs are converted into corresponding types of the FilterModel. Later, the reduction algorithm will operate on each (Case Pool IDs, Permission Set IDs) group to generate new rules.
+One rule is operated on a particular workgroup ID and a particular pool ID.
+First, instances of the UserModel will be grouped by Workgroup Id and checked
+whether there exists general rules that can apply to all users from the same
+work group. If such rules exist, create new rules based on the work group level.
+Second, users from the same work group will be further grouped by their [Case
+Pool IDs, Permission Set IDs]. In this grouping strategy, redundant information
+such as user ID, workforce ID, and workgroup ID are ignored. Role IDs, Skill IDs
+and Role Skill IDs are converted into corresponding types of the FilterModel.
+Later, the reduction algorithm will operate on each (Case Pool IDs, Permission
+Set IDs) group to generate new rules.
 
 #### Step 4: Reduction Algorithm
 
-This step minimizes/reduces/simplifies the filter groups that can result in each permission assignment. Implementation for the reduction algorithm is included in the ```FiltersReduction``` class. The algorithm operates on every (Case Pool IDs, Permission Set IDs) group and return a list of minimized filter groups. The absence of any filter in a minimized filter groups will affect the permission assignment decision.
+This step minimizes/reduces/simplifies the filter groups that can result in each
+permission assignment. Implementation for the reduction algorithm is included in
+the ```FiltersReduction``` class. The algorithm operates on every (Case Pool
+IDs, Permission Set IDs) group and return a list of minimized filter groups. The
+absence of any filter in a minimized filter groups will affect the permission
+assignment decision.
 
 #### Step 5: Rule Concentration
 
-This step tries to decrease the number of generated rule by identifying possible rule combinations and concentrating rules. A rule identified by its workforce ID, workgroup ID, Case Pool ID and multiple Permission Set IDs. If two rules have the same combinations of filters, workgroup ID and case pool ID, it is possible to combine them into one rule.
+This step tries to decrease the number of generated rule by identifying possible
+rule combinations and concentrating rules. A rule identified by its workforce
+ID, workgroup ID, Case Pool ID and multiple Permission Set IDs. If two rules
+have the same combinations of filters, workgroup ID and case pool ID, it is
+possible to combine them into one rule.
 
 #### Step 6: Rule Validation
 
-This step tests the performance of rules on the input data set. The testing results and generated rules will be written into a new csv file in the output folder under the project directory.
+This step tests the performance of rules on the input data set. The testing
+results and generated rules will be written into a new csv file in the output
+folder under the project directory.
 
 ***
 ## How to run Rule Suggestion Engine on other data
-With several changes, the rule suggestion engine is capable of operating on input data sets that have different formats.
+With several changes, the rule suggestion engine is capable of operating on
+input data sets that have different formats.
 
 #### Change 1: Update CSV Parser
-The ```CsvParser``` class needs to be updated in order to read information from different csv formats.
+The ```CsvParser``` class needs to be updated in order to read information from
+different csv formats.
 
 #### Change 2: Update the ```UserModel``` class
-The new format of the input csv formats might contain more information. Additional data structures/variables are required to add in UserModel class in order to hold the extra information.
+The new format of the input csv formats might contain more information.
+Additional data structures/variables are required to add in UserModel class in
+order to hold the extra information.
 
 #### Change 3: Update the ```FilterModel``` class
-The new format of the input csv formats might contain more types of filters besides skill IDs and role IDs. More attributes might require to add in the enum variable "FilterType" in the ```FilterModel``` class.
+The new format of the input csv formats might contain more types of filters
+besides skill IDs and role IDs. More attributes might require to add in the enum
+variable "FilterType" in the ```FilterModel``` class.
 ***
 ## License
 Copyright 2020 Google LLC
@@ -86,7 +143,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-Workforce Managerment Rule Suggestion Engine.
+Workforce Management Rule Suggestion Engine.
 
 
 This is not an officially supported Google product.
