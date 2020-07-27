@@ -9,5 +9,5 @@ public interface RuleSuggestionService {
   //Returns a string style CSV.
   String suggestRules (String csvFilePath) throws IOException, CsvException;
 
-  String suggestRules (String csvFilePath, int percentage);
+  String suggestRules (String csvFilePath, boolean assignMorePermissions) throws IOException, CsvException;
 }
