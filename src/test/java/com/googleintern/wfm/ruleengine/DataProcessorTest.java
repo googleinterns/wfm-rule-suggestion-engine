@@ -109,7 +109,7 @@ public class DataProcessorTest {
   private static final int EXPECTED_NUMBER_OF_USERS_USERS_WITH_VALID_WORKGROUP_ID = 5;
 
   private static final ImmutableList<UserModel> INPUT_USERS_INCLUDE_CONFLICTS =
-      ImmutableList.of(USER_2, USER_3, USER_4, USER_5, USER_6);
+      ImmutableList.of(USER_3, USER_2, USER_4, USER_5, USER_6);
 
   private static final ImmutableList<UserModel> EXPECTED_USERS_WITHOUT_CONFLICTS =
       ImmutableList.of(USER_2, USER_4, USER_6);
