@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+
 /** RuleSuggestionService class is used to suggest rules based on the input data reading. */
 public class RuleSuggestionServiceImplementation implements RuleSuggestionService {
   private static final String CSV_INPUT_FILE_PATH =
@@ -61,7 +64,9 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
     ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(csvFilePath);
 
     ImmutableList<UserModel> usersWithValidWorkgroupId =
-        DataProcessor.filterUsersWithValidWorkgroupId(userPoolAssignments);
+        userPoolAssignments.stream()
+            .filter(user -> user.workgroupId() > 0)
+            .collect(toImmutableList());
 
     ImmutableList<UserModel> validUsers =
         assignMorePermissions
@@ -83,7 +88,8 @@ public class RuleSuggestionServiceImplementation implements RuleSuggestionServic
       return ImmutableSet.of();
     }
     ImmutableListMultimap<Long, UserModel> usersByWorkgroupId =
-        WorkgroupIdGroupingUtil.groupByWorkGroupId(validUserPoolAssignments);
+        validUserPoolAssignments.stream()
+            .collect(toImmutableListMultimap(user -> user.workgroupId(), user -> user));
     ImmutableSet.Builder<RuleModel> rulesBuilder = ImmutableSet.builder();
     for (Long workgroupId : usersByWorkgroupId.keySet()) {
       ImmutableSet<RuleModel> workgroupIdRulesWithEmptyFilters =

@@ -8,15 +8,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CasePoolIdAndPermissionIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
-import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.io.IOException;
 
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+
 /**
- * GroupingUtilTest class is used to test the functionality of both WorkgroupIdGroupingUtil and
+ * GroupingUtilTest class is used to test the functionality of the
  * CasePoolIdAndPermissionIdGroupingUtil classes.
  */
 public class GroupingUtilTest {
@@ -101,11 +102,11 @@ public class GroupingUtilTest {
 
   @Test
   public void groupByWorkGroupIdTest() throws IOException, CsvException {
-    ImmutableList<UserModel> userPoolAssignments =
-        CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
+    ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
 
     ImmutableListMultimap<Long, UserModel> mapByWorkGroupId =
-        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
+        userPoolAssignments.stream()
+            .collect(toImmutableListMultimap(user -> user.workgroupId(), user -> user));
     Assert.assertEquals(EXPECTED_WORKGROUP_ID_NUMBER, mapByWorkGroupId.keySet().size());
 
     mapByWorkGroupId.forEach(
@@ -116,10 +117,10 @@ public class GroupingUtilTest {
 
   @Test
   public void groupByCasePoolIdAndPermissionSetIdTest() throws IOException, CsvException {
-    ImmutableList<UserModel> userPoolAssignments =
-        CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
+    ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableListMultimap<Long, UserModel> mapByWorkGroupId =
-        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
+        userPoolAssignments.stream()
+            .collect(toImmutableListMultimap(user -> user.workgroupId(), user -> user));
 
     ImmutableSetMultimap<PoolAssignmentModel, ImmutableList<FilterModel>> firstPermissionGroup =
         CasePoolIdAndPermissionIdGroupingUtil.groupByCasePoolIdAndPermissionSetId(

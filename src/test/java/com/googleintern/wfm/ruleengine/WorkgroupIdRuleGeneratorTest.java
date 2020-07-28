@@ -9,17 +9,15 @@ import org.junit.Test;
 import src.main.java.com.googleintern.wfm.ruleengine.action.CsvParser;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.RuleIdGenerator;
 import src.main.java.com.googleintern.wfm.ruleengine.action.generator.WorkgroupIdRuleGenerator;
-import src.main.java.com.googleintern.wfm.ruleengine.action.WorkgroupIdGroupingUtil;
 import src.main.java.com.googleintern.wfm.ruleengine.model.FilterModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.RuleModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
 import java.io.IOException;
 
-/**
- * WorkgroupIdRuleGeneratorTest is used to test the functionality of the WorkgroupIdRuleGenerator
- * class.
- */
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+
+/** WorkgroupIdRuleGeneratorTest is used to test the functionality of grouping by workgroup ID. */
 public class WorkgroupIdRuleGeneratorTest {
   private static final String TEST_CSV_FILE_PATH =
       System.getProperty("user.home")
@@ -74,7 +72,8 @@ public class WorkgroupIdRuleGeneratorTest {
   public void findGeneralRuleForWorkGroupIdTest() throws IOException, CsvException {
     ImmutableList<UserModel> userPoolAssignments = CsvParser.readFromCSVFile(TEST_CSV_FILE_PATH);
     ImmutableListMultimap<Long, UserModel> mapByWorkGroupId =
-        WorkgroupIdGroupingUtil.groupByWorkGroupId(userPoolAssignments);
+        userPoolAssignments.stream()
+            .collect(toImmutableListMultimap(user -> user.workgroupId(), user -> user));
     RuleIdGenerator firstRuleIdGenerator = new RuleIdGenerator();
 
     ImmutableSet<RuleModel> firstGeneratedRules =
