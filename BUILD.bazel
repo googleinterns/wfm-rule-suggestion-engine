@@ -15,11 +15,6 @@ alias(
 )
 
 alias(
-    name = "WorkgroupIdGroupingUtil",
-    actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:WorkgroupIdGroupingUtil",
-)
-
-alias(
     name = "CasePoolIdAndPermissionIdGroupingUtil",
     actual = "//src/main/java/com/googleintern/wfm/ruleengine/action:CasePoolIdAndPermissionIdGroupingUtil",
 )

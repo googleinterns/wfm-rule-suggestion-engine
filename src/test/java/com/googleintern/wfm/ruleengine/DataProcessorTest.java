@@ -8,6 +8,8 @@ import src.main.java.com.googleintern.wfm.ruleengine.action.DataProcessor;
 import src.main.java.com.googleintern.wfm.ruleengine.model.PoolAssignmentModel;
 import src.main.java.com.googleintern.wfm.ruleengine.model.UserModel;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 /** DataProcessorTest class is used to test the functionality of DataProcessing class. */
 public class DataProcessorTest {
   private static final PoolAssignmentModel POOL_ASSIGNMENT_0 =
@@ -121,7 +123,9 @@ public class DataProcessorTest {
   @Test
   public void filterInvalidWorkgroupIdTest() {
     ImmutableList<UserModel> validUsers =
-        DataProcessor.filterUsersWithValidWorkgroupId(INPUT_USERS_INCLUDE_INVALID_WORKGROUP_ID);
+        INPUT_USERS_INCLUDE_INVALID_WORKGROUP_ID.stream()
+            .filter(user -> user.workgroupId() > 0)
+            .collect(toImmutableList());
     Assert.assertEquals(EXPECTED_NUMBER_OF_USERS_USERS_WITH_VALID_WORKGROUP_ID, validUsers.size());
     Assert.assertTrue(validUsers.equals(EXPECTED_USERS_WITH_VALID_WORKGROUP_ID));
   }
@@ -129,7 +133,9 @@ public class DataProcessorTest {
   @Test
   public void filterInvalidWorkgroupIdWithEmptyInputTest() {
     ImmutableList<UserModel> validUsers =
-        DataProcessor.filterUsersWithValidWorkgroupId(ImmutableList.of());
+        ImmutableList.<UserModel>builder().build().stream()
+            .filter(user -> user.workgroupId() > 0)
+            .collect(toImmutableList());
     Assert.assertEquals(EXPECTED_NUMBER_OF_USERS_USERS_WITH_EMPTY_INPUT, validUsers.size());
     Assert.assertTrue(validUsers.equals(ImmutableList.of()));
   }

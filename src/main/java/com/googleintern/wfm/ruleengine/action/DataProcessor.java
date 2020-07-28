@@ -11,14 +11,8 @@ import java.util.Set;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.stream.Collectors.toSet;
 
-/** DataProcessor class is used to filter out invalid or conflict data. */
+/** DataProcessor class is used to filter out conflict data. */
 public class DataProcessor {
-
-  /** Filter out user data with invalid workgroup Id values(< 0). */
-  public static ImmutableList<UserModel> filterUsersWithValidWorkgroupId(List<UserModel> rawData) {
-    return rawData.stream().filter(data -> data.workgroupId() > 0).collect(toImmutableList());
-  }
-
   /**
    * Filter out conflict user data. Conflict users are users with less role/skill ids but more
    * assigned permissions. This function is used when we want final generated rules to assign less
