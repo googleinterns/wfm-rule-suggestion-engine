@@ -51,7 +51,7 @@ public class DataProcessor {
               .filter(
                   comparedUser ->
                       !dirtyUsers.contains(comparedUser.userId())
-                          && currentUser.isConflictUserPair(comparedUser))
+                          && currentUser.isAConflictUser(comparedUser))
               .map(UserModel::userId)
               .collect(toSet()));
     }

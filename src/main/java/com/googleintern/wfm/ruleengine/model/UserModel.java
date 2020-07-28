@@ -53,7 +53,7 @@ public abstract class UserModel {
     public abstract UserModel build();
   }
 
-  public boolean isConflictUserPair(UserModel comparedUser) {
+  public boolean isAConflictUser(UserModel comparedUser) {
     return workforceId() == comparedUser.workforceId()
         && workgroupId() == comparedUser.workgroupId()
         && skillIds().containsAll(comparedUser.skillIds())
