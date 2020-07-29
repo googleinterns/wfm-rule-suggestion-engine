@@ -35,20 +35,17 @@ public class DataProcessor {
 
   private static ImmutableSet<Long> findConflictUserIdPairs(List<UserModel> rawUserData) {
     Set<Long> dirtyUsers = new HashSet<Long>();
-    Set<Long> visitedUsers = new HashSet<Long>();
 
     for (UserModel currentUser : rawUserData) {
       if (dirtyUsers.contains(currentUser.userId())) {
         continue;
       }
-      visitedUsers.add(currentUser.userId());
       dirtyUsers.addAll(
           rawUserData.stream()
               .filter(
                   comparedUser ->
-                      !visitedUsers.contains(comparedUser.userId())
-                          && !dirtyUsers.contains(comparedUser.userId())
-                          && currentUser.isConflictUserPair(comparedUser))
+                      !dirtyUsers.contains(comparedUser.userId())
+                          && currentUser.isAConflictUser(comparedUser))
               .map(UserModel::userId)
               .collect(toSet()));
     }
