@@ -108,8 +108,11 @@ public class DataProcessorTest {
 
   private static final int EXPECTED_NUMBER_OF_USERS_USERS_WITH_VALID_WORKGROUP_ID = 5;
 
-  private static final ImmutableList<UserModel> INPUT_USERS_INCLUDE_CONFLICTS =
+  private static final ImmutableList<UserModel> INPUT_USERS_INCLUDE_CONFLICTS_1 =
       ImmutableList.of(USER_3, USER_2, USER_4, USER_5, USER_6);
+
+  private static final ImmutableList<UserModel> INPUT_USERS_INCLUDE_CONFLICTS_2 =
+      ImmutableList.of(USER_2, USER_3, USER_4, USER_5, USER_6);
 
   private static final ImmutableList<UserModel> EXPECTED_USERS_WITHOUT_CONFLICTS =
       ImmutableList.of(USER_2, USER_4, USER_6);
@@ -135,9 +138,17 @@ public class DataProcessorTest {
   }
 
   @Test
-  public void filterConflictDataTest() {
+  public void filterConflictDataTest_Case1() {
     ImmutableList<UserModel> validUsers =
-        DataProcessor.removeConflictUsers(INPUT_USERS_INCLUDE_CONFLICTS);
+        DataProcessor.removeConflictUsers(INPUT_USERS_INCLUDE_CONFLICTS_1);
+    Assert.assertEquals(EXPECTED_NUMBER_OF_USERS_USERS_WITHOUT_CONFLICTS, validUsers.size());
+    Assert.assertTrue(validUsers.equals(EXPECTED_USERS_WITHOUT_CONFLICTS));
+  }
+
+  @Test
+  public void filterConflictDataTest_Case2(){
+    ImmutableList<UserModel> validUsers =
+            DataProcessor.removeConflictUsers(INPUT_USERS_INCLUDE_CONFLICTS_2);
     Assert.assertEquals(EXPECTED_NUMBER_OF_USERS_USERS_WITHOUT_CONFLICTS, validUsers.size());
     Assert.assertTrue(validUsers.equals(EXPECTED_USERS_WITHOUT_CONFLICTS));
   }
